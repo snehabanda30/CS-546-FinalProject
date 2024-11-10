@@ -1,0 +1,25 @@
+{
+  "name": "cs-546-finalproject",
+  "version": "1.0.0",
+  "description": "A local community website where neighbors can request and offer help for tasks like grocery shopping, yard work, or technical assistance. Users can request specific types of help and other users can find people who can help them with their tasks.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "tailwind-generate": "npx tailwindcss -i ./globals.css -o ./public/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "express": "^4.21.1",
+    "express-handlebars": "^8.0.1",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.14"
+  }
+}
