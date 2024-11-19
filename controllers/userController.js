@@ -30,28 +30,23 @@ const signup = async (req, res) => {
 
     // Check for username and password
     if (!username || !password) {
-      return res.status(400).render("signup", {
-        error: "All fields are mandatory.",
-        script: "/public/js/validateUserSchema.js",
-      });
+      return res.status(400).json({ error: "All fields are required" });
     }
 
     // Checks if sent data corresponds to correct user schema
     const result = userSchema.safeParse({ username, password });
     if (result.success === false) {
       const errors = result.error.errors.map((error) => error.message);
-      return res.status(400).render("signup", {
+      return res.status(400).json({
         error: errors.join(", "),
-        script: "/public/js/validateUserSchema.js",
       });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(409).render("signup", {
+      return res.status(409).json({
         error: `User with username ${username} already exists.`,
-        script: "/public/js/validateUserSchema.js",
       });
     }
 
@@ -59,11 +54,11 @@ const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = await User.create({ username, hashedPassword });
-    return res.redirect("/");
+
+    return res.json({ username: newUser.username });
   } catch (e) {
-    return res.status(500).render("signup", {
+    return res.status(500).json({
       error: "Something went wrong when signing up. Please try again.",
-      script: "/public/js/validateUserSchema.js",
     });
   }
 };
