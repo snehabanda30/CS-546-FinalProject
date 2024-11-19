@@ -1,4 +1,4 @@
-<form action="/users/signup" method="post" class="bg-slate-300 w-1/2 px-6 py-4 mx-auto my-auto rounded-md shadow-lg gap-4 flex flex-col items-start">
+<form id="signupForm" method="post" class="bg-slate-300 w-1/2 px-6 py-4 mx-auto my-auto rounded-md shadow-lg gap-4 flex flex-col items-start">
   <div class="flex flex-col w-full">
     <label for="username" class="font-bold text-xl mb-2">Username:</label>
     <input type="text" placeholder="Enter username" id="username" name="username" class="rounded-lg px-3 py-2 w-full border-[1px] border-black">
@@ -8,4 +8,10 @@
     <input type="text" placeholder="Enter password" id="password" name="password" class="rounded-lg px-3 py-2 w-full border-[1px] border-black">
   </div>
   <button type="submit" class="bg-green-600 font-bold text-white hover:bg-green-500 py-2 px-4 rounded-lg transition-all">Submit</button>
+  <ul class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500" id="zodInputErrors">
+
+  </ul>
+  {{#if error}}
+  <p class="bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500">{{error}}</p>
+  {{/if}}
 </form>
