@@ -1,3 +1,5 @@
+import User from "../models/User.js"
+
 const demoFuncOne = (req, res) => {
   return res.render("test", {
     number: 1,
@@ -12,4 +14,17 @@ const demoFuncTwo = (req, res) => {
   })
 }
 
-export default {demoFuncOne, demoFuncTwo}
+// Signup
+
+const getSignup = (req, res) => {
+  return res.render("signup")
+}
+
+const signup = (req, res) => {
+  // Logic for signup
+  const { username, password } = req.body
+  console.log(username, password)
+  return res.redirect("/")
+}
+
+export default {demoFuncOne, demoFuncTwo, getSignup, signup}
