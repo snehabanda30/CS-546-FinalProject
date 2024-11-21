@@ -2,8 +2,11 @@ import express from "express"
 import exphbs from "express-handlebars"
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
+import connectDB from "./config/connectDB.js"
 
 const app = express()
+
+await connectDB()
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   // If the user posts to the server with a property called _method, rewrite the request's method
@@ -26,8 +29,12 @@ app.use(rewriteUnsupportedBrowserMethods);
 app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+app.get("/", (req, res) => {
+  res.render("home")
+})
 app.use("/users", userRoutes)
 app.use("/posts", postRoutes)
+
 
 app.listen(3000, () => {
   console.log("Listening on port 3000")
