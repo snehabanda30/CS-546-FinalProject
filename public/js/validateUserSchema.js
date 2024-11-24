@@ -37,5 +37,40 @@ $("#signupForm").on("submit", (event) => {
       },
     };
     $.ajax(requestConfig);
-  }
+  } 
+}); 
+
+$("#editForm").on("submit", (event) => {
+  event.preventDefault();
+  $("#inputErrors").addClass("hidden").empty();
+  const userInput = {
+    username: $("#username").val().trim(),
+    password: $("#password").val().trim(),
+  };
+  const result = userSchema.safeParse(userInput);
+  if (result.success === false) {
+    result.error.errors.forEach((error) => {
+      $("#inputErrors").append(`<li>${error.message}</li>`);
+    });
+    $("#inputErrors").removeClass("hidden");
+  } else {
+    // Submit form with AJAX
+    const requestConfig = {
+      method: "PATCH",
+      url: "/editsignup",
+      contentType: "application/json",
+      data: JSON.stringify({
+        username: userInput.username,
+        password: userInput.password,
+      }),
+      error: function (xhr, status, error) {
+        $("#inputErrors").append(`<li>${xhr.responseJSON.error}</li>`);
+        $("#inputErrors").removeClass("hidden");
+      },
+      success: function (result, status, xhr) {
+        window.location.href = "/";
+      },
+    };
+    $.ajax(requestConfig);
+  } 
 });

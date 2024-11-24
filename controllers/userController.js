@@ -15,7 +15,24 @@ const demoFuncTwo = (req, res) => {
     type: "user",
   });
 };
+const getHome = async (req, res) => {
+  try {
+      let userLogin = null;
+      if (req.session) {
+          if (req.session.userId)
+              userLogin = await User.findById(req.session.userId);
+              console.log(userLogin);
 
+      }
+      console.log("Session in getHome:", req.session);
+      console.log("Fetched userLogin:", userLogin);
+      res.render('home', { userLogin }); 
+
+  } catch (error) {
+     console.log(error);
+      res.redirect('/');
+  }
+};
 // Signup
 const getSignup = (req, res) => {
   return res.render("signup", {
@@ -54,13 +71,91 @@ const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = await User.create({ username, hashedPassword });
+    req.session.userId = newUser._id; // Set session userId
+    console.log("Session set after signup:", req.session);
 
-    return res.json({ username: newUser.username });
+    // return res.json({ username: newUser.username });
+    return res.redirect("/");
   } catch (e) {
     return res.status(500).json({
       error: "Something went wrong when signing up. Please try again.",
     });
   }
 };
+// edit 
 
-export default { demoFuncOne, demoFuncTwo, getSignup, signup };
+const getEdit = async (req,res) => {
+  console.log("hello!!!!");
+  console.log("req.session:", req.session); // Check session object
+
+  const { userId } = req.params; 
+  try {  
+    let userLogin = null;
+        if (req.session) {
+            if (req.session.userId)
+                userLogin = await User.findById(req.session.userId); 
+                console.log(userLogin); 
+                console.log(userLogin.username);
+
+        }
+    const user = await User.findById(req.session.userId);  
+    console.log(user.username);
+    if (!user){
+      return res.status(404).json({ error: "User not found" });
+    } 
+    return res.render("edit", {
+      script: "/public/js/validateUserSchema.js",
+      user: user.username,  // Pass user data for editing
+      userLogin: userLogin.username, // Pass userLogin to show authenticated state
+  });
+  } catch (e) {
+    return res.status(500).json({
+      error: "Something went wrong when fetching user data.",
+    });
+  }
+} 
+
+const editUser = async (req, res) => {
+  const { userId } = req.params;
+  const { username, password } = req.body; // Extract data from form submission
+
+  try {
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    // Prepare an object to hold updates
+    const updates = {};
+
+    // Update username if it has changed
+    if (username && username !== user.username) {
+      const usernameValidation = userSchema.safeParse({ username });
+      if (!usernameValidation.success) {
+        const errors = usernameValidation.error.errors.map((error) => error.message);
+        return res.status(400).json({ error: errors.join(", ") });
+      }
+      updates.username = username;
+    }
+
+    // Update password if provided
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updates.hashedPassword = await bcrypt.hash(password, salt);
+    }
+
+    // Apply updates if any
+    if (Object.keys(updates).length > 0) {
+      await User.findByIdAndUpdate(userId, updates, { new: true });
+    }
+
+    return res.json({ message: "User details updated successfully." });
+  } catch (err) {
+    return res.status(500).json({
+      error: "An error occurred while updating the user. Please try again.",
+    });
+  }
+};
+
+
+export default { demoFuncOne, demoFuncTwo, getSignup, signup, getEdit,editUser,getHome};

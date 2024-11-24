@@ -1,0 +1,21 @@
+<form id="editForm"  method="POST">
+  <label for="username">Username:</label>
+  <input
+    type="text"
+    id="username"
+    name="username"
+    value="{{user.username}}"
+  />
+
+  <label for="password">Password:</label>
+  <input
+    type="password"
+    id="password"
+    name="password"
+    placeholder="Leave blank to keep current password"
+  />
+
+  <div id="inputErrors" class="hidden"></div>
+  <button type="submit">Save Changes</button>
+</form>
+
