@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const commentsSchema = new mongoose.Schema({
-  commentID: {
-    type: mongoose.Schema.Types.ObjectId,
-    auto: true,
-  },
   userID: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

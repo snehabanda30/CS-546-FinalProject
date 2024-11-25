@@ -3,10 +3,6 @@ import { addressSchema } from './Address.js';
 import { reviewSchema } from './Review.js';
 
 const userSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    auto: true,
-  },
   username: {
     type: String,
     required: true,

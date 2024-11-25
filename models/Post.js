@@ -3,10 +3,6 @@ import { addressSchema } from './Address.js';
 import { commentsSchema } from './Comment.js';
 
 const postSchema = new mongoose.Schema({
-  postID: {
-    type: mongoose.Schema.Types.ObjectId,
-    auto: true,
-  },
   posterID: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
