@@ -4,6 +4,9 @@ import { userSchema } from "../utils/schemas.js";
 
 // Signup
 const getSignup = (req, res) => {
+  if (req.session.profile) {
+    return res.redirect("/");
+  }
   return res.render("signup", {
     script: "/public/js/validateUserSignupSchema.js",
   });
@@ -51,6 +54,9 @@ const signup = async (req, res) => {
 
 // login
 const getLoginPage = async (req, res) => {
+  if (req.session.profile) {
+    return res.redirect("/");
+  }
   return res.render("login", {
     script: "/public/js/validateUserLoginSchema.js",
   });
