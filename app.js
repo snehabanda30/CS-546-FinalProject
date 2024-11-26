@@ -1,12 +1,16 @@
-import express from "express"
-import exphbs from "express-handlebars"
-import userRoutes from './routes/userRoutes.js'
-import postRoutes from './routes/postRoutes.js'
-import connectDB from "./config/connectDB.js"
+import express from "express";
+import exphbs from "express-handlebars";
+import userRoutes from "./routes/userRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
+import connectDB from "./config/connectDB.js";
+import session from "express-session";
+import { configDotenv } from "dotenv";
 
-const app = express()
+const app = express();
 
-await connectDB()
+await connectDB();
+
+configDotenv();
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   // If the user posts to the server with a property called _method, rewrite the request's method
@@ -29,13 +33,32 @@ app.use(rewriteUnsupportedBrowserMethods);
 app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-app.get("/", (req, res) => {
-  res.render("home")
-})
-app.use("/users", userRoutes)
-app.use("/posts", postRoutes)
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 72,
+      httpOnly: true,
+    },
+  })
+);
 
+// app.use((req, res, next) => {
+//   console.log("Session:", req.session);
+//   next();
+// });
+
+app.get("/", (req, res) => {
+  if (req.session.profile?.id) {
+    return res.render("home", { user: req.session.profile });
+  }
+  return res.render("home");
+});
+app.use("/users", userRoutes);
+app.use("/posts", postRoutes);
 
 app.listen(3000, () => {
-  console.log("Listening on port 3000")
-})
+  console.log("Listening on port 3000");
+});

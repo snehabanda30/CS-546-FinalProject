@@ -3,13 +3,16 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/test1", userController.demoFuncOne);
-
-router.get("/test2", userController.demoFuncTwo);
-
 router
   .route("/signup")
   .get(userController.getSignup)
   .post(userController.signup);
+
+router
+  .route("/login")
+  .get(userController.getLoginPage)
+  .post(userController.login);
+
+router.route("/logout").post(userController.logout);
 
 export default router;
