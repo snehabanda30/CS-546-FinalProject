@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from "bcrypt";
 import User from '../models/User.js';
 import Post from '../models/Post.js';
 import { Address } from '../models/Address.js';
@@ -11,6 +12,9 @@ async function seedDatabase() {
     await connectDB();
     await mongoose.connection.dropDatabase();
     console.log('Database cleared');
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash('123456', salt);
 
     const address1 = await Address.create({
       address: '26 Roosevelt Avenue',
@@ -84,7 +88,7 @@ async function seedDatabase() {
 
     const user1 = await User.create({
       username: 'vgiraldo',
-      hashedPassword: '123456',
+      hashedPassword: hashedPassword,
       email: 'vgiraldo@stevens.edu',
       phoneNumber: '5512427420',
       firstName: 'Victor',
@@ -98,7 +102,7 @@ async function seedDatabase() {
 
     const user2 = await User.create({
       username: 'sbanda',
-      hashedPassword: '123456',
+      hashedPassword: hashedPassword,
       email: 'sbanda1@stevens.edu',
       phoneNumber: '2015555555',
       firstName: 'Sneha',
@@ -112,7 +116,7 @@ async function seedDatabase() {
 
     const user3 = await User.create({
       username: 'bpatel',
-      hashedPassword: '123456',
+      hashedPassword: hashedPassword,
       email: 'bpatel4@stevens.edu',
       phoneNumber: '2015555555',
       firstName: 'Birva',
@@ -126,7 +130,7 @@ async function seedDatabase() {
 
     const user4 = await User.create({
       username: 'jferber',
-      hashedPassword: '123456',
+      hashedPassword: hashedPassword,
       email: 'jferber@stevens.edu',
       phoneNumber: '2015555555',
       firstName: 'Justin',
@@ -140,7 +144,7 @@ async function seedDatabase() {
 
     const user5 = await User.create({
       username: 'pputrevu',
-      hashedPassword: '123456',
+      hashedPassword: hashedPassword,
       email: 'pputrevu@stevens.edu',
       phoneNumber: '2015555555',
       firstName: 'Prerana',
