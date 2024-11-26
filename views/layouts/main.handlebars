@@ -1,39 +1,57 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="/public/css/output.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/zod@3.23.8/lib/index.umd.min.js"></script>
+    <link rel="stylesheet" href="/public/css/output.css" />
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/zod@3.23.8/lib/index.umd.min.js"
+    ></script>
   </head>
   <body>
     <header class="bg-gray-300 p-4 flex gap-4">
       {{#if user}}
-      <div class="flex justify-between w-full">
-        <a href="/" class="font-semibold hover:text-zinc-800 transition-all">Home</a>
-        <div class="flex gap-4">
-          <a href="/">{{user.username}}</a>
-          <button id="logoutButton" class="font-semibold hover:text-zinc-800 transition-all">Logout</button>
+        <div class="flex justify-between w-full">
+          <a
+            href="/"
+            class="font-semibold hover:text-zinc-800 transition-all"
+          >Home</a>
+          <div class="flex gap-4">
+            <a href="/">{{user.username}}</a>
+            <button
+              id="logoutButton"
+              class="font-semibold hover:text-zinc-800 transition-all"
+            >Logout</button>
+          </div>
         </div>
-      </div>
       {{else}}
-      <a href="/" class="font-semibold hover:text-zinc-800 transition-all">Home</a>
-      <a href="/users/signup" class="font-semibold hover:text-zinc-800 transition-all">Signup</a>
-      <a href="/users/login" class="font-semibold hover:text-zinc-800 transition-all">Login</a>
+        <a
+          href="/"
+          class="font-semibold hover:text-zinc-800 transition-all"
+        >Home</a>
+        <a
+          href="/users/signup"
+          class="font-semibold hover:text-zinc-800 transition-all"
+        >Signup</a>
+        <a
+          href="/users/login"
+          class="font-semibold hover:text-zinc-800 transition-all"
+        >Login</a>
       {{/if}}
     </header>
     <main class="flex flex-col min-h-[calc(100vh-80px)]">
       <div class="flex flex-1 flex-col h-full">
-        {{{body}}}  
+        {{{body}}}
       </div>
     </main>
     <footer class="bg-gray-300">
       CS-546 Final Project Footer
     </footer>
     {{#if script}}
-    <script src="{{script}}"></script>
+      <script src="{{script}}"></script>
     {{/if}}
     <script src="/public/js/layoutInteractions.js"></script>
   </body>

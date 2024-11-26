@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import { addressSchema } from './Address.js';
-import { reviewSchema } from './Review.js';
+import mongoose from "mongoose";
+import { addressSchema } from "./Address.js";
+import { reviewSchema } from "./Review.js";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -16,20 +16,20 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    default: '',
+    default: "",
   },
   phoneNumber: {
     type: String,
-    default: '',
+    default: "",
     maxlength: 10,
   },
   firstName: {
     type: String,
-    default: '',
+    default: "",
   },
   lastName: {
     type: String,
-    default: '',
+    default: "",
   },
   address: {
     type: addressSchema,
@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema({
   },
   favorites: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'User',
+    ref: "User",
     default: [],
   },
   tasksHelped: {
@@ -62,9 +62,9 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
-    default: '',
+    default: "",
   },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;
