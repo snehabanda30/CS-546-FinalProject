@@ -30,8 +30,8 @@ const postSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pending', 'In Progress', 'Completed'],
-    default: 'Pending',
+    enum: ["Pending", "In Progress", "Completed"],
+    default: "Pending",
   },
   description: {
     type: String,

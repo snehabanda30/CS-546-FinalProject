@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const addressSchema = new mongoose.Schema({
   address: { type: String, required: true },
@@ -9,6 +9,6 @@ const addressSchema = new mongoose.Schema({
   country: { type: String, required: true },
 });
 
-const Address = mongoose.model('Address', addressSchema);
+const Address = mongoose.model("Address", addressSchema);
 
 export { addressSchema, Address };

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const commentsSchema = new mongoose.Schema({
   userID: {
@@ -15,6 +15,6 @@ const commentsSchema = new mongoose.Schema({
   },
 });
 
-const Comment = mongoose.model('Comment', commentsSchema);
+const Comment = mongoose.model("Comment", commentsSchema);
 
 export { commentsSchema, Comment };
