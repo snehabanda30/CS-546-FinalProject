@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import { addressSchema } from './Address.js';
-import { commentsSchema } from './Comment.js';
+import mongoose from "mongoose";
+import { addressSchema } from "./Address.js";
+import { commentsSchema } from "./Comment.js";
 
 const postSchema = new mongoose.Schema({
   posterID: {
@@ -25,13 +25,13 @@ const postSchema = new mongoose.Schema({
   },
   priority: {
     type: String,
-    enum: ['Low', 'Medium', 'High'],
+    enum: ["Low", "Medium", "High"],
     required: true,
   },
   status: {
     type: String,
-    enum: ['Pending', 'In Progress', 'Completed'],
-    default: 'Open',
+    enum: ["Pending", "In Progress", "Completed"],
+    default: "Open",
   },
   description: {
     type: String,
@@ -51,10 +51,10 @@ const postSchema = new mongoose.Schema({
   },
   requestedUsers: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'User',
+    ref: "User",
     default: [],
   },
 });
-const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.model("Post", postSchema);
 
 export default Post;

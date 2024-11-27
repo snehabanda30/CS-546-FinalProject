@@ -1,10 +1,10 @@
 import postController from "../controllers/postController.js";
-import express from "express"
+import express from "express";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get("/test1", postController.demoFuncOne)
+router.get("/test1", postController.demoFuncOne);
 
-router.get("/test2", postController.demoFuncTwo)
+router.get("/test2", postController.demoFuncTwo);
 
-export default router
+export default router;
