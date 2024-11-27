@@ -33,7 +33,7 @@ $("#signupForm").on("submit", (event) => {
         $("#inputErrors").removeClass("hidden");
       },
       success: function (result, status, xhr) {
-        window.location.href = "/";
+        window.location.href = "/users/login";
       },
     };
     $.ajax(requestConfig);

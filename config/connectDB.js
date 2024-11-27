@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://0.0.0.0:27017/final-project")
+    await mongoose.connect("mongodb://0.0.0.0:27017/final-project");
     console.log("MongoDB connected");
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const closeConnection = async () => {
   await mongoose.connection.close();
@@ -15,3 +15,4 @@ const closeConnection = async () => {
 }
 
 export { connectDB, closeConnection };
+
