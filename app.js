@@ -2,7 +2,7 @@ import express from "express";
 import exphbs from "express-handlebars";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
-import connectDB from "./config/connectDB.js";
+import { connectDB } from "./config/connectDB.js";
 import session from "express-session";
 import { configDotenv } from "dotenv";
 

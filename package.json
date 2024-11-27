@@ -7,7 +7,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "seed": "node tasks/seed.js",
-    "tailwind-generate": "npx tailwindcss -i ./globals.css -o ./public/css/output.css --watch"
+    "tailwind-generate": "npx tailwindcss -i ./globals.css -o ./public/css/output.css --watch",
     "prepare": "husky",
     "prettier": "npx prettier . --write"
   },
