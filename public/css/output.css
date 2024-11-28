@@ -744,3 +744,61 @@ video {
   --tw-text-opacity: 1;
   color: rgb(39 39 42 / var(--tw-text-opacity));
 }
+
+
+.post-details-container {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.post-card {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+Heading Styles
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+h2, h3 {
+  font-size: 1.8rem;
+  color: #333;
+}
+
+/* Detail Field Styles */
+.detail-field {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.detail-value {
+  font-weight: normal;
+  color: #555;
+}
+
+.post-category {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+/* Comments Section */
+.comments-section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.comments-section li {
+  margin-bottom: 10px;
+}
+
+.comments-section p {
+  font-style: italic;
+  color: #888;
+}
+
+
+

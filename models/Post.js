@@ -5,6 +5,7 @@ import { commentsSchema } from "./Comment.js";
 const postSchema = new mongoose.Schema({
   posterID: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   helperID: {
@@ -31,7 +32,7 @@ const postSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["Pending", "In Progress", "Completed"],
-    default: "Open",
+    default: "Pending",
   },
   description: {
     type: String,

@@ -35,7 +35,7 @@ app.set("view engine", "handlebars");
 
 app.use(
   session({
-    secret: process.env.SECRET_KEY,
+    secret: process.env.SECRET_TOKEN,
     saveUninitialized: false,
     resave: false,
     cookie: {
@@ -50,12 +50,16 @@ app.use(
 //   next();
 // });
 
+app.engine("handlebars", hbs.engine);
+app.set("view engine", "handlebars");
+
 app.get("/", (req, res) => {
   if (req.session.profile?.id) {
     return res.render("home", { user: req.session.profile });
   }
   return res.render("home");
 });
+
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 

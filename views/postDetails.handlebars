@@ -1,0 +1,60 @@
+<div class="post-details-container">
+  <h1>Post Details</h1>
+  <div class="post-card">
+    <h2 class="post-category">{{post.category}} Post</h2>
+    <br />
+    <p class="detail-field"><strong>Status:</strong>
+      <span class="detail-value">{{post.status}}</span></p>
+    <p class="detail-field"><strong>Priority:</strong>
+      <span class="detail-value">{{post.priority}}</span></p>
+    <p class="detail-field"><strong>Location:</strong>
+      <span class="detail-value">
+        {{post.location.address}},
+        {{#if post.location.suite}}
+          {{post.location.suite}},
+        {{/if}}
+        {{post.location.city}},
+        {{post.location.state}},
+        {{post.location.zipCode}},
+        {{post.location.country}}
+      </span>
+    </p>
+    <p class="detail-field"><strong>Complete By:</strong>
+      <span class="detail-value">{{post.completeBy}}</span></p>
+
+    <p class="detail-field">
+      <strong>Description:</strong>
+      <span class="detail-value">{{post.description}}</span>
+    </p>
+
+    <p class="detail-field">
+      <strong>Skills Required:</strong>
+      <span class="detail-value">
+        <ul>
+          {{#each post.skillsRequired}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </span>
+    </p>
+    <br />
+    <p class="detail-field">
+      <strong>Comments:</strong>
+      <span class="detail-value">
+        {{#if post.comments.length}}
+          <ul>
+            {{#each post.comments}}
+              <li><strong>{{this.user}}:</strong> {{this.comment}}</li>
+            {{/each}}
+          </ul>
+        {{else}}
+          No comments yet.
+        {{/if}}
+      </span>
+    </p>
+
+    <p class="detail-field"><strong>Posted By:</strong>
+      <span class="detail-value">{{post.username}}</span></p>
+
+  </div>
+</div>
