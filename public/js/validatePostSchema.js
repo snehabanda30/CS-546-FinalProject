@@ -1,3 +1,5 @@
+import { Zod } from 'zod';
+
 const postSchema = Zod.object({
   category: Zod.string().min(1, "Category is required"),
   location: Zod.object({
@@ -23,7 +25,6 @@ const postSchema = Zod.object({
       return completeByDate > currentDate; // Ensures date is in the future
     }, "Complete by date must be in the future"),
 });
-
 
 $("#createPostForm").on("submit", (event) => {
   event.preventDefault();

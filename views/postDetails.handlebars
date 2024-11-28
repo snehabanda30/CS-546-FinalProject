@@ -1,12 +1,28 @@
-<div class="post-details-container p-6 max-w-3xl mx-auto bg-white rounded-md shadow-lg">
-  <h1 class="text-3xl font-bold mb-4">Post Details</h1>
-  <div class="post-card bg-gray-100 p-6 rounded-md shadow-md">
-    <h2 class="text-2xl font-semibold mb-4 text-blue-600">{{post.category}} Post</h2>
-    <p class="detail-field mb-2"><strong>Status:</strong>
-      <span class="detail-value text-gray-700">{{post.status}}</span></p>
-    <p class="detail-field mb-2"><strong>Priority:</strong>
-      <span class="detail-value text-gray-700">{{post.priority}}</span></p>
-    <p class="detail-field mb-2"><strong>Location:</strong>
+<div
+  class="post-details-container flex flex-col items-center py-6 px-4 bg-gray-100"
+>
+  <h1 class="text-3xl font-bold mb-6">Post Details</h1>
+  <div class="post-card bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl">
+    <h2 class="post-category text-2xl font-semibold text-blue-600 mb-4">
+      {{post.category}}
+      Post
+    </h2>
+
+
+    <p class="detail-field text-lg mb-2">
+      <strong class="font-bold">Status:</strong>
+      <span class="detail-value text-gray-700">{{post.status}}</span>
+    </p>
+
+
+    <p class="detail-field text-lg mb-2">
+      <strong class="font-bold">Priority:</strong>
+      <span class="detail-value text-gray-700">{{post.priority}}</span>
+    </p>
+
+
+    <p class="detail-field text-lg mb-2">
+      <strong class="font-bold">Location:</strong>
       <span class="detail-value text-gray-700">
         {{post.location.address}},
         {{#if post.location.suite}}
@@ -18,41 +34,46 @@
         {{post.location.country}}
       </span>
     </p>
-    <p class="detail-field mb-2"><strong>Complete By:</strong>
-      <span class="detail-value text-gray-700">{{post.completeBy}}</span></p>
+    <p class="detail-field"><strong>Complete By:</strong>
+      <span class="detail-value">{{post.completeBy}}</span></p>
 
-    <p class="detail-field mb-4">
+
+    <p class="detail-field">
       <strong>Description:</strong>
-      <span class="detail-value text-gray-700">{{post.description}}</span>
+      <span class="detail-value">{{post.description}}</span>
     </p>
 
-    <p class="detail-field mb-4">
+
+    <p class="detail-field">
       <strong>Skills Required:</strong>
       <span class="detail-value">
-        <ul class="list-disc pl-6 space-y-1">
+        <ul>
           {{#each post.skillsRequired}}
-            <li class="text-gray-700">{{this}}</li>
+            <li>{{this}}</li>
           {{/each}}
         </ul>
       </span>
     </p>
-    <br>
-    <p class="detail-field mb-4">
-      <strong>Comments:</strong>
+    <br />
+    <p class="detail-field text-lg mb-4">
+      <strong class="font-bold">Comments:</strong>
       <span class="detail-value text-gray-700">
         {{#if post.comments.length}}
-          <ul class="space-y-2">
+          <ul>
             {{#each post.comments}}
-              <li><strong class="text-blue-600">{{this.user}}:</strong> {{this.comment}}</li>
+              <li><strong>{{this.user}}:</strong> {{this.comment}}</li>
             {{/each}}
           </ul>
         {{else}}
-          <span class="text-gray-500">No comments yet.</span>
+          No comments yet.
         {{/if}}
       </span>
     </p>
 
+
     <p class="detail-field"><strong>Posted By:</strong>
-      <span class="detail-value text-gray-700">{{post.username}}</span></p>
+      <span class="detail-value">{{post.username}}</span></p>
+
+
   </div>
 </div>
