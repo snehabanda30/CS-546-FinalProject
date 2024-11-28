@@ -73,7 +73,8 @@ const createPost = async (req, res) => {
 
 
     // Redirect to the post details page after successful creation
-    res.redirect(`/posts/post/${post._id}`);
+    //res.redirect(`/posts/post/${post._id}`);
+    return res.json({ _id: post._id });
   } catch (error) {
     console.error("Error creating post:", error);
     res.status(500).json({ error: "Failed to create post" });

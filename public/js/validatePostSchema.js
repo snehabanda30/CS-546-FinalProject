@@ -1,5 +1,3 @@
-import { Zod } from 'zod';
-
 const postSchema = Zod.object({
   category: Zod.string().min(1, "Category is required"),
   location: Zod.object({
@@ -27,6 +25,7 @@ const postSchema = Zod.object({
 });
 
 $("#createPostForm").on("submit", (event) => {
+  // console.log("form submitted.");
   event.preventDefault();
   $("#inputErrors").addClass("hidden").empty();
 
@@ -46,9 +45,12 @@ $("#createPostForm").on("submit", (event) => {
     completeBy: $("#completeBy").val().trim(),
   };
 
+  console.log("Collected form data:", postInput);
+
   // Validate input using Zod schema
   const result = postSchema.safeParse(postInput);
   if (result.success === false) {
+    console.log("failed validation.");
     // Display validation errors
     result.error.errors.forEach((error) => {
       $("#inputErrors").append(`<li>${error.message}</li>`);
@@ -58,7 +60,7 @@ $("#createPostForm").on("submit", (event) => {
     // Submit form with AJAX if validation passes
     const requestConfig = {
       method: "POST",
-      url: "/posts/create", // The route for creating the post
+      url: "/posts/createPost", // The route for creating the post
       contentType: "application/json",
       data: JSON.stringify(postInput),
       error: function (xhr, status, error) {
@@ -68,7 +70,7 @@ $("#createPostForm").on("submit", (event) => {
       },
       success: function (result, status, xhr) {
         // Redirect on success
-        window.location.href = "/posts/${result._id}"; // Redirect to the newly created post's page
+        window.location.href = `/posts/post/${result._id}`; // Redirect to the newly created post's page
       },
     };
     $.ajax(requestConfig);
