@@ -1,6 +1,5 @@
 import postController from "../controllers/postController.js";
 import express from "express";
-console.log(postController);
 
 const router = express.Router();
 
