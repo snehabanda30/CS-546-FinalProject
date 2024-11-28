@@ -50,8 +50,6 @@ app.use(
 //   next();
 // });
 
-app.engine("handlebars", hbs.engine);
-app.set("view engine", "handlebars");
 
 app.get("/", (req, res) => {
   if (req.session.profile?.id) {

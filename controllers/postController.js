@@ -11,6 +11,7 @@ const getCreatePost = (req, res) => {
   // redirect to createPost form
   return res.render("createPost", {
     script: "/public/js/validatePostSchema.js",
+    user: req.session.profile
   });
 };
 
@@ -73,8 +74,7 @@ const createPost = async (req, res) => {
 };
 
 const getPostDetails = async (req, res) => {
-  console.log("Fetching post with ID:", req.params.postId);
-
+  
   const postId = req.params.postId; // Extract postId from URL parameters
 
   try {
@@ -101,7 +101,10 @@ const getPostDetails = async (req, res) => {
       username: user.username, // Add username
     };
 
-    res.render("postDetails", { post: formattedPost });
+    res.render("postDetails", { 
+      post: formattedPost,
+      user: req.session.profile
+    });
   } catch (error) {
     console.error("Error retrieving post details:", error);
     res.status(500).json({ error: "Failed to retrieve the post" });

@@ -24,7 +24,6 @@ const postSchema = Zod.object({
     }, "Complete by date must be in the future"),
 });
 
-console.log(postInput);
 
 $("#createPostForm").on("submit", (event) => {
   event.preventDefault();
