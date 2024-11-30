@@ -55,6 +55,7 @@ app.set("view engine", "handlebars");
 //   res.render("home")
 // }) 
 
+
 app.get("/", userController.getHome);
 
 app.use("/users", userRoutes)
