@@ -44,7 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(rewriteUnsupportedBrowserMethods);
 
 app.engine("handlebars", exphbs.engine({ 
-  defaultLayout: "main", 
+  defaultLayout: "main",
   handlebars: allowInsecurePrototypeAccess(Handlebars),
 
  } 

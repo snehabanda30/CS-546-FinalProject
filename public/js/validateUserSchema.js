@@ -2,7 +2,7 @@ const userSchema = Zod.object({
   username: Zod.string()
     .min(3, "Username must be at least 3 characters")
     .max(13, "Username must be no more than 13 characters"),
-  password: Zod.string().min(6, "Password must be at least 6 characters. in my first schema"),
+  password: Zod.string().min(6, "Password must be at least 6 characters"),
 }); 
 const edituserSchema = Zod.object({
   username: Zod.string()
@@ -11,7 +11,7 @@ const edituserSchema = Zod.object({
     .optional()
     .or(Zod.literal("")), 
   password:  Zod.string()
-    .min(6, "Password must be at least 6 characters. in my secobd schema") 
+    .min(6, "Password must be at least 6 characters.") 
     .nullable()
     .optional() 
     .or(Zod.literal("")), 
