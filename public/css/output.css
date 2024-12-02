@@ -580,8 +580,12 @@ video {
   height: 100%;
 }
 
-.min-h-\[calc\(100vh-80px\)\] {
-  min-height: calc(100vh - 80px);
+.min-h-full {
+  min-height: 100%;
+}
+
+.min-h-screen {
+  min-height: 100vh;
 }
 
 .w-1\/2 {
@@ -596,12 +600,28 @@ video {
   flex: 1 1 0%;
 }
 
+.grow {
+  flex-grow: 1;
+}
+
 .flex-col {
   flex-direction: column;
 }
 
+.content-center {
+  align-content: center;
+}
+
 .items-start {
   align-items: flex-start;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
 }
 
 .justify-between {
