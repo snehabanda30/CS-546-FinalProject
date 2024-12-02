@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import { userSchema } from "../utils/schemas.js";
+import Post from "../models/Post.js";
+import { format } from "date-fns";
 
 // Signup
 const getSignup = (req, res) => {
@@ -116,10 +118,54 @@ const logout = async (req, res) => {
   }
 };
 
+const getProfilePage = async (req, res) => {
+  try {
+    if (!req.session.profile) {
+      return res.redirect("/users/login");
+    }
+
+    const { username } = req.params;
+    const trimmedUsername = username.trim();
+
+    const user = await User.findOne({ username: trimmedUsername });
+    if (!user) {
+      return res.status(404).render("404", {
+        user: req.session.profile,
+      });
+    }
+
+    const filteredPosts = await Post.find({ posterID: user._id });
+    const objectPosts = filteredPosts.map((post) => ({
+      ...post.toObject(),
+      datePosted: format(new Date(post.datePosted), "MMMM dd, yyyy"),
+      completeBy: format(new Date(post.completeBy), "MMMM dd, yyyy"),
+    }));
+
+    const returnedUserData = {
+      username: user.username,
+      tasksPosted: objectPosts,
+      tasksHelped: user.tasksHelped,
+      rating: user.averageRating,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      hasTasksPosted: objectPosts.length > 0,
+    };
+    return res.render("profilePage", {
+      user: req.session.profile,
+      viewedUser: returnedUserData,
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ error: "Something went wrong when fetching page" });
+  }
+};
+
 export default {
   getSignup,
   signup,
   getLoginPage,
   login,
   logout,
+  getProfilePage,
 };
