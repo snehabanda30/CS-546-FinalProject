@@ -121,7 +121,7 @@ const logout = async (req, res) => {
 const getProfilePage = async (req, res) => {
   try {
     if (!req.session.profile) {
-      return res.redirect("/users/login");
+      return res.status(401).redirect("/users/login");
     }
 
     const { username } = req.params;
