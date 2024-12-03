@@ -3,6 +3,9 @@ const userSchema = Zod.object({
     .min(3, "Username must be at least 3 characters")
     .max(13, "Username must be no more than 13 characters"),
   password: Zod.string().min(6, "Password must be at least 6 characters"),
+  email: Zod.string().email("Invalid email address"),
+  firstName: Zod.string().min(1, "First name must be at least 1 character"),
+  lastName: Zod.string().min(1, "Last name must be at least 1 character"),
 });
 
 $("#signupForm").on("submit", (event) => {
@@ -11,6 +14,9 @@ $("#signupForm").on("submit", (event) => {
   const userInput = {
     username: $("#username").val().trim(),
     password: $("#password").val().trim(),
+    firstName: $("#firstName").val().trim(),
+    lastName: $("#lastName").val().trim(),
+    email: $("#email").val().trim(),
   };
   const result = userSchema.safeParse(userInput);
   if (result.success === false) {
@@ -27,6 +33,9 @@ $("#signupForm").on("submit", (event) => {
       data: JSON.stringify({
         username: userInput.username,
         password: userInput.password,
+        firstName: userInput.firstName,
+        lastName: userInput.lastName,
+        email: userInput.email,
       }),
       error: function (xhr, status, error) {
         $("#inputErrors").append(`<li>${xhr.responseJSON.error}</li>`);
