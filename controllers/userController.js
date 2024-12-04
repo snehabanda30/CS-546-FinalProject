@@ -161,6 +161,53 @@ const getProfilePage = async (req, res) => {
   }
 };
 
+const getEditProfilePage = async (req, res) => {
+  console.log("Getting edit profile page");
+  console.log(req.session);
+  console.log(req.params);
+  if (!req.session.profile) {
+    return res.redirect("/users/login");
+  } else if (req.session.profile.username !== req.params.username) {
+    return res.status(403).render("403", {
+      user: req.session.profile,
+    });
+  }
+
+  const user = await User.findOne({ username: req.params.username });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  const returnedUserData = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    address: {
+      address: user.address.address,
+      suite: user.address.suite,
+      city: user.address.city,
+      state: user.address.state,
+      zipCode: user.address.zipCode,
+      country: user.address.country,
+    },
+  };
+
+  console.log(returnedUserData);
+
+  return res.render("editProfilePage", {
+    user: req.session.profile,
+    userData: returnedUserData,
+  });
+};
+
+const editProfile = async (req, res) => {
+  console.log("Updating profile");
+};
+
 export default {
   getSignup,
   signup,
@@ -168,4 +215,6 @@ export default {
   login,
   logout,
   getProfilePage,
+  getEditProfilePage,
+  editProfile,
 };

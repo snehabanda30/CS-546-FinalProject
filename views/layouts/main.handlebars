@@ -28,29 +28,29 @@
           </div>
         </div>
       {{else}}
-      <div class="flex justify-between w-full">
-        <a
-          href="/"
-          class="font-semibold hover:text-zinc-800 transition-all"
-        >Home</a>
-        <div class="flex gap-4">
+        <div class="flex justify-between w-full">
           <a
-            href="/users/signup"
+            href="/"
             class="font-semibold hover:text-zinc-800 transition-all"
-          >Signup</a>
-          <a
-            href="/users/login"
-            class="font-semibold hover:text-zinc-800 transition-all"
-          >Login</a>
+          >Home</a>
+          <div class="flex gap-4">
+            <a
+              href="/users/signup"
+              class="font-semibold hover:text-zinc-800 transition-all"
+            >Signup</a>
+            <a
+              href="/users/login"
+              class="font-semibold hover:text-zinc-800 transition-all"
+            >Login</a>
+          </div>
         </div>
-      </div>
       {{/if}}
     </header>
     <main class="flex grow flex-col justify-center p-4">
-        {{{body}}}
+      {{{body}}}
     </main>
     <footer class="flex bg-gray-300 p-4 justify-center">
-       <p>&copy; CS-546 Final Project Footer</p>
+      <p>&copy; CS-546 Final Project Footer</p>
     </footer>
     {{#if script}}
       <script src="{{script}}"></script>
