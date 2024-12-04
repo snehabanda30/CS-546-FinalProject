@@ -35,7 +35,7 @@ app.set("view engine", "handlebars");
 
 app.use(
   session({
-    secret: process.env.SECRET_KEY,
+    secret: process.env.SECRET_TOKEN,
     saveUninitialized: false,
     resave: false,
     cookie: {
