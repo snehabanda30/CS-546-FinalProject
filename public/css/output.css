@@ -584,12 +584,8 @@ video {
   display: none;
 }
 
-.h-full {
-  height: 100%;
-}
-
-.min-h-\[calc\(100vh-80px\)\] {
-  min-height: calc(100vh - 80px);
+.min-h-screen {
+  min-height: 100vh;
 }
 
 .w-1\/2 {
@@ -606,6 +602,10 @@ video {
 
 .flex-1 {
   flex: 1 1 0%;
+}
+
+.grow {
+  flex-grow: 1;
 }
 
 .list-disc {
