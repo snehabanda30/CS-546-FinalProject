@@ -584,14 +584,6 @@ video {
   display: none;
 }
 
-.h-full {
-  height: 100%;
-}
-
-.min-h-full {
-  min-height: 100%;
-}
-
 .min-h-screen {
   min-height: 100vh;
 }
@@ -614,6 +606,7 @@ video {
 
 .grow {
   flex-grow: 1;
+}
 
 .list-disc {
   list-style-type: disc;
@@ -626,10 +619,6 @@ video {
 .flex-col {
   flex-direction: column;
 }
-
-
-.content-center {
-  align-content: center;
 
 .place-items-center {
   place-items: center;
