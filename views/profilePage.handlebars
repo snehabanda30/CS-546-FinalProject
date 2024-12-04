@@ -9,7 +9,7 @@
       </span>{{viewedUser.tasksPosted.length}}</p>
     <p class="w-full text-center"><span class="font-bold">Helped:
       </span>{{viewedUser.tasksHelped.length}}</p>
-  </div>
+  </div> 
   {{#if viewedUser.hasTasksPosted}}
     <div class="w-[600px] flex flex-col gap-2">
       {{#each viewedUser.tasksPosted}}
@@ -28,5 +28,9 @@
     </div>
   {{else}}
     <p class="text-xl mt-6">User has no posts</p>
-  {{/if}}
+  {{/if}} 
+  <a href="/users/editsignup"
+       class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 text-center">
+   Edit User Settings </a>
+
 </section>
