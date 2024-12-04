@@ -17,4 +17,8 @@ router.route("/logout").post(userController.logout);
 
 router.route("/profile/:username").get(userController.getProfilePage);
 
+router
+.route("/editsignup")
+.get(userController.getEdit) 
+.patch(userController.editUser); 
 export default router;
