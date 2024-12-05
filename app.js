@@ -6,11 +6,15 @@ import { connectDB } from "./config/connectDB.js";
 import session from "express-session";
 import { configDotenv } from "dotenv";
 
+
 const app = express();
+
 
 await connectDB();
 
+
 configDotenv();
+
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   // If the user posts to the server with a property called _method, rewrite the request's method
@@ -21,21 +25,29 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
     delete req.body._method;
   }
 
+
   // let the next middleware run:
   next();
 };
+
+const hbs = exphbs.create({ defaultLayout: "main" });
+hbs.handlebars.registerHelper('joinSkills', function(skills) {
+  return skills.join(', ');
+});
 
 app.use("/public", express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(rewriteUnsupportedBrowserMethods);
 
+
 app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+
 app.use(
   session({
-    secret: process.env.SECRET_KEY,
+    secret: process.env.SECRET_TOKEN,
     saveUninitialized: false,
     resave: false,
     cookie: {
@@ -45,10 +57,12 @@ app.use(
   }),
 );
 
+
 // app.use((req, res, next) => {
 //   console.log("Session:", req.session);
 //   next();
 // });
+
 
 app.get("/", (req, res) => {
   if (req.session.profile?.id) {
@@ -56,8 +70,11 @@ app.get("/", (req, res) => {
   }
   return res.render("home");
 });
+
+
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
+
 
 app.listen(3000, () => {
   console.log("Listening on port 3000");
