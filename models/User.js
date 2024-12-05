@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     default: "",
+    required: true,
   },
   phoneNumber: {
     type: String,
@@ -26,10 +27,12 @@ const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     default: "",
+    required: true,
   },
   lastName: {
     type: String,
     default: "",
+    required: true,
   },
   address: {
     type: addressSchema,
@@ -53,11 +56,11 @@ const userSchema = new mongoose.Schema({
     default: [],
   },
   tasksHelped: {
-    type: [String],
+    type: [mongoose.Schema.Types.ObjectId],
     default: [],
   },
-  tasksCompleted: {
-    type: [String],
+  tasksPosted: {
+    type: [mongoose.Schema.Types.ObjectId],
     default: [],
   },
   profilePicture: {

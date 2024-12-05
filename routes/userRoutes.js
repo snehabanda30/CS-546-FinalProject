@@ -15,4 +15,6 @@ router
 
 router.route("/logout").post(userController.logout);
 
+router.route("/profile/:username").get(userController.getProfilePage);
+
 export default router;

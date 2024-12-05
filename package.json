@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "seed": "node tasks/seed.js",
     "tailwind-generate": "npx tailwindcss -i ./globals.css -o ./public/css/output.css --watch",
     "prepare": "husky",
     "prettier": "npx prettier . --write"
@@ -17,6 +18,7 @@
   "dependencies": {
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-handlebars": "^8.0.1",
