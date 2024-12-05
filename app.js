@@ -30,6 +30,10 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   next();
 };
 
+const hbs = exphbs.create({ defaultLayout: "main" });
+hbs.handlebars.registerHelper('joinSkills', function(skills) {
+  return skills.join(', ');
+});
 
 app.use("/public", express.static("public"));
 app.use(express.json());

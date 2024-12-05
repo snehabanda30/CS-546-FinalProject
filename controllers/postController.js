@@ -58,13 +58,17 @@ const createPost = async (req, res) => {
       });
     }
 
+    let skills = [];
+    if (skillsRequired && typeof skillsRequired === 'string') {
+      skills = skillsRequired.split(',').map(skill => skill.trim());
+    }
 
     // If validation passes, create the post object
     const post = await Post.create({
       posterID: req.session.profile.id, // Set posterID to the logged-in user's ID from the session
       category,
       location,
-      skillsRequired,
+      skillsRequired: skills,
       priority,
       status: status || "Pending",
       description,
