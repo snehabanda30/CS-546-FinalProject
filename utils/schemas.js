@@ -26,12 +26,14 @@ export const postSchema = z.object({
     "Priority must be Low, Medium, or High",
   ),
   description: z.string().min(1, "Description is required"),
-  completeBy: z
-    .string()
+  completeBy: z.string()
     .min(1, "Complete by date is required")
     .refine((date) => {
       const currentDate = new Date();
+      const currentDateNewYork = new Date(
+        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
+      );
       const completeByDate = new Date(date);
-      return completeByDate > currentDate; // Ensures date is in the future
-    }, "Complete by date must be in the future"),
+      return completeByDate > currentDateNewYork; // adjust time zone
+    }, "Complete by date must be in the future."),
 });

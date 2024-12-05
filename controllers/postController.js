@@ -9,6 +9,7 @@ const getCreatePost = (req, res) => {
   if (!req.session.profile) {
     return res.redirect("/users/login");
   }
+  
   // redirect to createPost form
   return res.render("createPost", {
     script: "/public/js/validatePostSchema.js",
@@ -90,7 +91,12 @@ const getPostDetails = async (req, res) => {
   console.log("Fetching post with ID:", req.params.postId);
 
 
-  const postId = req.params.postId; // Extract postId from URL parameters
+  const postId = req.params.postId; 
+  
+  // check if the user is logged in, if not, redirect
+  if (!req.session.profile) {
+    return res.redirect("/users/login");
+  }
 
 
   try {

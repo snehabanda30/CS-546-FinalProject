@@ -19,9 +19,12 @@ const postSchema = Zod.object({
     .min(1, "Complete by date is required")
     .refine((date) => {
       const currentDate = new Date();
+      const currentDateNewYork = new Date(
+        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
+      );
       const completeByDate = new Date(date);
-      return completeByDate > currentDate; // Ensures date is in the future
-    }, "Complete by date must be in the future"),
+      return completeByDate > currentDateNewYork; // adjust time zone
+    }, "Complete by date must be in the future."),
 });
 
 $("#createPostForm").on("submit", (event) => {
