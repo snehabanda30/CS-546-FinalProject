@@ -5,7 +5,7 @@ const userSchema = Zod.object({
   password: Zod.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: Zod.string().min(
     6,
-    "Confirmed password must be at least 6 characters"
+    "Confirmed password must be at least 6 characters",
   ),
   email: Zod.string().email("Invalid email address"),
   firstName: Zod.string().min(1, "First name must be at least 1 character"),
