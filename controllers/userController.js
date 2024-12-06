@@ -116,78 +116,78 @@ const logout = async (req, res) => {
   }
 };
 
-const getEdit = async (req,res) => { 
-  
-  try {  
-    const { userId } = req.params; 
-    console.log(req.session.profile.id); 
+const getEdit = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log(req.session.profile.id);
     let userLogin = null;
-        if (req.session) {
-            if (req.session.profile.id)
-            {
-              userLogin = await User.findById(req.session.profile.id);
-              console.log("HELLOOOO!!!!!");
-
-            }
-        }
-    console.log("HELLOOOO idk if this is workinggg at this poing i hate my life!!!!!");
-    const user = await User.findById(req.session.profile.id);  
-    console.log(user.username); 
-    if (!user){
+    if (req.session) {
+      if (req.session.profile.id) {
+        userLogin = await User.findById(req.session.profile.id);
+        console.log("HELLOOOO!!!!!");
+      }
+    }
+    console.log(
+      "HELLOOOO idk if this is workinggg at this poing i hate my life!!!!!",
+    );
+    const user = await User.findById(req.session.profile.id);
+    console.log(user.username);
+    if (!user) {
       return res.status(404).json({ error: "User not found! in this array" });
-    }  
+    }
 
     return res.render("edit", {
       script: "/public/js/validateUserEditSignup.js",
-      user: user.username,  // Pass user data for editing
+      user: user.username, // Pass user data for editing
       userLogin: userLogin.username, // Pass userLogin to show authenticated state
-  });
+    });
   } catch (e) {
     return res.status(500).json({
       error: "Something went wrong when fetching user data.",
     });
   }
-} 
+};
 
 const editUser = async (req, res) => {
   try {
     let userLogin = null;
     if (req.session) {
-      if (req.session.profile.id)
-      {
+      if (req.session.profile.id) {
         userLogin = await User.findById(req.session.profile.id);
         console.log(userLogin);
       }
-  }
-    const { username, password } = req.body; 
+    }
+    const { username, password } = req.body;
     // Find the user
-    const user = await User.findById(req.session.profile.id); 
+    const user = await User.findById(req.session.profile.id);
     console.log(user);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
     // Prepare an object to hold updates
     const updates = {};
-    // Update username if it has changed 
-    
+    // Update username if it has changed
+
     if (username && username !== user.username) {
       console.log(username);
       const usernameValidation = edituserSchema.safeParse({ username });
-      const existingUser = await User.findOne({ username }); 
-      
-        if (existingUser) {
-          return res.status(409).json({
+      const existingUser = await User.findOne({ username });
+
+      if (existingUser) {
+        return res.status(409).json({
           error: `User with username ${username} already exists.`,
-      });
-    }
+        });
+      }
       if (!usernameValidation.success) {
-        const errors = usernameValidation.error.errors.map((error) => error.message);
+        const errors = usernameValidation.error.errors.map(
+          (error) => error.message,
+        );
         return res.status(400).json({ error: errors.join(", ") });
       }
       updates.username = username;
-      req.session.profile.username=username 
-    } 
-  
+      req.session.profile.username = username;
+    }
+
     // Update password if provided
     if (password) {
       const salt = await bcrypt.genSalt(10);
@@ -196,9 +196,13 @@ const editUser = async (req, res) => {
 
     // Apply updates if any
     if (Object.keys(updates).length > 0) {
-      await User.findByIdAndUpdate(req.session.profile.id, updates, { new: true });
-      return res.status(200).json({ message: "User details updated successfully." });
-    } 
+      await User.findByIdAndUpdate(req.session.profile.id, updates, {
+        new: true,
+      });
+      return res
+        .status(200)
+        .json({ message: "User details updated successfully." });
+    }
   } catch (err) {
     return res.status(500).json({
       error: "An error occurred while updating the user. Please try again.",
@@ -212,6 +216,6 @@ export default {
   getLoginPage,
   login,
   logout,
-  getEdit, 
+  getEdit,
   editUser,
 };

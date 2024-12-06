@@ -13,8 +13,8 @@ export const edituserSchema = z.object({
     .min(3, "Username must be at least 3 characters")
     .max(13, "Username must be no more than 13 characters")
     .optional(),
-  password: z 
+  password: z
     .string()
-    .min(6, "Password must be at least 6 characters") 
-    .optional(), 
+    .min(6, "Password must be at least 6 characters")
+    .optional(),
 });
