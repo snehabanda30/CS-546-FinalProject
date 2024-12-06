@@ -1,0 +1,36 @@
+{{#each posts}}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-xl mt-8 box">
+
+  <div class="space-y-4">
+    <div class="flex items-center text-lg font-semibold text-gray-700">
+      <span class="mr-2">Category:</span>
+      <span class="text-gray-500">{{category}}</span>
+    </div>
+
+    <div class="flex items-center text-lg font-semibold text-gray-700">
+      <span class="mr-2">Location:</span>
+      <span class="text-gray-500">{{location.address}}, {{location.city}}, {{location.state}}, {{location.zipCode}}, {{location.country}}</span>
+    </div>
+
+    {{!-- <div class="flex items-center text-lg font-semibold text-gray-700">
+      <span class="mr-2">Skills Required:</span>
+      <span class="text-gray-500">{{joinSkills post.skillsRequired}}</span>
+    </div> --}}
+
+    <div class="flex items-center text-lg font-semibold text-gray-700">
+      <span class="mr-2">Priority:</span>
+      <span class="text-gray-500">{{priority}}</span>
+    </div>
+
+    <div class="text-lg font-semibold text-gray-700">
+      <span class="block mb-2">Description:</span>
+      <p class="text-gray-500 whitespace-pre-wrap">{{description}}</p>
+    </div>
+
+    <div class="flex items-center text-lg font-semibold text-gray-700">
+      <span class="mr-2">Complete By:</span>
+      <span class="text-gray-500">{{completeBy}}</span>
+    </div>
+  </div>
+</div> 
+{{/each}}

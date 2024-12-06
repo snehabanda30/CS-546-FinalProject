@@ -7,4 +7,5 @@ router.get("/test1", postController.demoFuncOne);
 
 router.get("/test2", postController.demoFuncTwo);
 
+// router.get("/", postController.getAllPosts);
 export default router;

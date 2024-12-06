@@ -2,9 +2,12 @@ import express from "express";
 import exphbs from "express-handlebars";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import homeRoutes from "./routes/homepageRoutes.js";
+
 import { connectDB } from "./config/connectDB.js";
 import session from "express-session";
-import { configDotenv } from "dotenv";
+import { configDotenv } from "dotenv"; 
+import Post from "./models/Post.js";
 
 const app = express();
 
@@ -35,7 +38,7 @@ app.set("view engine", "handlebars");
 
 app.use(
   session({
-    secret: process.env.SECRET_KEY,
+    secret: process.env.SECRET_TOKEN,
     saveUninitialized: false,
     resave: false,
     cookie: {
@@ -50,14 +53,17 @@ app.use(
 //   next();
 // });
 
-app.get("/", (req, res) => {
-  if (req.session.profile?.id) {
-    return res.render("home", { user: req.session.profile });
-  }
-  return res.render("home");
-});
+// app.get("/", (req, res) => {
+  
+//     if(req.session.profile?.id) {
+//       return res.render("home", { user: req.session.profile,});
+//     }
+//     return res.render("home");
+
+//   });
+app.use("/", homeRoutes);
 app.use("/users", userRoutes);
-app.use("/posts", postRoutes);
+app.use("/posts", postRoutes); 
 
 app.listen(3000, () => {
   console.log("Listening on port 3000");
