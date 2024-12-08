@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -20,13 +21,19 @@
             class="font-semibold hover:text-zinc-800 transition-all"
           >Home</a>
           <div class="flex gap-4">
-            <a href="users/profile/{{user.username}}">{{user.username}}</a>
+            <a href="/users/profile/{{user.username}}">{{user.username}}</a>
             <button
               id="logoutButton"
               class="font-semibold hover:text-red-500 transition-all"
             >Logout</button>
+            <!-- Add Create Post Button when user is logged in -->
+            <a
+              href="/posts/createPost"
+              class="font-semibold hover:text-zinc-800 transition-all"
+            >Create Post</a>
           </div>
         </div>
+
       {{else}}
         <div class="flex justify-between w-full">
           <a

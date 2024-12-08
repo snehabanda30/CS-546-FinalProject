@@ -5,6 +5,7 @@ import { commentsSchema } from "./Comment.js";
 const postSchema = new mongoose.Schema({
   posterID: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   helperID: {

@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import { userSchema, userEditSchema } from "../utils/schemas.js";
+import { userSchema, userEditSchema, refinedUserSchema, userLoginSchema } from "../utils/schemas.js";
 import Post from "../models/Post.js";
 import { format } from "date-fns";
 
@@ -17,15 +17,30 @@ const getSignup = (req, res) => {
 const signup = async (req, res) => {
   try {
     // Logic for signup
-    const { username, password } = req.body;
+    const { username, password, email, firstName, lastName, confirmPassword } =
+      req.body;
 
     // Check for username and password
-    if (!username || !password) {
+    if (
+      !username ||
+      !password ||
+      !email ||
+      !firstName ||
+      !lastName ||
+      !confirmPassword
+    ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
     // Checks if sent data corresponds to correct user schema
-    const result = userSchema.safeParse({ username, password });
+    const result = refinedUserSchema.safeParse({
+      username,
+      password,
+      email,
+      firstName,
+      lastName,
+      confirmPassword,
+    });
     if (result.success === false) {
       const errors = result.error.errors.map((error) => error.message);
       return res.status(400).json({
@@ -41,10 +56,24 @@ const signup = async (req, res) => {
       });
     }
 
+    // Check if email already exists
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(409).json({
+        error: `User with email ${email} already exists.`,
+      });
+    }
+
     // Create new user with hashed password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = await User.create({ username, hashedPassword });
+    const newUser = await User.create({
+      username,
+      hashedPassword,
+      email,
+      firstName,
+      lastName,
+    });
 
     return res.json({ username: newUser.username });
   } catch (e) {
@@ -72,7 +101,7 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    const result = userSchema.safeParse({ username, password });
+    const result = userLoginSchema.safeParse({ username, password });
     if (result.success === false) {
       const errors = result.error.errors.map((error) => error.message);
       return res.status(400).json({
@@ -84,7 +113,7 @@ const login = async (req, res) => {
     if (!existingUser) {
       return res
         .status(404)
-        .json({ error: `User with username ${username} not found` });
+        .json({ error: `Incorrect username or password entered` });
     }
 
     const match = await bcrypt.compare(password, existingUser.hashedPassword);
