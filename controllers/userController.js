@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import { userSchema } from "../utils/schemas.js";
+import { userSchema, userEditSchema } from "../utils/schemas.js";
 import Post from "../models/Post.js";
 import { format } from "date-fns";
 
@@ -162,9 +162,6 @@ const getProfilePage = async (req, res) => {
 };
 
 const getEditProfilePage = async (req, res) => {
-  console.log("Getting edit profile page");
-  console.log(req.session);
-  console.log(req.params);
   if (!req.session.profile) {
     return res.redirect("/users/login");
   } else if (req.session.profile.username !== req.params.username) {
@@ -196,16 +193,87 @@ const getEditProfilePage = async (req, res) => {
     },
   };
 
-  console.log(returnedUserData);
-
   return res.render("editProfilePage", {
     user: req.session.profile,
     userData: returnedUserData,
+    address: returnedUserData.address.address,
+    script: "/public/js/validateUserEditSchema.js ",
   });
 };
 
 const editProfile = async (req, res) => {
-  console.log("Updating profile");
+  const { email, phoneNumber, address, suite, city, state, zipcode, country } =
+    req.body;
+
+  if (!req.session.profile) {
+    return res.status(401).render("401", {
+      user: req.session.profile,
+    });
+  }
+
+  const result = userEditSchema.safeParse({
+    email,
+    phoneNumber,
+    address,
+    suite,
+    city,
+    state,
+    zipcode,
+    country,
+  });
+
+  if (result.success === false) {
+    const errors = result.error.errors.map((error) => error.message);
+    return res.status(400).json({
+      error: errors.join(", "),
+    });
+  }
+
+  const user = await User.findOne({ _id: req.session.profile.id });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  if (email) {
+    user.email = email;
+  }
+
+  if (phoneNumber) {
+    user.phoneNumber = phoneNumber;
+  }
+
+  if (address) {
+    user.address.address = address;
+  }
+
+  if (suite) {
+    user.address.suite = suite;
+  }
+
+  if (city) {
+    user.address.city = city;
+  }
+
+  if (state) {
+    user.address.state = state;
+  }
+
+  if (zipcode) {
+    user.address.zipCode = zipcode;
+  }
+
+  if (country) {
+    user.address.country = country;
+  }
+
+  await user.save();
+
+  return res.status(200).render("profilePage", {
+    user: req.session.profile,
+  });
 };
 
 export default {
