@@ -17,4 +17,6 @@ router.route("/logout").post(userController.logout);
 
 router.route("/profile/:username").get(userController.getProfilePage);
 
+router.route("/review").post(userController.reviewUser);
+
 export default router;

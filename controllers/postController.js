@@ -2,14 +2,13 @@ import Post from "../models/Post.js";
 import User from "../models/User.js";
 import { postSchema } from "../utils/schemas.js";
 
-
 // Allow user to create a Post
 const getCreatePost = (req, res) => {
   // Redirect to login page if user is not logged in
   if (!req.session.profile) {
     return res.redirect("/users/login");
   }
-  
+
   // redirect to createPost form
   return res.render("createPost", {
     script: "/public/js/validatePostSchema.js",
@@ -17,14 +16,12 @@ const getCreatePost = (req, res) => {
   });
 };
 
-
 // Create Post function
 const createPost = async (req, res) => {
   // Check if the user is logged in
   if (!req.session.profile || !req.session.profile.id) {
     return res.status(401).json({ error: "User not logged in" });
   }
-
 
   // Get the form input from req.body
   const {
@@ -36,7 +33,6 @@ const createPost = async (req, res) => {
     description,
     completeBy,
   } = req.body;
-
 
   // Validate using Zod schema
   try {
@@ -50,7 +46,6 @@ const createPost = async (req, res) => {
       completeBy,
     };
 
-
     const result = postSchema.safeParse(postData);
     if (result.success === false) {
       const errors = result.error.errors.map((error) => error.message);
@@ -60,8 +55,8 @@ const createPost = async (req, res) => {
     }
 
     let skills = [];
-    if (skillsRequired && typeof skillsRequired === 'string') {
-      skills = skillsRequired.split(',').map(skill => skill.trim());
+    if (skillsRequired && typeof skillsRequired === "string") {
+      skills = skillsRequired.split(",").map((skill) => skill.trim());
     }
 
     // If validation passes, create the post object
@@ -76,7 +71,6 @@ const createPost = async (req, res) => {
       completeBy,
     });
 
-
     // Redirect to the post details page after successful creation
     //res.redirect(`/posts/post/${post._id}`);
     return res.json({ _id: post._id });
@@ -86,37 +80,30 @@ const createPost = async (req, res) => {
   }
 };
 
-
 const getPostDetails = async (req, res) => {
   console.log("Fetching post with ID:", req.params.postId);
 
+  const postId = req.params.postId;
 
-  const postId = req.params.postId; 
-  
   // check if the user is logged in, if not, redirect
   if (!req.session.profile) {
     return res.redirect("/users/login");
   }
 
-
   try {
     // Find the post by its ID in the database
     const post = await Post.findById(postId);
-
 
     // If no post is found, return a 404 error
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
 
-
     const user = await User.findById(post.posterID);
-
 
     if (!user) {
       return res.status(404).json({ error: "Poster not found" });
     }
-
 
     // Render the 'postDetails' page and pass the post data
     const formattedPost = {
@@ -127,7 +114,6 @@ const getPostDetails = async (req, res) => {
       username: user.username, // Add username
     };
 
-
     res.render("postDetails", {
       post: formattedPost,
       user: req.session.profile,
@@ -137,6 +123,5 @@ const getPostDetails = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve the post" });
   }
 };
-
 
 export default { getCreatePost, createPost, getPostDetails };
