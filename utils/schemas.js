@@ -16,7 +16,7 @@ export const userSchema = z.object({
 
 export const refinedUserSchema = userSchema.refine(
   (data) => data.password === data.confirmPassword,
-  { message: "Passwords do not match", path: ["confirmPassword"] },
+  { message: "Passwords do not match", path: ["confirmPassword"] }
 );
 
 export const userLoginSchema = userSchema.pick({
@@ -39,10 +39,11 @@ export const postSchema = z.object({
     .regex(/^[a-zA-Z, ]*$/, "Skills must be a comma-separated list of words"),
   priority: z.enum(
     ["Low", "Medium", "High"],
-    "Priority must be Low, Medium, or High",
+    "Priority must be Low, Medium, or High"
   ),
   description: z.string().min(1, "Description is required"),
-  completeBy: z.string()
+  completeBy: z
+    .string()
     .min(1, "Complete by date is required")
     .refine((date) => {
       const currentDate = new Date();
@@ -53,3 +54,12 @@ export const postSchema = z.object({
       return completeByDate > currentDateNewYork; // adjust time zone
     }, "Complete by date must be in the future."),
 });
+
+export const reviewSchema = z
+  .object({
+    rating: z.string(),
+    reviewBody: z.string().optional(),
+  })
+  .refine((data) => parseInt(data.rating) >= 1 && parseInt(data.rating) <= 5, {
+    message: "Rating must be an integer between 1 and 5",
+  });

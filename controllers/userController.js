@@ -1,6 +1,10 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import { refinedUserSchema, userLoginSchema } from "../utils/schemas.js";
+import {
+  refinedUserSchema,
+  reviewSchema,
+  userLoginSchema,
+} from "../utils/schemas.js";
 import Post from "../models/Post.js";
 import { format } from "date-fns";
 
@@ -170,6 +174,10 @@ const getProfilePage = async (req, res) => {
       completeBy: format(new Date(post.completeBy), "MMMM dd, yyyy"),
     }));
 
+    const objectReviews = user.reviews.map((review) => ({
+      ...review.toObject(),
+    }));
+
     const returnedUserData = {
       username: user.username,
       tasksPosted: objectPosts,
@@ -178,15 +186,80 @@ const getProfilePage = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       hasTasksPosted: objectPosts.length > 0,
+      reviews: objectReviews,
     };
     return res.render("profilePage", {
       user: req.session.profile,
       viewedUser: returnedUserData,
+      script: "/public/js/validateReviewSchema.js",
     });
   } catch (e) {
     return res
       .status(500)
       .json({ error: "Something went wrong when fetching page" });
+  }
+};
+
+// Review
+
+export const reviewUser = async (req, res) => {
+  try {
+    if (!req.session.profile) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const { username, rating, reviewBody } = req.body;
+    const reviewer = req.session.profile.username;
+
+    if (!rating) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    if (username === reviewer) {
+      return res.status(400).json({
+        error: "You cannot review yourself",
+      });
+    }
+
+    const result = reviewSchema.safeParse({ rating, reviewBody });
+    if (result.success === false) {
+      const errors = result.error.errors.map((error) => error.message);
+      return res.status(400).json({
+        error: errors.join(", "),
+      });
+    }
+
+    const existingUser = await User.findOne(
+      { username },
+      { reviews: 1 },
+      { collation: { locale: "en_US", strength: 2 } }
+    );
+    if (!existingUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const existingReview = existingUser.reviews.filter(
+      (review) => review.posterUsername === reviewer
+    );
+    if (existingReview.length !== 0) {
+      return res.status(400).json({ error: "You have reviewed this user" });
+    }
+
+    const review = {
+      rating,
+      reviewBody,
+      posterUsername: reviewer,
+    };
+    await User.updateOne(
+      { username },
+      { $push: { reviews: review } },
+      { collation: { locale: "en_US", strength: 2 } }
+    );
+
+    return res.status(201).json({ message: "Review posted" });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ error: "Something went wrong when reviewing" });
   }
 };
 
@@ -197,4 +270,5 @@ export default {
   login,
   logout,
   getProfilePage,
+  reviewUser,
 };
