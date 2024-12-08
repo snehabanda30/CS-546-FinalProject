@@ -231,14 +231,14 @@ export const reviewUser = async (req, res) => {
     const existingUser = await User.findOne(
       { username },
       { reviews: 1 },
-      { collation: { locale: "en_US", strength: 2 } }
+      { collation: { locale: "en_US", strength: 2 } },
     );
     if (!existingUser) {
       return res.status(404).json({ error: "User not found" });
     }
 
     const existingReview = existingUser.reviews.filter(
-      (review) => review.posterUsername === reviewer
+      (review) => review.posterUsername === reviewer,
     );
     if (existingReview.length !== 0) {
       return res.status(400).json({ error: "You have reviewed this user" });
@@ -252,7 +252,7 @@ export const reviewUser = async (req, res) => {
     await User.updateOne(
       { username },
       { $push: { reviews: review } },
-      { collation: { locale: "en_US", strength: 2 } }
+      { collation: { locale: "en_US", strength: 2 } },
     );
 
     return res.status(201).json({ message: "Review posted" });

@@ -30,7 +30,7 @@ $("#reviewForm").on("submit", (event) => {
       }),
       error: function (xhr) {
         $("#inputErrors").append(
-          `<li class="break-all">${xhr.responseJSON.error}</li>`
+          `<li class="break-all">${xhr.responseJSON.error}</li>`,
         );
         $("#inputErrors").removeClass("hidden");
       },

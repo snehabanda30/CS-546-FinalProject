@@ -16,7 +16,7 @@ export const userSchema = z.object({
 
 export const refinedUserSchema = userSchema.refine(
   (data) => data.password === data.confirmPassword,
-  { message: "Passwords do not match", path: ["confirmPassword"] }
+  { message: "Passwords do not match", path: ["confirmPassword"] },
 );
 
 export const userLoginSchema = userSchema.pick({
@@ -39,7 +39,7 @@ export const postSchema = z.object({
     .regex(/^[a-zA-Z, ]*$/, "Skills must be a comma-separated list of words"),
   priority: z.enum(
     ["Low", "Medium", "High"],
-    "Priority must be Low, Medium, or High"
+    "Priority must be Low, Medium, or High",
   ),
   description: z.string().min(1, "Description is required"),
   completeBy: z
@@ -48,7 +48,7 @@ export const postSchema = z.object({
     .refine((date) => {
       const currentDate = new Date();
       const currentDateNewYork = new Date(
-        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
+        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" }),
       );
       const completeByDate = new Date(date);
       return completeByDate > currentDateNewYork; // adjust time zone
