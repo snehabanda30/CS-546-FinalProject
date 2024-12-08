@@ -53,3 +53,16 @@ export const postSchema = z.object({
       return completeByDate > currentDateNewYork; // adjust time zone
     }, "Complete by date must be in the future."),
 });
+
+export const userEditSchema = z.object({
+  email: z.string().email().optional().or(z.literal("")),
+  phone: z.string().min(10).max(10).optional().or(z.literal("")),
+  firstName: z.string().min(1).max(50).optional().or(z.literal("")),
+  lastName: z.string().min(1).max(50).optional().or(z.literal("")),
+  address: z.string().min(1).max(100).optional().or(z.literal("")),
+  suite: z.string().min(1).max(50).optional().or(z.literal("")),
+  city: z.string().min(1).max(50).optional().or(z.literal("")),
+  state: z.string().min(1).max(50).optional().or(z.literal("")),
+  zipcode: z.string().min(5).max(5).optional().or(z.literal("")),
+  country: z.string().min(1).max(50).optional().or(z.literal("")),
+});
