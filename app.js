@@ -5,6 +5,7 @@ import postRoutes from "./routes/postRoutes.js";
 import { connectDB } from "./config/connectDB.js";
 import session from "express-session";
 import { configDotenv } from "dotenv";
+import { registerHelpers } from "./helpers.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   next();
 };
 
+registerHelpers();
 app.use("/public", express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

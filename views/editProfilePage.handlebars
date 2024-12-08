@@ -12,18 +12,18 @@
       id="email"
       name="email"
       class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-      value={{userData.email}}
+      value="{{userData.email}}"
     />
   </div>
   <div class="flex flex-col w-full">
-    <label for="phoneNumber" class="font-bold text-xl">Phone Number:</label>
+    <label for="phone" class="font-bold text-xl">Phone Number:</label>
     <input
       type="tel"
       placeholder="Enter phone number"
-      id="phoneNumber"
-      name="phoneNumber"
+      id="phone"
+      name="phone"
       class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-      value={{userData.phoneNumber}}
+      value="{{userData.phoneNumber}}"
     />
   </div>
   <div class="flex gap-2 w-full">
@@ -35,7 +35,7 @@
         id="firstName"
         name="firstName"
         class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-        value={{userData.firstName}}
+        value="{{userData.firstName}}"
       />
     </div>
     <div class="flex flex-col w-full">
@@ -46,7 +46,7 @@
         id="lastName"
         name="lastName"
         class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-        value={{userData.lastName}}
+        value="{{userData.lastName}}"
       />
     </div>
   </div>
@@ -59,17 +59,16 @@
         id="address"
         name="address"
         class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-        value={{userData.address.address}}
+        value="{{address}}"
       />
     </div>
     <div class="flex flex-col w-full">
-      <label for="suiteNumber" class="font-bold text-xl">Suite Number
-        (Optional):</label>
+      <label for="suite" class="font-bold text-xl">Suite Number (Optional):</label>
       <input
         type="text"
         placeholder="Enter your suite number"
-        id="suiteNumber"
-        name="suiteNumber"
+        id="suite"
+        name="suite"
         class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
       />
     </div>
@@ -83,7 +82,7 @@
         id="city"
         name="city"
         class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-        value={{userData.address.city}}
+        value="{{userData.address.city}}"
       />
     </div>
     <div class="flex flex-col w-full">
@@ -94,20 +93,20 @@
         id="state"
         name="state"
         class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-        value={{userData.address.state}}
+        value="{{userData.address.state}}"
       />
     </div>
   </div>
   <div class="flex gap-2 w-full">
     <div class="flex flex-col w-full">
-      <label for="zipCode" class="font-bold text-xl">Zipcode:</label>
+      <label for="zipcode" class="font-bold text-xl">Zipcode:</label>
       <input
         type="text"
         placeholder="Enter your zipcode"
         id="zipcode"
         name="zipcode"
         class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-        value={{userData.address.zipCode}}
+        value="{{userData.address.zipCode}}"
       />
     </div>
     <div class="flex flex-col w-full">
@@ -118,7 +117,7 @@
         id="country"
         name="country"
         class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
-        value={{userData.address.country}}
+        value="{{userData.address.country}}"
       />
     </div>
   </div>
