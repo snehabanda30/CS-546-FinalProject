@@ -80,7 +80,6 @@ $("#updateProfileForm").on("submit", (event) => {
     $("#inputErrors").removeClass("hidden");
   } else {
     const username = window.location.pathname.split("/")[3];
-    console.log(username);
     const requestConfig = {
       method: "PUT",
       url: `/users/profile/${username}/edit`,

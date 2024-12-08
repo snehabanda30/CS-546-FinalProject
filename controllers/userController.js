@@ -196,7 +196,6 @@ const getEditProfilePage = async (req, res) => {
   return res.render("editProfilePage", {
     user: req.session.profile,
     userData: returnedUserData,
-    address: returnedUserData.address.address,
     script: "/public/js/validateUserEditSchema.js ",
   });
 };
