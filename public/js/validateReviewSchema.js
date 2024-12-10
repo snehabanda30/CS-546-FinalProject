@@ -35,7 +35,7 @@ $("#reviewForm").on("submit", (event) => {
         $("#inputErrors").removeClass("hidden");
       },
       success: function () {
-        console.log("Review posted");
+        window.location.href = `/users/profile/${username}`;
       },
     };
     $.ajax(requestConfig);

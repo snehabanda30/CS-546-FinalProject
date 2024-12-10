@@ -53,7 +53,11 @@ const signup = async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
     if (existingUser) {
       return res.status(409).json({
         error: `User with username ${username} already exists.`,
@@ -113,7 +117,11 @@ const login = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ username }).exec();
+    const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
     if (!existingUser) {
       return res
         .status(404)
@@ -133,6 +141,7 @@ const login = async (req, res) => {
     };
     return res.redirect("/");
   } catch (e) {
+    console.log(e);
     return res.status(500).json({
       error: "Something went wrong when signing up. Please try again.",
     });
@@ -210,6 +219,8 @@ export const reviewUser = async (req, res) => {
     const { username, rating, reviewBody } = req.body;
     const reviewer = req.session.profile.username;
 
+    const reviewUser = await User.findOne({ username: reviewer });
+
     if (!rating) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -230,11 +241,30 @@ export const reviewUser = async (req, res) => {
 
     const existingUser = await User.findOne(
       { username },
-      { reviews: 1 },
+      { reviews: 1, tasksHelped: 1, tasksPosted: 1 },
       { collation: { locale: "en_US", strength: 2 } },
     );
     if (!existingUser) {
       return res.status(404).json({ error: "User not found" });
+    }
+
+    let hasInteracted = false;
+    for (const post of existingUser.tasksPosted) {
+      if (reviewUser.tasksHelped.includes(post)) {
+        hasInteracted = true;
+        break;
+      }
+    }
+    for (const post of existingUser.tasksHelped) {
+      if (reviewUser.tasksPosted.includes(post)) {
+        hasInteracted = true;
+        break;
+      }
+    }
+    if (!hasInteracted) {
+      return res.status(400).json({
+        error: "No interaction with user",
+      });
     }
 
     const existingReview = existingUser.reviews.filter(
@@ -244,6 +274,17 @@ export const reviewUser = async (req, res) => {
       return res.status(400).json({ error: "You have reviewed this user" });
     }
 
+    const currentRatingSum = existingUser.reviews.reduce(
+      (acc, review) => acc + review.rating,
+      0,
+    );
+    const newRating =
+      Math.round(
+        ((currentRatingSum + parseInt(rating)) /
+          (existingUser.reviews.length + 1)) *
+          100,
+      ) / 100;
+
     const review = {
       rating,
       reviewBody,
@@ -251,7 +292,7 @@ export const reviewUser = async (req, res) => {
     };
     await User.updateOne(
       { username },
-      { $push: { reviews: review } },
+      { $push: { reviews: review }, $set: { averageRating: newRating } },
       { collation: { locale: "en_US", strength: 2 } },
     );
 
