@@ -5,6 +5,7 @@ import postRoutes from "./routes/postRoutes.js";
 import { connectDB } from "./config/connectDB.js";
 import session from "express-session";
 import { configDotenv } from "dotenv";
+import { registerHelpers } from "./helpers.js";
 
 
 const app = express();
@@ -30,6 +31,8 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   next();
 };
 
+
+registerHelpers();
 const hbs = exphbs.create({ defaultLayout: "main" });
 hbs.handlebars.registerHelper('joinSkills', function(skills) {
   return skills.join(', ');
