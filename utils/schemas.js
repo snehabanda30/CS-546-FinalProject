@@ -42,14 +42,24 @@ export const postSchema = z.object({
     "Priority must be Low, Medium, or High",
   ),
   description: z.string().min(1, "Description is required"),
-  completeBy: z.string()
+  completeBy: z
+    .string()
     .min(1, "Complete by date is required")
     .refine((date) => {
       const currentDate = new Date();
       const currentDateNewYork = new Date(
-        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
+        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" }),
       );
       const completeByDate = new Date(date);
       return completeByDate > currentDateNewYork; // adjust time zone
     }, "Complete by date must be in the future."),
 });
+
+export const reviewSchema = z
+  .object({
+    rating: z.string(),
+    reviewBody: z.string().optional(),
+  })
+  .refine((data) => parseInt(data.rating) >= 1 && parseInt(data.rating) <= 5, {
+    message: "Rating must be an integer between 1 and 5",
+  });

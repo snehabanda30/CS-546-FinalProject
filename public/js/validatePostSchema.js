@@ -20,7 +20,7 @@ const postSchema = Zod.object({
     .refine((date) => {
       const currentDate = new Date();
       const currentDateNewYork = new Date(
-        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
+        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" }),
       );
       const completeByDate = new Date(date);
       return completeByDate > currentDateNewYork; // adjust time zone
