@@ -5,6 +5,7 @@ import {
   userEditSchema,
   refinedUserSchema,
   userLoginSchema,
+  reviewSchema,
 } from '../utils/schemas.js';
 import Post from '../models/Post.js';
 import { format } from 'date-fns';
@@ -54,7 +55,11 @@ const signup = async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
     if (existingUser) {
       return res.status(409).json({
         error: `User with username ${username} already exists.`,
@@ -114,7 +119,11 @@ const login = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ username }).exec();
+    const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
     if (!existingUser) {
       return res
         .status(404)
@@ -134,6 +143,7 @@ const login = async (req, res) => {
     };
     return res.redirect('/');
   } catch (e) {
+    console.log(e);
     return res.status(500).json({
       error: 'Something went wrong when signing up. Please try again.',
     });
@@ -175,6 +185,10 @@ const getProfilePage = async (req, res) => {
       completeBy: format(new Date(post.completeBy), 'MMMM dd, yyyy'),
     }));
 
+    const objectReviews = user.reviews.map((review) => ({
+      ...review.toObject(),
+    }));
+
     const returnedUserData = {
       username: user.username,
       tasksPosted: objectPosts,
@@ -183,10 +197,12 @@ const getProfilePage = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       hasTasksPosted: objectPosts.length > 0,
+      reviews: objectReviews,
     };
     return res.render('profilePage', {
       user: req.session.profile,
       viewedUser: returnedUserData,
+      script: "/public/js/validateReviewSchema.js",
     });
   } catch (e) {
     return res
@@ -328,6 +344,98 @@ const editProfile = async (req, res) => {
   return res.status(200).render('profilePage', {
     user: req.session.profile,
   });
+
+export const reviewUser = async (req, res) => {
+  try {
+    if (!req.session.profile) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const { username, rating, reviewBody } = req.body;
+    const reviewer = req.session.profile.username;
+
+    const reviewUser = await User.findOne({ username: reviewer });
+
+    if (!rating) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    if (username === reviewer) {
+      return res.status(400).json({
+        error: "You cannot review yourself",
+      });
+    }
+
+    const result = reviewSchema.safeParse({ rating, reviewBody });
+    if (result.success === false) {
+      const errors = result.error.errors.map((error) => error.message);
+      return res.status(400).json({
+        error: errors.join(", "),
+      });
+    }
+
+    const existingUser = await User.findOne(
+      { username },
+      { reviews: 1, tasksHelped: 1, tasksPosted: 1 },
+      { collation: { locale: "en_US", strength: 2 } },
+    );
+    if (!existingUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    let hasInteracted = false;
+    for (const post of existingUser.tasksPosted) {
+      if (reviewUser.tasksHelped.includes(post)) {
+        hasInteracted = true;
+        break;
+      }
+    }
+    for (const post of existingUser.tasksHelped) {
+      if (reviewUser.tasksPosted.includes(post)) {
+        hasInteracted = true;
+        break;
+      }
+    }
+    if (!hasInteracted) {
+      return res.status(400).json({
+        error: "No interaction with user",
+      });
+    }
+
+    const existingReview = existingUser.reviews.filter(
+      (review) => review.posterUsername === reviewer,
+    );
+    if (existingReview.length !== 0) {
+      return res.status(400).json({ error: "You have reviewed this user" });
+    }
+
+    const currentRatingSum = existingUser.reviews.reduce(
+      (acc, review) => acc + review.rating,
+      0,
+    );
+    const newRating =
+      Math.round(
+        ((currentRatingSum + parseInt(rating)) /
+          (existingUser.reviews.length + 1)) *
+          100,
+      ) / 100;
+
+    const review = {
+      rating,
+      reviewBody,
+      posterUsername: reviewer,
+    };
+    await User.updateOne(
+      { username },
+      { $push: { reviews: review }, $set: { averageRating: newRating } },
+      { collation: { locale: "en_US", strength: 2 } },
+    );
+
+    return res.status(201).json({ message: "Review posted" });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ error: "Something went wrong when reviewing" });
+  }
 };
 
 export default {
@@ -339,4 +447,5 @@ export default {
   getProfilePage,
   getEditProfilePage,
   editProfile,
+  reviewUser,
 };

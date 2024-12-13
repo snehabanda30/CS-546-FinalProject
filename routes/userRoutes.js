@@ -22,4 +22,6 @@ router
   .get(userController.getEditProfilePage)
   .put(userController.editProfile);
 
+router.route("/review").post(userController.reviewUser);
+
 export default router;

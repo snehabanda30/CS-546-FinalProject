@@ -104,3 +104,12 @@ export const userEditSchema = z.object({
       'Invalid skills format. Must be a comma-separated list of skills.'
     ),
 });
+
+export const reviewSchema = z
+  .object({
+    rating: z.string(),
+    reviewBody: z.string().optional(),
+  })
+  .refine((data) => parseInt(data.rating) >= 1 && parseInt(data.rating) <= 5, {
+    message: "Rating must be an integer between 1 and 5",
+  });
