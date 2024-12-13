@@ -1,0 +1,145 @@
+<form
+  id="updateProfileForm"
+  method="post"
+  class="bg-slate-300 w-1/2 px-6 py-4 mx-auto my-auto rounded-md shadow-lg gap-4 flex flex-col items-start"
+>
+  <h1 class="font-bold text-3xl">Update your profile:</h1>
+  <div class="flex flex-col w-full">
+    <label for="email" class="font-bold text-xl mb-2">Email:</label>
+    <input
+      type="email"
+      placeholder="Enter email"
+      id="email"
+      name="email"
+      class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+      value="{{userData.email}}"
+    />
+  </div>
+  <div class="flex flex-col w-full">
+    <label for="phone" class="font-bold text-xl">Phone Number:</label>
+    <input
+      type="tel"
+      placeholder="Enter phone number"
+      id="phone"
+      name="phone"
+      class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+      value="{{userData.phoneNumber}}"
+    />
+  </div>
+  <div class="flex flex-col w-full">
+    <label for="skills" class="font-bold text-xl">Skills (Comma Separated):</label>
+    <input
+      type="text"
+      placeholder="Enter a list of comma separated skills"
+      id="skills"
+      name="skills"
+      class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+    />
+  </div>
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-col w-full">
+      <label for="firstName" class="font-bold text-xl">First Name:</label>
+      <input
+        type="text"
+        placeholder="Enter your first name"
+        id="firstName"
+        name="firstName"
+        class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+        value="{{userData.firstName}}"
+      />
+    </div>
+    <div class="flex flex-col w-full">
+      <label for="lastName" class="font-bold text-xl">Last Name:</label>
+      <input
+        type="text"
+        placeholder="Enter your last name"
+        id="lastName"
+        name="lastName"
+        class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+        value="{{userData.lastName}}"
+      />
+    </div>
+  </div>
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-col w-full">
+      <label for="address" class="font-bold text-xl">Street Address:</label>
+      <input
+        type="text"
+        placeholder="Enter your street address"
+        id="address"
+        name="address"
+        class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+        value="{{userData.address.address}}"
+      />
+    </div>
+    <div class="flex flex-col w-full">
+      <label for="suite" class="font-bold text-xl">Suite Number (Optional):</label>
+      <input
+        type="text"
+        placeholder="Enter your suite number"
+        id="suite"
+        name="suite"
+        class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+      />
+    </div>
+  </div>
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-col w-full">
+      <label for="city" class="font-bold text-xl">City:</label>
+      <input
+        type="text"
+        placeholder="Enter your city"
+        id="city"
+        name="city"
+        class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+        value="{{userData.address.city}}"
+      />
+    </div>
+    <div class="flex flex-col w-full">
+      <label for="state" class="font-bold text-xl">State:</label>
+      <input
+        type="text"
+        placeholder="Enter your state"
+        id="state"
+        name="state"
+        class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+        value="{{userData.address.state}}"
+      />
+    </div>
+  </div>
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-col w-full">
+      <label for="zipcode" class="font-bold text-xl">Zipcode:</label>
+      <input
+        type="text"
+        placeholder="Enter your zipcode"
+        id="zipcode"
+        name="zipcode"
+        class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+        value="{{userData.address.zipCode}}"
+      />
+    </div>
+    <div class="flex flex-col w-full">
+      <label for="country" class="font-bold text-xl">Country:</label>
+      <input
+        type="text"
+        placeholder="Enter your country"
+        id="country"
+        name="country"
+        class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+        value="{{userData.address.country}}"
+      />
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    class="bg-green-600 font-bold text-white hover:bg-green-500 py-2 px-4 rounded-lg transition-all"
+  >Submit</button>
+  <ul
+    class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
+    id="inputErrors"
+  >
+
+  </ul>
+</form>

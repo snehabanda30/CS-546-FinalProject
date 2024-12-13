@@ -1,9 +1,11 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import {
+  userSchema,
+  userEditSchema,
   refinedUserSchema,
-  reviewSchema,
   userLoginSchema,
+  reviewSchema,
 } from "../utils/schemas.js";
 import Post from "../models/Post.js";
 import { format } from "date-fns";
@@ -209,7 +211,135 @@ const getProfilePage = async (req, res) => {
   }
 };
 
-// Review
+const getEditProfilePage = async (req, res) => {
+  if (!req.session.profile) {
+    return res.redirect("/users/login");
+  } else if (req.session.profile.username !== req.params.username) {
+    return res.status(403).render("403", {
+      user: req.session.profile,
+    });
+  }
+
+  const user = await User.findOne({ username: req.params.username });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  const returnedUserData = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    address: {
+      address: user.address.address,
+      suite: user.address.suite,
+      city: user.address.city,
+      state: user.address.state,
+      zipCode: user.address.zipCode,
+      country: user.address.country,
+    },
+  };
+
+  return res.render("editProfilePage", {
+    user: req.session.profile,
+    userData: returnedUserData,
+    script: "/public/js/validateUserEditSchema.js ",
+  });
+};
+
+const editProfile = async (req, res) => {
+  let {
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    suite,
+    city,
+    state,
+    zipcode,
+    country,
+    skills,
+  } = req.body;
+
+  if (!req.session.profile) {
+    return res.status(401).render("401", {
+      user: req.session.profile,
+    });
+  }
+
+  const result = userEditSchema.safeParse({
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    suite,
+    city,
+    state,
+    zipcode,
+    country,
+    skills,
+  });
+
+  if (result.success === false) {
+    const errors = result.error.errors.map((error) => error.message);
+    return res.status(400).json({
+      error: errors.join(", "),
+    });
+  }
+
+  const user = await User.findOne({ _id: req.session.profile.id });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  if (await User.findOne({ email, _id: { $ne: req.session.profile.id } })) {
+    return res.status(409).json({
+      error: `User with email ${email} already exists.`,
+    });
+  }
+
+  user.email = email;
+
+  user.phoneNumber = phone;
+
+  user.address.address = address;
+
+  if (suite) {
+    user.address.suite = suite;
+  }
+
+  user.address.city = city;
+
+  user.address.state = state;
+
+  user.address.zipCode = zipcode;
+
+  user.address.country = country;
+
+  skills = skills.split(",").map((skill) => skill.trim());
+  if (skills) {
+    for (let i = 0; i < skills.length; i++) {
+      if (user.skills.includes(skills[i])) {
+        continue;
+      }
+      user.skills.push(skills[i]);
+    }
+  }
+
+  await user.save();
+
+  return res.status(200).render("profilePage", {
+    user: req.session.profile,
+  });
+};
 
 export const reviewUser = async (req, res) => {
   try {
@@ -311,5 +441,7 @@ export default {
   login,
   logout,
   getProfilePage,
+  getEditProfilePage,
+  editProfile,
   reviewUser,
 };

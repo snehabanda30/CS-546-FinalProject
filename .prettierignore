@@ -1,3 +1,4 @@
 /public/css
 package-lock.json
+/views/profilePage.handlebars
 main.handlebars

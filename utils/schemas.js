@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+const skillsRegex =
+  /^\s*([a-zA-Z]+(?:\s+[a-zA-Z]+)*)\s*(?:,\s*([a-zA-Z]+(?:\s+[a-zA-Z]+)*)\s*)*$/;
+
 export const userSchema = z.object({
   username: z
     .string()
@@ -53,6 +56,54 @@ export const postSchema = z.object({
       const completeByDate = new Date(date);
       return completeByDate > currentDateNewYork; // adjust time zone
     }, "Complete by date must be in the future."),
+});
+
+export const userEditSchema = z.object({
+  email: z.string().email("Invalid email format."),
+  phone: z
+    .string()
+    .min(10, "Phone number must be exactly 10 characters.")
+    .max(10, "Phone number must be exactly 10 characters."),
+  firstName: z
+    .string()
+    .min(1, "First name cannot be empty.")
+    .max(50, "First name cannot exceed 50 characters."),
+  lastName: z
+    .string()
+    .min(1, "Last name cannot be empty.")
+    .max(50, "Last name cannot exceed 50 characters."),
+  address: z
+    .string()
+    .min(1, "Address cannot be empty.")
+    .max(100, "Address cannot exceed 100 characters."),
+  suite: z
+    .string()
+    .min(1, "Suite cannot be empty.")
+    .max(50, "Suite cannot exceed 50 characters.")
+    .optional()
+    .or(z.literal("")),
+  city: z
+    .string()
+    .min(1, "City cannot be empty.")
+    .max(50, "City cannot exceed 50 characters."),
+  state: z
+    .string()
+    .min(1, "State cannot be empty.")
+    .max(50, "State cannot exceed 50 characters."),
+  zipcode: z
+    .string()
+    .min(5, "Zipcode must be exactly 5 characters.")
+    .max(5, "Zipcode must be exactly 5 characters."),
+  country: z
+    .string()
+    .min(1, "Country cannot be empty.")
+    .max(50, "Country cannot exceed 50 characters."),
+  skills: z
+    .string()
+    .regex(
+      skillsRegex,
+      "Invalid skills format. Must be a comma-separated list of skills.",
+    ),
 });
 
 export const reviewSchema = z
