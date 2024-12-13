@@ -289,6 +289,12 @@ const editProfile = async (req, res) => {
     });
   }
 
+  if (await User.findOne({ email, _id: { $ne: req.session.profile.id } })) {
+    return res.status(409).json({
+      error: `User with email ${email} already exists.`,
+    });
+  }
+
   user.email = email;
 
   user.phoneNumber = phone;
