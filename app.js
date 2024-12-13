@@ -26,7 +26,6 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   next();
 };
 
-
 registerHelpers();
 const hbs = exphbs.create({ defaultLayout: "main" });
 hbs.handlebars.registerHelper("joinSkills", function (skills) {
