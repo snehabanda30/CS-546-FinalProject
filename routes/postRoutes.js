@@ -3,9 +3,12 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/test1", postController.demoFuncOne);
+// routes for create post
+router
+  .route("/createPost")
+  .get(postController.getCreatePost)
+  .post(postController.createPost);
 
-router.get("/test2", postController.demoFuncTwo);
+router.get("/post/:postId", postController.getPostDetails);
 
-// router.get("/", postController.getAllPosts);
 export default router;

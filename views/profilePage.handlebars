@@ -1,8 +1,17 @@
-<section class="flex items-center flex-1 p-4 flex-col gap-1">
+<section class="flex items-center flex-grow flex-col gap-1">
+    {{#ifEquals user.username viewedUser.username}}
+    <a href="{{../viewedUser.username}}/edit">
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Edit Profile
+      </button>
+    </a>
+  {{/ifEquals}}
   <h1 class="font-bold text-3xl">{{viewedUser.firstName}}
     {{viewedUser.lastName}}</h1>
   <p class="text-gray-400 italic tracking-wide">@{{viewedUser.username}}</p>
-  <div class="grid grid-cols-3 place-items-center gap-3">
+  <div class="grid grid-cols-3 place-items-center gap-3 p-4">
     <p class="w-full text-center"><span class="font-bold">Rating:
       </span>{{viewedUser.rating}}</p>
     <p class="w-full text-center"><span class="font-bold">Posted:
@@ -10,23 +19,123 @@
     <p class="w-full text-center"><span class="font-bold">Helped:
       </span>{{viewedUser.tasksHelped.length}}</p>
   </div>
-  {{#if viewedUser.hasTasksPosted}}
-    <div class="w-[600px] flex flex-col gap-2">
-      {{#each viewedUser.tasksPosted}}
-        <article class="p-4 rounded-xl border-[1px] border-black shadow-lg">
-          <p class="text-2xl">{{category}}</p>
-          <p><span class="font-bold">Posted: </span>{{datePosted}}</p>
-          <p><span class="font-bold">Complete By: </span>{{completeBy}}</p>
-          <p class="font-bold">Skills required:</p>
-          <ul class="list-disc px-6">
-            {{#each skillsRequired}}
-              <li>{{this}}</li>
-            {{/each}}
-          </ul>
-        </article>
-      {{/each}}
+  <div
+    class="grid grid-cols-3 place-items-start gap-3 min-w-[915px] flex-grow h-[450px] overflow-hidden"
+  >
+    {{#if viewedUser.hasTasksPosted}}
+      <div
+        class="w-[600px] flex flex-col gap-2 col-span-2 overflow-y-auto px-4 h-full"
+      >
+        {{#each viewedUser.tasksPosted}}
+          <article class="p-4 rounded-xl border-[1px] border-black shadow-lg">
+            <p class="text-2xl">{{category}}</p>
+            <p><span class="font-bold">Posted: </span>{{datePosted}}</p>
+            <p><span class="font-bold">Complete By: </span>{{completeBy}}</p>
+            <p class="font-bold">Skills required:</p>
+            <ul class="list-disc px-6">
+              {{#each skillsRequired}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </article>
+        {{/each}}
+      </div>
+    {{else}}
+      <div class="flex w-full justify-center items-center col-span-2">
+        <p class="text-xl mt-6 col-span-2">User has no posts</p>
+      </div>
+    {{/if}}
+    <div class="flex flex-col w-full px-2 h-full overflow-y-auto">
+      <form
+        class="flex flex-col w-full mb-2 items-start p-2"
+        id="reviewForm"
+        method="post"
+      >
+        <h1 class="text-lg font-bold">Rating:</h1>
+        <div class="rating gap-1">
+          <label for="rating-1" class="sr-only">Rating 1</label>
+          <input
+            type="radio"
+            name="rating"
+            class="mask mask-star-2 bg-orange-400"
+            id="rating-1"
+            value="1"
+          />
+
+          <label for="rating-2" class="sr-only">Rating 2</label>
+          <input
+            type="radio"
+            name="rating"
+            class="mask mask-star-2 bg-orange-400"
+            id="rating-2"
+            value="2"
+          />
+
+          <label for="rating-3" class="sr-only">Rating 3</label>
+          <input
+            type="radio"
+            name="rating"
+            class="mask mask-star-2 bg-orange-400"
+            id="rating-3"
+            value="3"
+          />
+
+          <label for="rating-4" class="sr-only">Rating 4</label>
+          <input
+            type="radio"
+            name="rating"
+            class="mask mask-star-2 bg-orange-400"
+            id="rating-4"
+            value="4"
+            checked
+          />
+
+          <label for="rating-5" class="sr-only">Rating 5</label>
+          <input
+            type="radio"
+            name="rating"
+            class="mask mask-star-2 bg-orange-400"
+            id="rating-5"
+            value="5"
+          />
+        </div>
+        <label for="reviewBody" class="text-lg font-bold">Review:</label>
+        <textarea
+          type="text"
+          placeholder="Review here"
+          class="textarea textarea-bordered w-full mb-2"
+          name="reviewBody"
+          id="reviewBody"
+        ></textarea>
+        <button
+          type="submit"
+          class="btn btn-success btn-sm mb-2"
+        >Submit</button>
+        <ul
+          class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500 w-full"
+          id="inputErrors"
+        >
+
+        </ul>
+      </form>
+      {{#if viewedUser.reviews.length}}
+        {{#each viewedUser.reviews}}
+          <div class="chat chat-end w-full mb-2">
+            <div class="chat-bubble flex flex-col w-full">
+              <p class="font-bold text-md">{{posterUsername}}</p>
+              <p class="text-sm">{{reviewBody}}</p>
+              <div class="flex mt-3 items-center gap-1">
+                {{rating}}
+                <div class="w-5 h-5 bg-orange-400 mask mask-star-2"></div>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      {{/if}}
     </div>
-  {{else}}
-    <p class="text-xl mt-6">User has no posts</p>
-  {{/if}}
+  </div>
+  <a href="/users/editsignup"
+       class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 text-center">
+   Edit User Settings </a>
+
 </section>

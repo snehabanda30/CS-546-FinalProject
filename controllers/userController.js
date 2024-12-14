@@ -1,6 +1,13 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import { userSchema } from "../utils/schemas.js";
+import {
+  userSchema,
+  edituserSchema,
+  userEditSchema,
+  refinedUserSchema,
+  userLoginSchema,
+  reviewSchema,
+} from "../utils/schemas.js";
 import Post from "../models/Post.js";
 import { format } from "date-fns";
 
@@ -17,15 +24,30 @@ const getSignup = (req, res) => {
 const signup = async (req, res) => {
   try {
     // Logic for signup
-    const { username, password } = req.body;
+    const { username, password, email, firstName, lastName, confirmPassword } =
+      req.body;
 
     // Check for username and password
-    if (!username || !password) {
+    if (
+      !username ||
+      !password ||
+      !email ||
+      !firstName ||
+      !lastName ||
+      !confirmPassword
+    ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
     // Checks if sent data corresponds to correct user schema
-    const result = userSchema.safeParse({ username, password });
+    const result = refinedUserSchema.safeParse({
+      username,
+      password,
+      email,
+      firstName,
+      lastName,
+      confirmPassword,
+    });
     if (result.success === false) {
       const errors = result.error.errors.map((error) => error.message);
       return res.status(400).json({
@@ -34,17 +56,35 @@ const signup = async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
     if (existingUser) {
       return res.status(409).json({
         error: `User with username ${username} already exists.`,
       });
     }
 
+    // Check if email already exists
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(409).json({
+        error: `User with email ${email} already exists.`,
+      });
+    }
+
     // Create new user with hashed password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = await User.create({ username, hashedPassword });
+    const newUser = await User.create({
+      username,
+      hashedPassword,
+      email,
+      firstName,
+      lastName,
+    });
 
     return res.json({ username: newUser.username });
   } catch (e) {
@@ -72,7 +112,7 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    const result = userSchema.safeParse({ username, password });
+    const result = userLoginSchema.safeParse({ username, password });
     if (result.success === false) {
       const errors = result.error.errors.map((error) => error.message);
       return res.status(400).json({
@@ -80,11 +120,15 @@ const login = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ username }).exec();
+    const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
     if (!existingUser) {
       return res
         .status(404)
-        .json({ error: `User with username ${username} not found` });
+        .json({ error: `Incorrect username or password entered` });
     }
 
     const match = await bcrypt.compare(password, existingUser.hashedPassword);
@@ -100,6 +144,7 @@ const login = async (req, res) => {
     };
     return res.redirect("/");
   } catch (e) {
+    console.log(e);
     return res.status(500).json({
       error: "Something went wrong when signing up. Please try again.",
     });
@@ -141,6 +186,10 @@ const getProfilePage = async (req, res) => {
       completeBy: format(new Date(post.completeBy), "MMMM dd, yyyy"),
     }));
 
+    const objectReviews = user.reviews.map((review) => ({
+      ...review.toObject(),
+    }));
+
     const returnedUserData = {
       username: user.username,
       tasksPosted: objectPosts,
@@ -149,15 +198,322 @@ const getProfilePage = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       hasTasksPosted: objectPosts.length > 0,
+      reviews: objectReviews,
     };
     return res.render("profilePage", {
       user: req.session.profile,
       viewedUser: returnedUserData,
+      script: "/public/js/validateReviewSchema.js",
     });
   } catch (e) {
     return res
       .status(500)
       .json({ error: "Something went wrong when fetching page" });
+  }
+};
+
+const getEdit = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!req.session || !req.session.profile || !req.session.profile.id) {
+      return res.redirect("/");
+    }
+    let userLogin = null;
+    if (req.session) {
+      if (req.session.profile.id) {
+        userLogin = await User.findById(req.session.profile.id);
+      }
+    }
+    const user = await User.findById(req.session.profile.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found! in this array" });
+    }
+
+    return res.render("edit", {
+      script: "/public/js/validateUserEditSignup.js",
+      user: user.username, // Pass user data for editing
+      userLogin: userLogin.username, // Pass userLogin to show authenticated state
+    });
+  } catch (e) {
+    return res.status(500).json({
+      error: "Something went wrong when fetching user data.",
+    });
+  }
+};
+
+const editUser = async (req, res) => {
+  try {
+    let userLogin = null;
+    if (req.session) {
+      if (req.session.profile.id) {
+        userLogin = await User.findById(req.session.profile.id);
+      }
+    }
+    const { username, password } = req.body;
+    const user = await User.findById(req.session.profile.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    const updates = {};
+    if (username && username !== user.username) {
+      const usernameValidation = edituserSchema.safeParse({ username });
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        return res.status(409).json({
+          error: `User with username ${username} already exists.`,
+        });
+      }
+      if (!usernameValidation.success) {
+        const errors = usernameValidation.error.errors.map(
+          (error) => error.message,
+        );
+        return res.status(400).json({ error: errors.join(", ") });
+      }
+      updates.username = username;
+      req.session.profile.username = username;
+    }
+
+    // Update password if provided
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updates.hashedPassword = await bcrypt.hash(password, salt);
+    }
+    // Apply updates if any
+    if (Object.keys(updates).length > 0) {
+      await User.findByIdAndUpdate(req.session.profile.id, updates, {
+        new: true,
+      });
+      return res
+        .status(200)
+        .json({ message: "User details updated successfully." });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      error: "An error occurred while updating the user. Please try again.",
+    });
+  }
+};
+
+const getEditProfilePage = async (req, res) => {
+  if (!req.session.profile) {
+    return res.redirect("/users/login");
+  } else if (req.session.profile.username !== req.params.username) {
+    return res.status(403).render("403", {
+      user: req.session.profile,
+    });
+  }
+
+  const user = await User.findOne({ username: req.params.username });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  const returnedUserData = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    address: {
+      address: user.address.address,
+      suite: user.address.suite,
+      city: user.address.city,
+      state: user.address.state,
+      zipCode: user.address.zipCode,
+      country: user.address.country,
+    },
+  };
+
+  return res.render("editProfilePage", {
+    user: req.session.profile,
+    userData: returnedUserData,
+    script: "/public/js/validateUserEditSchema.js ",
+  });
+};
+
+const editProfile = async (req, res) => {
+  let {
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    suite,
+    city,
+    state,
+    zipcode,
+    country,
+    skills,
+  } = req.body;
+
+  if (!req.session.profile) {
+    return res.status(401).render("401", {
+      user: req.session.profile,
+    });
+  }
+
+  const result = userEditSchema.safeParse({
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    suite,
+    city,
+    state,
+    zipcode,
+    country,
+    skills,
+  });
+
+  if (result.success === false) {
+    const errors = result.error.errors.map((error) => error.message);
+    return res.status(400).json({
+      error: errors.join(", "),
+    });
+  }
+
+  const user = await User.findOne({ _id: req.session.profile.id });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  if (await User.findOne({ email, _id: { $ne: req.session.profile.id } })) {
+    return res.status(409).json({
+      error: `User with email ${email} already exists.`,
+    });
+  }
+
+  user.email = email;
+
+  user.phoneNumber = phone;
+
+  user.address.address = address;
+
+  if (suite) {
+    user.address.suite = suite;
+  }
+
+  user.address.city = city;
+
+  user.address.state = state;
+
+  user.address.zipCode = zipcode;
+
+  user.address.country = country;
+
+  skills = skills.split(",").map((skill) => skill.trim());
+  if (skills) {
+    for (let i = 0; i < skills.length; i++) {
+      if (user.skills.includes(skills[i])) {
+        continue;
+      }
+      user.skills.push(skills[i]);
+    }
+  }
+
+  await user.save();
+
+  return res.status(200).render("profilePage", {
+    user: req.session.profile,
+  });
+};
+
+export const reviewUser = async (req, res) => {
+  try {
+    if (!req.session.profile) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const { username, rating, reviewBody } = req.body;
+    const reviewer = req.session.profile.username;
+
+    const reviewUser = await User.findOne({ username: reviewer });
+
+    if (!rating) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    if (username === reviewer) {
+      return res.status(400).json({
+        error: "You cannot review yourself",
+      });
+    }
+
+    const result = reviewSchema.safeParse({ rating, reviewBody });
+    if (result.success === false) {
+      const errors = result.error.errors.map((error) => error.message);
+      return res.status(400).json({
+        error: errors.join(", "),
+      });
+    }
+
+    const existingUser = await User.findOne(
+      { username },
+      { reviews: 1, tasksHelped: 1, tasksPosted: 1 },
+      { collation: { locale: "en_US", strength: 2 } },
+    );
+    if (!existingUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    let hasInteracted = false;
+    for (const post of existingUser.tasksPosted) {
+      if (reviewUser.tasksHelped.includes(post)) {
+        hasInteracted = true;
+        break;
+      }
+    }
+    for (const post of existingUser.tasksHelped) {
+      if (reviewUser.tasksPosted.includes(post)) {
+        hasInteracted = true;
+        break;
+      }
+    }
+    if (!hasInteracted) {
+      return res.status(400).json({
+        error: "No interaction with user",
+      });
+    }
+
+    const existingReview = existingUser.reviews.filter(
+      (review) => review.posterUsername === reviewer,
+    );
+    if (existingReview.length !== 0) {
+      return res.status(400).json({ error: "You have reviewed this user" });
+    }
+
+    const currentRatingSum = existingUser.reviews.reduce(
+      (acc, review) => acc + review.rating,
+      0,
+    );
+    const newRating =
+      Math.round(
+        ((currentRatingSum + parseInt(rating)) /
+          (existingUser.reviews.length + 1)) *
+          100,
+      ) / 100;
+
+    const review = {
+      rating,
+      reviewBody,
+      posterUsername: reviewer,
+    };
+    await User.updateOne(
+      { username },
+      { $push: { reviews: review }, $set: { averageRating: newRating } },
+      { collation: { locale: "en_US", strength: 2 } },
+    );
+
+    return res.status(201).json({ message: "Review posted" });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ error: "Something went wrong when reviewing" });
   }
 };
 
@@ -168,4 +524,9 @@ export default {
   login,
   logout,
   getProfilePage,
+  getEditProfilePage,
+  editProfile,
+  reviewUser,
+  getEdit,
+  editUser,
 };
