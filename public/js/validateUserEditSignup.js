@@ -27,8 +27,6 @@ $("#editForm").on("submit", (event) => {
     return;
   }
   const dataToSend = {};
-  console.log("UserInput");
-  console.log(userInput.username);
 
   if (userInput.username) {
     dataToSend.username = userInput.username;

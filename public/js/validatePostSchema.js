@@ -28,7 +28,6 @@ const postSchema = Zod.object({
 });
 
 $("#createPostForm").on("submit", (event) => {
-  // console.log("form submitted.");
   event.preventDefault();
   $("#inputErrors").addClass("hidden").empty();
 
@@ -48,12 +47,8 @@ $("#createPostForm").on("submit", (event) => {
     completeBy: $("#completeBy").val().trim(),
   };
 
-  console.log("Collected form data:", postInput);
-
-  // Validate input using Zod schema
   const result = postSchema.safeParse(postInput);
   if (result.success === false) {
-    console.log("failed validation.");
     // Display validation errors
     result.error.errors.forEach((error) => {
       $("#inputErrors").append(`<li>${error.message}</li>`);
