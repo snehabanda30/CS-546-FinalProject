@@ -147,4 +147,41 @@ const getAllPosts = async (req, res) => {
   }
 };
 
-export default { getCreatePost, createPost, getPostDetails, getAllPosts };
+const sendInfo = async (req, res) => {
+  try {
+    const postID = req.params.postID;
+
+    const post = await Post.findById(postID).populate("posterID").exec();
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const user = await User.findOne({ _id: req.session.profile.id });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (post.posterID.equals(user._id)) {
+      return res.status(400).json({ error: "Cannot send info to own post" });
+    }
+
+    if (!post.requestedUsers.includes(user._id)) {
+      post.requestedUsers.push(user._id);
+      await post.save();
+    }
+
+    return res.status(200).json({ success: true, message: "Info sent" });
+  } catch (error) {
+    console.error("Error sending info:", error);
+    res.status(500).json({ error: "Failed to send info" });
+  }
+};
+
+export default {
+  getCreatePost,
+  createPost,
+  getPostDetails,
+  getAllPosts,
+  sendInfo,
+};

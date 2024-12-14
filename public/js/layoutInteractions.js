@@ -30,3 +30,22 @@ $("#favoriteButton").on("click", () => {
   };
   $.ajax(requestConfig);
 });
+
+$("#offer-help").on("click", (e) => {
+  $("success-message").addClass("hidden").text("");
+  $("#inputErrors").addClass("hidden").empty();
+  const postID = $(e.currentTarget).data("post-id");
+  const requestConfig = {
+    method: "POST",
+    url: `/posts/${postID}/send-info`,
+    contentType: "application/json",
+    success: function () {
+      $("#success-message").text("Info sent successfully!");
+    },
+    error: function (xhr) {
+      $("#inputErrors").append(`<li>${xhr.responseJSON.error}</li>`);
+      $("#inputErrors").removeClass("hidden");
+    },
+  };
+  $.ajax(requestConfig);
+});

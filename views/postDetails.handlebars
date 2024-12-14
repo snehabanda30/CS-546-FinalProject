@@ -43,7 +43,7 @@
       <button
         class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
       >
-        Edit Post
+        <a href="">Edit Post</a>
       </button>
     </div>
   </div>
@@ -89,6 +89,19 @@
     </div>
 
     <div class="mt-6 text-center">
+      <button
+        id="offer-help"
+        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
+        data-post-id="{{post._id}}"
+      >
+        Offer Help
+      </button>
+      <p id="success-message" class="font-bold text-green-500"></p>
+      <ul
+        class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
+        id="inputErrors"
+      ></ul>
+
     </div>
   </div>
 
