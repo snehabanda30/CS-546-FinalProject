@@ -178,10 +178,45 @@ const sendInfo = async (req, res) => {
   }
 };
 
+const getHelpers = async (req, res) => {
+  try {
+    if (!req.session.profile) {
+      return res.redirect("/users/login");
+    }
+
+    const user = req.session.profile;
+    const postID = req.params.postID;
+
+    const userThatPosted = await User.findById(user.id);
+    const post = await Post.findById(postID)
+      .lean()
+      .populate([{ path: "requestedUsers" }, { path: "posterID" }])
+      .exec();
+
+    if (!post) {
+      return res.status(404).render("404", { error: "Post not found" });
+    }
+
+    if (user.id !== post.posterID._id.toString()) {
+      return res.status(403).render("403", { error: "You are not the poster" });
+    }
+
+    return res.status(200).render("helpers", {
+      user,
+      post,
+      title: "Helpers",
+    });
+  } catch (error) {
+    console.error("Error retrieving helpers:", error);
+    res.status(500).json({ error: "Failed to retrieve helpers" });
+  }
+};
+
 export default {
   getCreatePost,
   createPost,
   getPostDetails,
   getAllPosts,
   sendInfo,
+  getHelpers,
 };
