@@ -1,0 +1,42 @@
+<form
+  id="editForm"
+  method="POST"
+  class="bg-gray-100 w-1/2 px-6 py-4 mx-auto my-auto rounded-md shadow-lg gap-4 flex flex-col items-start"
+>
+  <h1 class="font-bold text-3xl">Edit User Settings:</h1>
+
+  <!-- Username Input -->
+  <div class="flex flex-col w-full">
+    <label for="username" class="font-bold text-xl mb-2">Username:</label>
+    <input
+      type="text"
+      placeholder="Enter username"
+      id="username"
+      name="username"
+      value="{{user.username}}"
+      required
+      class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+    />
+  </div>
+
+  <!-- Password Input -->
+  <div class="flex flex-col w-full">
+    <label for="password" class="font-bold text-xl mb-2">Password:</label>
+    <input
+      type="password"
+      placeholder="Leave blank to keep current password"
+      id="password"
+      name="password"
+      class="rounded-lg px-3 py-2 w-full border-[1px] border-black"
+    />
+  </div>
+
+  <!-- Submit Button -->
+  <button
+    type="submit"
+    class="bg-blue-600 font-bold text-white hover:bg-blue-500 py-2 px-4 rounded-lg transition-all"
+  >
+    Save Changes
+  </button>
+
+</form>
