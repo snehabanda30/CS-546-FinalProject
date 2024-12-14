@@ -141,7 +141,9 @@ const getAllPosts = async (req, res) => {
 
     const user = req.session.profile || null;
 
-    return res.status(200).render("home", { user, posts: sanitizedPosts });
+    return res
+      .status(200)
+      .render("home", { user, posts: sanitizedPosts, title: "Home" });
   } catch (error) {
     return res.status(500).send("Server Error");
   }

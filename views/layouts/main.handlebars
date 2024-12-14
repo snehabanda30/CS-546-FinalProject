@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{title}}</title>
+    {{#if title}}
+      <title>{{title}}</title>
+    {{else}}
+      <title>CS-546 Final Project</title>
+    {{/if}}
     <link rel="stylesheet" href="/public/css/output.css" />
     <script
       src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
