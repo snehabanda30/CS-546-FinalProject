@@ -50,7 +50,6 @@ const userEditSchema = Zod.object({
 
 $("#updateProfileForm").on("submit", (event) => {
   event.preventDefault();
-  console.log("Submitting form");
   $("#inputErrors").addClass("hidden").empty();
   const userInput = {
     email: $("#email").val().trim(),

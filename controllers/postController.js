@@ -130,4 +130,19 @@ const getPostDetails = async (req, res) => {
   }
 };
 
-export default { getCreatePost, createPost, getPostDetails };
+const getAllPosts = async (req, res) => {
+  try {
+    const posts = await Post.find();
+    const sanitizedPosts = posts.map((post) =>
+      JSON.parse(JSON.stringify(post)),
+    );
+
+    const user = req.session.profile || null;
+
+    return res.status(200).render("home", { user, posts: sanitizedPosts });
+  } catch (error) {
+    return res.status(500).send("Server Error");
+  }
+};
+
+export default { getCreatePost, createPost, getPostDetails, getAllPosts };

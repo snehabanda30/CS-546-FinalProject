@@ -114,3 +114,15 @@ export const reviewSchema = z
   .refine((data) => parseInt(data.rating) >= 1 && parseInt(data.rating) <= 5, {
     message: "Rating must be an integer between 1 and 5",
   });
+
+export const edituserSchema = z.object({
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters")
+    .max(13, "Username must be no more than 13 characters")
+    .optional(),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .optional(),
+});

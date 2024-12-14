@@ -33,4 +33,15 @@ router.route("/favorite").post(userController.favoriteUser);
 
 router.route("/review").post(userController.reviewUser);
 
+router
+  .route("/profile/:username/edit")
+  .get(userController.getEditProfilePage)
+  .put(userController.editProfile);
+
+router.route("/review").post(userController.reviewUser);
+
+router
+  .route("/editsignup")
+  .get(userController.getEdit)
+  .patch(userController.editUser);
 export default router;
