@@ -1,17 +1,8 @@
 <section class="flex items-center flex-grow flex-col gap-1">
-    {{#ifEquals user.username viewedUser.username}}
-    <a href="{{../viewedUser.username}}/edit">
-      <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Edit Profile
-      </button>
-    </a>
-  {{/ifEquals}}
-  <h1 class="font-bold text-3xl">{{viewedUser.firstName}}
+  <h1 id="username" data-username="{{viewedUser.username}}" class="font-bold text-3xl">{{viewedUser.firstName}}
     {{viewedUser.lastName}}</h1>
   <p class="text-gray-400 italic tracking-wide">@{{viewedUser.username}}</p>
-  <div class="grid grid-cols-3 place-items-center gap-3 p-4">
+  <div class="grid grid-cols-3 place-items-center gap-3">
     <p class="w-full text-center"><span class="font-bold">Rating:
       </span>{{viewedUser.rating}}</p>
     <p class="w-full text-center"><span class="font-bold">Posted:
@@ -19,6 +10,21 @@
     <p class="w-full text-center"><span class="font-bold">Helped:
       </span>{{viewedUser.tasksHelped.length}}</p>
   </div>
+  {{#ifEquals user.username viewedUser.username}}
+  <div class="flex gap-3">
+    <a href="{{../viewedUser.username}}/edit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all">
+      Edit Profile
+    </a>    
+    <a href="/users/profile/{{../viewedUser.username}}/favorites" class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400">Favorites</a>
+  </div>
+  {{else}}
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all disabled:border-2 disabled:border-black disabled:text-black disabled:bg-white" 
+    id="favoriteButton" 
+    {{#ifEquals ../viewedUser.isFavorited true}}disabled{{/ifEquals}}>
+      {{#ifEquals ../viewedUser.isFavorited true}}Favorited{{else}}Favorite{{/ifEquals}}
+    </button>
+  {{/ifEquals}}
+  
   <div
     class="grid grid-cols-3 place-items-start gap-3 min-w-[915px] flex-grow h-[450px] overflow-hidden"
   >
@@ -109,7 +115,7 @@
         ></textarea>
         <button
           type="submit"
-          class="btn btn-success btn-sm mb-2"
+          class="btn btn-success btn-sm mb-2 text-white"
         >Submit</button>
         <ul
           class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500 w-full"
@@ -134,8 +140,12 @@
       {{/if}}
     </div>
   </div>
+  <div class="toast toast-end hidden" id="toast">
+    <div class="alert" id="toast-alert">
+      <span class="font-bold" id="alert-text">Favorited user</span>
+    </div>
+  </div>
   <a href="/users/editsignup"
        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 text-center">
    Edit User Settings </a>
-
 </section>

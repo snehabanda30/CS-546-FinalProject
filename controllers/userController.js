@@ -165,10 +165,6 @@ const logout = async (req, res) => {
 
 const getProfilePage = async (req, res) => {
   try {
-    if (!req.session.profile) {
-      return res.status(401).redirect("/users/login");
-    }
-
     const { username } = req.params;
     const trimmedUsername = username.trim();
 
@@ -178,6 +174,8 @@ const getProfilePage = async (req, res) => {
         user: req.session.profile,
       });
     }
+
+    const signedInUser = await User.findOne({ _id: req.session.profile.id });
 
     const filteredPosts = await Post.find({ posterID: user._id });
     const objectPosts = filteredPosts.map((post) => ({
@@ -190,6 +188,8 @@ const getProfilePage = async (req, res) => {
       ...review.toObject(),
     }));
 
+    const favorited = signedInUser.favorites.includes(user._id);
+
     const returnedUserData = {
       username: user.username,
       tasksPosted: objectPosts,
@@ -199,6 +199,7 @@ const getProfilePage = async (req, res) => {
       lastName: user.lastName,
       hasTasksPosted: objectPosts.length > 0,
       reviews: objectReviews,
+      isFavorited: favorited,
     };
     return res.render("profilePage", {
       user: req.session.profile,
@@ -517,6 +518,76 @@ export const reviewUser = async (req, res) => {
   }
 };
 
+const getFavorites = async (req, res) => {
+  const { username } = req.params;
+
+  if (req.session.profile.username !== username) {
+    return res.status(403).render("403", {
+      user: req.session.profile,
+    });
+  }
+
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  const favoriteUsers = await User.find({ _id: { $in: user.favorites } });
+
+  const formattedUsers = favoriteUsers.map((user) => ({
+    username: user.username,
+    profilePicture: user.profilePicture,
+  }));
+
+  return res.render("favoritesPage", {
+    user: req.session.profile,
+    favoriteUsers: formattedUsers,
+  });
+};
+
+const favoriteUser = async (req, res) => {
+  try {
+    if (!req.session.profile) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { favoritedUsername } = req.body;
+
+    const favoritedUser = await User.findOne(
+      { username: favoritedUsername },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
+    if (!favoritedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const user = await User.findOne(
+      { _id: req.session.profile.id },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
+    if (user.favorites.includes(favoritedUser._id)) {
+      return res.status(400).json({ error: "User already favorited" });
+    }
+
+    await User.updateOne(
+      { _id: req.session.profile.id },
+      { $push: { favorites: favoritedUser._id } },
+    );
+
+    return res.status(200).json({ message: "User favorited" });
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(500)
+      .json({ error: "Something went wrong when favoriting user" });
+  }
+};
+
 export default {
   getSignup,
   signup,
@@ -527,6 +598,7 @@ export default {
   getEditProfilePage,
   editProfile,
   reviewUser,
+  getFavorites,
+  favoriteUser,
   getEdit,
-  editUser,
 };
