@@ -88,8 +88,6 @@ const createPost = async (req, res) => {
 };
 
 const getPostDetails = async (req, res) => {
-  console.log("Fetching post with ID:", req.params.postId);
-
   const postId = req.params.postId;
 
   // check if the user is logged in, if not, redirect
@@ -99,7 +97,7 @@ const getPostDetails = async (req, res) => {
 
   try {
     // Find the post by its ID in the database
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("posterID").exec();
 
     // If no post is found, return a 404 error
     if (!post) {
@@ -134,7 +132,7 @@ const getPostDetails = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().populate("posterID").exec();
     const sanitizedPosts = posts.map((post) =>
       JSON.parse(JSON.stringify(post)),
     );

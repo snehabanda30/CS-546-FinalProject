@@ -1,8 +1,11 @@
 {{#if user}}
   {{#each posts}}
     <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-xl mt-8 box">
-
       <div class="space-y-4">
+        <div class="flex items-center text-lg font-semibold text-gray-700">
+          <span class="mr-2">Poster:</span>
+          <span class="text-gray-500">{{this.posterID.username}}</span>
+        </div>
         <div class="flex items-center text-lg font-semibold text-gray-700">
           <span class="mr-2">Category:</span>
           <span class="text-gray-500">{{category}}</span>
@@ -36,6 +39,11 @@
           <span class="mr-2">Complete By:</span>
           <span class="text-gray-500">{{completeBy}}</span>
         </div>
+      </div>
+      <div class="button-container">
+        <button class="post-details-button">
+          <a href="/posts/{{_id}}">View Post Details</a>
+        </button>
       </div>
     </div>
   {{/each}}

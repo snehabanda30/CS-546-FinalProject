@@ -9,6 +9,6 @@ router
   .get(postController.getCreatePost)
   .post(postController.createPost);
 
-router.get("/post/:postId", postController.getPostDetails);
+router.get("/:postId", postController.getPostDetails);
 
 export default router;
