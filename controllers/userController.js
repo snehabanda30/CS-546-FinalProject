@@ -1,7 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import {
-  userSchema,
   userEditSchema,
   refinedUserSchema,
   userLoginSchema,
@@ -9,7 +8,6 @@ import {
 } from "../utils/schemas.js";
 import Post from "../models/Post.js";
 import { format } from "date-fns";
-import { get } from "mongoose";
 
 // Signup
 const getSignup = (req, res) => {
