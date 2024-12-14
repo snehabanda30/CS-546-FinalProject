@@ -8,6 +8,7 @@ const userSchema = Zod.object({
 $("#loginForm").on("submit", (event) => {
   event.preventDefault();
   $("#inputErrors").addClass("hidden").empty();
+  $(".inputField").removeClass("border-2 border-red-500 bg-red-200");
   const userInput = {
     username: $("#username").val().trim(),
     password: $("#password").val().trim(),
@@ -16,6 +17,7 @@ $("#loginForm").on("submit", (event) => {
   if (result.success === false) {
     result.error.errors.forEach((error) => {
       $("#inputErrors").append(`<li>${error.message}</li>`);
+      $(`#${error.path}`).addClass("border-2 border-red-500 bg-red-200");
     });
     $("#inputErrors").removeClass("hidden");
   } else {
