@@ -44,4 +44,5 @@ router
   .route("/editsignup")
   .get(userController.getEdit)
   .patch(userController.editUser);
+
 export default router;

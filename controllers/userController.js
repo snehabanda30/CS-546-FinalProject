@@ -24,7 +24,7 @@ const getSignup = (req, res) => {
 const signup = async (req, res) => {
   try {
     // Logic for signup
-    const { username, password, email, firstName, lastName, confirmPassword } =
+    let { username, password, email, firstName, lastName, confirmPassword } =
       req.body;
 
     // Check for username and password
@@ -75,6 +75,8 @@ const signup = async (req, res) => {
       });
     }
 
+    // For case insensitivity
+    username = username.toLowerCase();
     // Create new user with hashed password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -106,7 +108,7 @@ const getLoginPage = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    let { username, password } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ error: "All fields are required" });
@@ -120,6 +122,7 @@ const login = async (req, res) => {
       });
     }
 
+    username = username.toLowerCase();
     const existingUser = await User.findOne(
       { username },
       {},
@@ -601,4 +604,5 @@ export default {
   getFavorites,
   favoriteUser,
   getEdit,
+  editUser,
 };
