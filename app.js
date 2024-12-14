@@ -2,10 +2,13 @@ import express from "express";
 import exphbs from "express-handlebars";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import homeRoutes from "./routes/homepageRoutes.js";
+
 import { connectDB } from "./config/connectDB.js";
 import session from "express-session";
 import { configDotenv } from "dotenv";
 import { registerHelpers } from "./helpers.js";
+import Post from "./models/Post.js";
 
 const app = express();
 
@@ -57,13 +60,15 @@ app.use(
 //   next();
 // });
 
-app.get("/", (req, res) => {
-  if (req.session.profile?.id) {
-    return res.render("home", { user: req.session.profile });
-  }
-  return res.render("home");
-});
+// app.get("/", (req, res) => {
 
+//     if(req.session.profile?.id) {
+//       return res.render("home", { user: req.session.profile,});
+//     }
+//     return res.render("home");
+
+//   });
+app.use("/", homeRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 

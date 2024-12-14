@@ -2225,3 +2225,7 @@ html {
 .focus\:ring-offset-2:focus {
   --tw-ring-offset-width: 2px;
 }
+.box {
+  height: 400px;
+  width: 600px;
+}
