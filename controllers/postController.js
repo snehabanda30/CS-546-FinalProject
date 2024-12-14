@@ -187,7 +187,6 @@ const getHelpers = async (req, res) => {
     const user = req.session.profile;
     const postID = req.params.postID;
 
-    const userThatPosted = await User.findById(user.id);
     const post = await Post.findById(postID)
       .lean()
       .populate([{ path: "requestedUsers" }, { path: "posterID" }])
@@ -212,6 +211,57 @@ const getHelpers = async (req, res) => {
   }
 };
 
+const selectHelper = async (req, res) => {
+  try {
+    const user = req.session.profile;
+    if (!user) {
+      return res.status(401).json({ error: "User not logged in" });
+    }
+
+    const postID = req.params.postID;
+    const helperID = req.params.helperID;
+
+    const post = await Post.findById(postID).populate("posterID").exec();
+
+    if (user.id !== post.posterID._id.toString()) {
+      return res.status(403).json({
+        error: "You are not authorized to select a helper for this post",
+      });
+    }
+
+    if (post.posterID._id.toString() === helperID) {
+      return res
+        .status(400)
+        .json({ error: "Cannot select yourself as a helper" });
+    }
+
+    if (!post.requestedUsers.some((id) => id.toString() === helperID)) {
+      return res
+        .status(400)
+        .json({ error: "This user has not requested to help with the post" });
+    }
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (post.helperID) {
+      return res
+        .status(400)
+        .json({ error: "A helper has already been selected" });
+    } else {
+      post.helperID = helperID;
+      post.status = "In Progress";
+      await post.save();
+    }
+
+    return res.status(200).json({ success: true, message: "Helper selected" });
+  } catch (error) {
+    console.error("Error selecting helper:", error);
+    res.status(500).json({ error: "Failed to select helper" });
+  }
+};
+
 export default {
   getCreatePost,
   createPost,
@@ -219,4 +269,5 @@ export default {
   getAllPosts,
   sendInfo,
   getHelpers,
+  selectHelper,
 };
