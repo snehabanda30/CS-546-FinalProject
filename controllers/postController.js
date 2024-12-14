@@ -116,6 +116,9 @@ const getPostDetails = async (req, res) => {
       completeBy: post.completeBy.toLocaleDateString("en-US", {
         timeZone: "UTC",
       }), // Format date
+      datePosted: post.datePosted.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+      }),
       username: user.username, // Add username
     };
 
@@ -133,9 +136,20 @@ const getPostDetails = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().populate("posterID").exec();
-    const sanitizedPosts = posts.map((post) =>
-      JSON.parse(JSON.stringify(post)),
-    );
+    // const sanitizedPosts = posts.map((post) =>
+    //   JSON.parse(JSON.stringify(post)),
+    // );
+    const sanitizedPosts = posts.map((post) => {
+      const formattedPost = post.toObject();
+      // Format the completeBy and datePosted dates from DB
+      formattedPost.completeBy = post.completeBy.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+      });
+      formattedPost.datePosted = post.datePosted.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+      });
+      return formattedPost;
+    });
 
     const user = req.session.profile || null;
 
