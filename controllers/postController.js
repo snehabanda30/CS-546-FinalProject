@@ -13,6 +13,7 @@ const getCreatePost = (req, res) => {
   return res.render("createPost", {
     script: "/public/js/validatePostSchema.js",
     user: req.session.profile,
+    title: "Create Post",
   });
 };
 
@@ -123,6 +124,7 @@ const getPostDetails = async (req, res) => {
     res.render("postDetails", {
       post: formattedPost,
       user: req.session.profile,
+      title: "Post Details",
     });
   } catch (error) {
     console.error("Error retrieving post details:", error);
@@ -139,7 +141,9 @@ const getAllPosts = async (req, res) => {
 
     const user = req.session.profile || null;
 
-    return res.status(200).render("home", { user, posts: sanitizedPosts });
+    return res
+      .status(200)
+      .render("home", { user, posts: sanitizedPosts, title: "Home" });
   } catch (error) {
     return res.status(500).send("Server Error");
   }

@@ -18,6 +18,7 @@ const getSignup = (req, res) => {
   }
   return res.render("signup", {
     script: "/public/js/validateUserSignupSchema.js",
+    title: "Sign Up",
   });
 };
 
@@ -103,6 +104,7 @@ const getLoginPage = async (req, res) => {
   }
   return res.render("login", {
     script: "/public/js/validateUserLoginSchema.js",
+    title: "Log In",
   });
 };
 
@@ -208,6 +210,7 @@ const getProfilePage = async (req, res) => {
       user: req.session.profile,
       viewedUser: returnedUserData,
       script: "/public/js/validateReviewSchema.js",
+      title: "Profile",
     });
   } catch (e) {
     return res
@@ -237,6 +240,7 @@ const getEdit = async (req, res) => {
       script: "/public/js/validateUserEditSignup.js",
       user: user.username, // Pass user data for editing
       userLogin: userLogin.username, // Pass userLogin to show authenticated state
+      title: "Edit Login",
     });
   } catch (e) {
     return res.status(500).json({
@@ -334,6 +338,7 @@ const getEditProfilePage = async (req, res) => {
     user: req.session.profile,
     userData: returnedUserData,
     script: "/public/js/validateUserEditSchema.js ",
+    title: "Edit Profile",
   });
 };
 
@@ -548,6 +553,7 @@ const getFavorites = async (req, res) => {
   return res.render("favoritesPage", {
     user: req.session.profile,
     favoriteUsers: formattedUsers,
+    title: "Favorites",
   });
 };
 
