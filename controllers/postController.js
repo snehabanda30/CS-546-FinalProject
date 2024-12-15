@@ -161,13 +161,13 @@ const postSearch = async (req, res) => {
     const exp = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
 
     const searchedPosts = await Post.find({
-      $or: [{ category: exp }, { description: exp }],
+      $or: [{ category: exp }, { description: exp }]
     }).lean();
 
     const searchResults = searchedPosts.map((post) =>
       JSON.parse(JSON.stringify(post)),
     );
-    console.log(searchResults);
+    //console.log(searchResults);
 
     const user = req.session.profile || null;
     
