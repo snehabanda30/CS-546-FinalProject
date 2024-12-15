@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import { postSchema } from "../utils/schemas.js";
@@ -90,11 +91,6 @@ const createPost = async (req, res) => {
 const getPostDetails = async (req, res) => {
   const postId = req.params.postId;
 
-  // check if the user is logged in, if not, redirect
-  if (!req.session.profile) {
-    return res.redirect("/users/login");
-  }
-
   try {
     // Find the post by its ID in the database
     const post = await Post.findById(postId).populate("posterID").exec();
@@ -133,9 +129,11 @@ const getPostDetails = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().populate("posterID").exec();
-    const sanitizedPosts = posts.map((post) =>
-      JSON.parse(JSON.stringify(post)),
-    );
+    const sanitizedPosts = posts.map((post) => ({
+      ...post.toObject(),
+      datePosted: format(post.datePosted, "MM/dd/yyyy"),
+      completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    }));
 
     const user = req.session.profile || null;
 
@@ -152,6 +150,12 @@ const sendInfo = async (req, res) => {
     const postID = req.params.postID;
 
     const post = await Post.findById(postID).populate("posterID").exec();
+
+    if (!req.session.profile) {
+      return res
+        .status(401)
+        .json({ error: "You must be logged in to do that!" });
+    }
 
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
