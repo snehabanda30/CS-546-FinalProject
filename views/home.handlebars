@@ -5,19 +5,16 @@
     {{#each posts}}
       <div class="bg-white p-6 rounded-lg shadow-xl">
         <div class="flex flex-col space-y-6">
-          <!-- Poster Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Poster:</label>
             <span class="text-gray-500">{{this.posterID.username}}</span>
           </div>
 
-          <!-- Category Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Category:</label>
             <span class="text-gray-500">{{category}}</span>
           </div>
 
-          <!-- Location Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Location:</label>
             <span
@@ -29,13 +26,11 @@
               {{location.country}}</span>
           </div>
 
-          <!-- Priority Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Priority:</label>
             <span class="text-gray-500">{{priority}}</span>
           </div>
 
-          <!-- Description Section -->
           <div class="flex flex-col space-y-2">
             <label
               class="text-lg font-semibold text-gray-700"
@@ -43,19 +38,16 @@
             <p class="text-gray-500 whitespace-pre-wrap">{{description}}</p>
           </div>
 
-          <!-- Complete By Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Complete By:</label>
             <span class="text-gray-500">{{completeBy}}</span>
           </div>
 
-          <!-- Date Posted Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Date Posted:</label>
             <span class="text-gray-500">{{datePosted}}</span>
           </div>
 
-          <!-- View Post Button -->
           <div class="mt-4 text-center">
             <button class="post-details-button">
               <a href="/posts/{{_id}}">View Post Details</a>
@@ -72,13 +64,11 @@
     {{#each posts}}
       <div class="bg-white p-6 rounded-lg shadow-xl">
         <div class="flex flex-col space-y-6">
-          <!-- Category Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Category:</label>
             <span class="text-gray-500">{{category}}</span>
           </div>
 
-          <!-- Location Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Location:</label>
             <span
@@ -90,19 +80,16 @@
               {{location.country}}</span>
           </div>
 
-          <!-- Skills Required Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Skills Required:</label>
             <span class="text-gray-500">{{skillsRequired}}</span>
           </div>
 
-          <!-- Priority Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Priority:</label>
             <span class="text-gray-500">{{priority}}</span>
           </div>
 
-          <!-- Description Section -->
           <div class="flex flex-col space-y-2">
             <label
               class="text-lg font-semibold text-gray-700"
@@ -110,19 +97,16 @@
             <p class="text-gray-500 whitespace-pre-wrap">{{description}}</p>
           </div>
 
-          <!-- Complete By Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Complete By:</label>
             <span class="text-gray-500">{{completeBy}}</span>
           </div>
 
-          <!-- Date Posted Section -->
           <div class="flex flex-col space-y-2">
             <label class="text-lg font-semibold text-gray-700">Date Posted:</label>
             <span class="text-gray-500">{{datePosted}}</span>
           </div>
 
-          <!-- View Post Button -->
           <div class="mt-4 text-center">
             <button class="post-details-button">
               <a href="/posts/{{_id}}">View Post Details</a>
