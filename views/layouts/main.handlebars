@@ -26,6 +26,11 @@
           >Home</a>
           <div class="flex gap-4">
             <a href="/users/profile/{{user.username}}">{{user.username}}</a>
+            <form id="search"  method="get">
+              <label for="search_task"></label>
+              <input type="text" id="search_task", name="q", placeholder="Search">
+              <button type="submit">Search</button>
+            </form>
             <button
               id="logoutButton"
               type="button"

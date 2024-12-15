@@ -30,3 +30,34 @@ $("#favoriteButton").on("click", () => {
   };
   $.ajax(requestConfig);
 });
+
+$("#search").on("submit", (event) => {
+  event.preventDefault();
+
+  // Collect form data
+  const searchTerm = $("#search_task").val().trim();
+  
+    // Submit form with AJAX if validation passes
+  const requestConfig = {
+      method: "GET",
+      url: "/search", // The route for creating the post
+      contentType: "application/json",
+      data: {q: searchTerm},
+      success: function (result) {
+        // Handle error response
+        $("#searchResults").html(result);
+        console.log("ajax called");
+      },
+      error: function (xhr) {
+        // Redirect on success
+        console.error(xhr.responseText);
+        alert("Error fetching search results");
+      },
+  };
+    $.ajax(requestConfig);
+  
+});
+
+
+
+
