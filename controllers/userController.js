@@ -195,7 +195,7 @@ const getProfilePage = async (req, res) => {
 
     const favorited = signedInUser.favorites.includes(user._id);
 
-    const returnedUserData = {
+    const returnedUserData = { 
       username: user.username,
       tasksPosted: objectPosts,
       tasksHelped: user.tasksHelped,
@@ -597,6 +597,102 @@ const favoriteUser = async (req, res) => {
   }
 };
 
+
+const getTaskStatusTracking = async (req, res) => {
+  if (!req.session.profile) {
+    return res.redirect("/users/login");
+  } else if (req.session.profile.username !== req.params.username) {
+    return res.status(403).render("403", {
+      user: req.session.profile,
+    });
+  }
+
+  const user = await User.findOne({ username: req.params.username });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  const returnedUserData = {
+    taskStatus: user.taskStatus,
+  };
+  
+  return res.render("taskstatus", {
+    user: req.session.profile,
+    userData: returnedUserData,
+    script: "/public/js/validateTaskStatus.js ",
+    title: "Edit Profile",
+  });
+};
+
+const taskStatus = async (req, res) => {
+  try {
+    let userLogin = null;
+      if (req.session.profile.id) {
+        userLogin = await User.findById(req.session.profile.id);
+        console.log(userLogin);
+      }
+    console.log(req.session.profile.id);
+    const { username } = req.params;
+
+    
+    const usernameValidation = edituserSchema.safeParse({ username });
+    if (!usernameValidation.success) {
+        const errors = usernameValidation.error.errors.map(
+          (error) => error.message,
+        );
+        return res.status(400).json({ error: errors.join(", ") });
+      }
+      const { status } = req.body;
+
+      console.log(status);
+
+      // Step 3: Validate the input
+      const statusValidation = taskStatusSchema.safeParse({ status }); // Replace `taskStatusSchema` with your validation schema
+      if (!statusValidation.success) {
+        const errors = statusValidation.error.errors.map((error) => error.message);
+        return res.status(400).json({ error: errors.join(", ") });
+      }
+  
+      // Step 4: Prepare updates
+      const updates = { status };
+  
+      // Step 5: Update the user in the database
+      const updatedUser = await User.findByIdAndUpdate(
+        req.session.profile.id,
+        updates,
+        { new: true } // Returns the updated document
+      );
+  
+      if (!updatedUser) {
+        return res.status(500).json({ error: "Failed to update the user." });
+      }
+  
+      // Step 6: Update session profile
+      req.session.profile.status = updatedUser.status;
+  
+      // Step 7: Respond with success
+
+
+    
+    // if (Object.keys(updates).length > 0) {
+    //   await User.findByIdAndUpdate(req.session.profile.id, updates, {
+    //     new: true,
+    //   });
+    //   return res
+    //     .status(200)
+    //     .json({ message: "User details updated successfully." });
+    // }
+  } catch (err) {
+    return res.status(400).json({
+      error: "An error occurred while updating the user. Please try again.",
+    });
+  }
+};
+
+
 export default {
   getSignup,
   signup,
@@ -611,4 +707,6 @@ export default {
   favoriteUser,
   getEdit,
   editUser,
+  getTaskStatusTracking,
+  taskStatus,
 };

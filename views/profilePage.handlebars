@@ -37,9 +37,17 @@
       >
         {{#each viewedUser.tasksPosted}}
           <article class="p-4 rounded-xl border-[1px] border-black shadow-lg">
-            <p class="text-2xl">{{category}}</p>
+           </a><p class="text-2xl">{{category}}</p>
             <p><span class="font-bold">Posted: </span>{{datePosted}}</p>
             <p><span class="font-bold">Complete By: </span>{{completeBy}}</p>
+             <p>
+               <a 
+                  href="/users/profile/taskstatus/{{../viewedUser.username}}" 
+                  class="text-blue-600 underline hover:text-blue-800 font-bold"
+                >
+                  Task Status: {{status}}
+                </a>
+              </p>
             <p class="font-bold">Skills required:</p>
             <ul class="list-disc px-6">
               {{#each skillsRequired}}
