@@ -1,6 +1,7 @@
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import { postSchema } from "../utils/schemas.js";
+import { commentSchema } from "../utils/schemas.js";
 
 // Allow user to create a Post
 const getCreatePost = (req, res) => {
@@ -133,6 +134,112 @@ const getPostDetails = async (req, res) => {
   }
 };
 
+// gets the post along with comments and posters username
+// renders comments.handlerbars
+const getComments = async (req, res) => {
+  // redirect to login if user not logged in
+  if (!req.session.profile) {
+    return res.redirect("/users/login");
+  }
+  const postId = req.params.postId;
+
+  try {
+    // get the post with the associated comments and user details
+    const post = await Post.findById(postId)
+      .populate("posterID", "username")
+      .exec();
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    console.log(post);
+
+    // formatting the post for rendering
+    const formattedPost = {
+      ...post.toObject(),
+      comments: post.comments.map((comment) => ({
+        commenter: comment.username || { username: "Anonymous" },
+        text: comment.commentText || "No text provided.",
+      })),
+      completeBy: post.completeBy.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+      }),
+      datePosted: post.datePosted.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+      }),
+    };
+
+    // get the comments page with post details and comments
+    res.render("comments", {
+      post: formattedPost,
+      comments: post.comments, // passing comments to the template
+      user: req.session.profile,
+      title: "Comments",
+      script: "/public/js/validateCommentSchema.js", // validation script for comments
+    });
+  } catch (error) {
+    console.error("Error retrieving comments:", error);
+    res.status(500).json({ error: "Failed to retrieve comments" });
+  }
+};
+
+// new comment creation
+const createComment = async (req, res) => {
+  if (!req.session.profile) {
+    return res.status(401).json({ error: "User not logged in" });
+  }
+
+  const postId = req.params.postId;
+  console.log(postId);
+  const { commentText } = req.body;
+
+  if (commentText.trim().length === 0) {
+    return res.status(404).json({ error: "Cannot post empty comments." });
+  }
+
+  try {
+    // Validate using Zod schema
+    const result = commentSchema.safeParse({
+      userID: req.session.profile.id,
+      username: req.session.profile.username,
+      commentText,
+    });
+    if (result.success === false) {
+      const errors = result.error.errors.map((error) => error.message);
+      return res.status(400).json({
+        error: errors.join(", "),
+      });
+    }
+
+    // finding the post to add the comment
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // add the new comment
+    const newComment = {
+      userID: req.session.profile.id,
+      username: req.session.profile.username,
+      commentText,
+    };
+    // const newComment = {
+    //   commenter: { username: req.session.profile.username },
+    //   text: commentText,
+    // };
+
+    post.comments.push(newComment);
+    await post.save();
+
+    // Redirect to the comments page
+    res.redirect(`/posts/${postId}/comments`);
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    res.status(500).json({ error: "Failed to create comment" });
+  }
+};
+
 const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().populate("posterID").exec();
@@ -233,4 +340,6 @@ export default {
   getAllPosts,
   sendInfo,
   getHelpers,
+  getComments,
+  createComment,
 };

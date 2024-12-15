@@ -58,6 +58,16 @@ export const postSchema = z.object({
     }, "Complete by date must be in the future."),
 });
 
+export const commentSchema = z.object({
+  commentText: z
+    .string()
+    .min(1, "Comment cannot be empty")
+    .refine((val) => val.trim().length > 0, {
+      message: "Comment cannot be just empty spaces",
+    }),
+  // postId: z.string().min(1, "Post ID is required"),
+});
+
 export const userEditSchema = z.object({
   email: z.string().email("Invalid email format."),
   phone: z
