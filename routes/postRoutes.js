@@ -1,5 +1,6 @@
 import postController from "../controllers/postController.js";
 import express from "express";
+import { verifyAuth } from "../middleware/verifyAuth.js";
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ router
   .get(postController.getCreatePost)
   .post(postController.createPost);
 
-router.get("/:postId", postController.getPostDetails);
+router.get("/:postId", verifyAuth, postController.getPostDetails);
 
 // // route for comments
 // router.get("/:postId/comments", postController.getComments);
