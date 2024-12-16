@@ -139,9 +139,7 @@ export const edituserSchema = z.object({
 const allowedStatuses = ["Not Started", "In Progress", "Completed", "On Hold"];
 
 export const taskStatusSchema = z.object({
-  status: z 
-  .string()
-  .refine((value) => allowedStatuses.includes(value), {
+  status: z.string().refine((value) => allowedStatuses.includes(value), {
     message: "Invalid status selected.",
   }),
 });

@@ -4,14 +4,11 @@ import User from "../models/User.js";
 import { postSchema } from "../utils/schemas.js";
 import { commentSchema } from "../utils/schemas.js";
 
-// Allow user to create a Post
 const getCreatePost = (req, res) => {
-  // Redirect to login page if user is not logged in
   if (!req.session.profile) {
     return res.redirect("/users/login");
   }
 
-  // redirect to createPost form
   return res.render("createPost", {
     script: "/public/js/validatePostSchema.js",
     user: req.session.profile,
@@ -19,14 +16,11 @@ const getCreatePost = (req, res) => {
   });
 };
 
-// Create Post function
 const createPost = async (req, res) => {
-  // Check if the user is logged in
   if (!req.session.profile || !req.session.profile.id) {
     return res.status(401).json({ error: "User not logged in" });
   }
 
-  // Get the form input from req.body
   const {
     category,
     location,
@@ -37,14 +31,13 @@ const createPost = async (req, res) => {
     completeBy,
   } = req.body;
 
-  // Validate using Zod schema
   try {
     const postData = {
       category,
       location,
       skillsRequired,
       priority,
-      status: status || "Pending", // Default to 'Pending' if status is not provided
+      status: status || "Pending",
       description,
       completeBy,
     };
@@ -62,9 +55,8 @@ const createPost = async (req, res) => {
       skills = skillsRequired.split(",").map((skill) => skill.trim());
     }
 
-    // If validation passes, create the post object
     const post = await Post.create({
-      posterID: req.session.profile.id, // Set posterID to the logged-in user's ID from the session
+      posterID: req.session.profile.id,
       category,
       location,
       skillsRequired: skills,
@@ -74,14 +66,11 @@ const createPost = async (req, res) => {
       completeBy,
     });
 
-    // Update the user's posts array with the new post ID
     await User.findOneAndUpdate(
       { _id: req.session.profile.id },
       { $push: { tasksPosted: post._id } },
     );
 
-    // Redirect to the post details page after successful creation
-    //res.redirect(`/posts/post/${post._id}`);
     return res.json({ _id: post._id });
   } catch (error) {
     console.error("Error creating post:", error);
@@ -93,10 +82,8 @@ const getPostDetails = async (req, res) => {
   const postId = req.params.postId;
 
   try {
-    // Find the post by its ID in the database
     const post = await Post.findById(postId).populate("posterID").exec();
 
-    // If no post is found, return a 404 error
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
@@ -113,20 +100,17 @@ const getPostDetails = async (req, res) => {
       ...comment.toObject(),
     }));
 
-    // Render the 'postDetails' page and pass the post data
     const formattedPost = {
       ...post.toObject(),
       completeBy: post.completeBy.toLocaleDateString("en-US", {
         timeZone: "UTC",
-      }), // Format date
+      }),
       datePosted: post.datePosted.toLocaleDateString("en-US", {
         timeZone: "UTC",
       }),
       comments: objectComments,
-      username: user.username, // Add username
+      username: user.username,
     };
-
-    // console.log("Formatted Comments:", formattedPost.comments);
 
     res.render("postDetails", {
       post: formattedPost,
@@ -140,14 +124,12 @@ const getPostDetails = async (req, res) => {
   }
 };
 
-// new comment creation
 const createComment = async (req, res) => {
   if (!req.session.profile) {
     return res.status(401).json({ error: "User not logged in" });
   }
 
   const postId = req.params.postId;
-  // console.log(postId);
   const { commentText } = req.body;
 
   if (commentText.trim().length === 0) {
@@ -155,7 +137,6 @@ const createComment = async (req, res) => {
   }
 
   try {
-    // Validate using Zod schema
     const result = commentSchema.safeParse({
       userID: req.session.profile.id,
       username: req.session.profile.username,
@@ -168,28 +149,20 @@ const createComment = async (req, res) => {
       });
     }
 
-    // finding the post to add the comment
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    // add the new comment
     const newComment = {
       userID: req.session.profile.id,
       username: req.session.profile.username,
       commentText,
     };
-    // const newComment = {
-    //   commenter: { username: req.session.profile.username },
-    //   text: commentText,
-    // };
 
     post.comments.push(newComment);
     await post.save();
 
-    // Redirect to the comments page
-    // res.redirect(`/posts/${postId}/comments`);
     return res.status(201).json({ message: "Comment posted" });
   } catch (error) {
     console.error("Error creating comment:", error);
@@ -201,12 +174,8 @@ const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().populate("posterID").exec();
 
-    // const sanitizedPosts = posts.map((post) =>
-    //   JSON.parse(JSON.stringify(post)),
-    // );
     const sanitizedPosts = posts.map((post) => {
       const formattedPost = post.toObject();
-      // Format the completeBy and datePosted dates from DB
       formattedPost.completeBy = post.completeBy.toLocaleDateString("en-US", {
         timeZone: "UTC",
       });
@@ -215,12 +184,6 @@ const getAllPosts = async (req, res) => {
       });
       return formattedPost;
     });
-
-    //     const sanitizedPosts = posts.map((post) => ({
-    //       ...post.toObject(),
-    //       datePosted: format(post.datePosted, "MM/dd/yyyy"),
-    //       completeBy: format(post.completeBy, "MM/dd/yyyy"),
-    //     }));
 
     const user = req.session.profile || null;
 
@@ -234,7 +197,6 @@ const getAllPosts = async (req, res) => {
 
 const postSearch = async (req, res) => {
   const searchTerm = req.query.q;
-  console.log("Query parameter q:", req.query.q);
 
   try {
     if (
@@ -253,10 +215,11 @@ const postSearch = async (req, res) => {
       $or: [{ category: exp }, { description: exp }],
     }).lean();
 
-    const searchResults = searchedPosts.map((post) =>
-      JSON.parse(JSON.stringify(post)),
-    );
-    //console.log(searchResults);
+    const searchResults = searchedPosts.map((post) => ({
+      ...post,
+      datePosted: format(post.datePosted, "MM/dd/yyyy"),
+      completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    }));
 
     const user = req.session.profile || null;
 
@@ -267,8 +230,6 @@ const postSearch = async (req, res) => {
     return res.status(500).send("Server Error");
   }
 };
-
-const postFilter = async (req, res) => {};
 
 const sendInfo = async (req, res) => {
   try {
@@ -401,5 +362,4 @@ export default {
   createComment,
   selectHelper,
   postSearch,
-  postFilter,
 };
