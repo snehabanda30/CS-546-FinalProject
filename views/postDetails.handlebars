@@ -80,14 +80,17 @@
             >
               Post Comment
             </button>
-            <button
+            <a
+              href="/posts/{{post._id}}/helpers"
               class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
             >
-              <a href="/posts/{{post._id}}/helpers">View Helpers</a>
-            </button>
-            <button class="green-button">
-              <a href="/">Return</a>
-            </button>
+              View Helpers
+            </a>
+            <br />
+            <br />
+            <a href="/" class="green-button">
+              Return
+            </a>
             <p id="success-message" class="font-bold text-green-500"></p>
             <ul
               class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
@@ -189,9 +192,11 @@
               >
                 Offer Help
               </button>
-              <button class="green-button">
-                <a href="/">Return</a>
-              </button>
+              <br />
+              <br />
+              <a href="/" class="green-button">
+                Return
+              </a>
               <p id="success-message" class="font-bold text-green-500"></p>
               <ul
                 class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
