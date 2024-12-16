@@ -1864,6 +1864,10 @@ html {
   margin-bottom: 1.5rem;
 }
 
+.ml-auto {
+  margin-left: auto;
+}
+
 .mr-2 {
   margin-right: 0.5rem;
 }
@@ -1940,6 +1944,11 @@ html {
   width: 100%;
 }
 
+.w-max {
+  width: -moz-max-content;
+  width: max-content;
+}
+
 .min-w-\[915px\] {
   min-width: 915px;
 }
@@ -2011,10 +2020,6 @@ html {
 
 .justify-center {
   justify-content: center;
-}
-
-.justify-between {
-  justify-content: space-between;
 }
 
 .gap-1 {

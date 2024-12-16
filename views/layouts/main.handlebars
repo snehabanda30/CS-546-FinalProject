@@ -18,52 +18,42 @@
     ></script>
   </head>
   <body class="flex flex-col min-h-screen">
-    <header class="bg-gray-300 p-4 flex gap-4">
+     <header class="bg-gray-300 p-4 flex gap-4 items-center">
       {{#if user}}
-        <div class="flex justify-between w-full">
-          <a
-            href="/"
-            class="font-semibold hover:text-zinc-800 transition-all"
-          >Home</a>
-          <div>
-            <form id="search"  method="get">
-              <label for="search_task"></label>
-              <input type="text" id="search_task" name="q" placeholder="Search by Category or Description">
-              <button type="submit">Search</button>
-            </form>
-          </div>
-          <div class="flex gap-4">
-            <a href="/users/profile/{{user.username}}">{{user.username}}</a>
-            <button
-              id="logoutButton"
-              type="button"
-              class="font-semibold hover:text-red-500 transition-all"
-            >Logout</button>
-            <!-- Add Create Post Button when user is logged in -->
-            <a
-              href="/posts/createPost"
-              class="font-semibold hover:text-zinc-800 transition-all"
-            >Create Post</a>
-          </div>
-        </div>
+
+    <a href="/" class="font-semibold hover:text-zinc-800 transition-all">Home</a>
+    <div class="w-full">
+      <form id="search" method="get" class="flex gap-2 items-center">
+        <label for="search_task" class="sr-only">Search</label>
+        <input type="text" id="search_task" name="q" placeholder="Search by Category or Description"
+          class="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full search-bar" />
+        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all">
+          Search
+        </button>
+      </form>
+    </div>
+    <ul class="ml-auto flex gap-4 justify-center items-center">
+      <a href="/users/profile/{{user.username}}">{{user.username}}</a>
+      <button id="logoutButton" type="button" class="font-semibold hover:text-red-500 transition-all">Logout</button>
+      <a href="/posts/createPost" class="font-semibold hover:text-zinc-800 transition-all w-max">Create Post</a>
+    </ul>
 
       {{else}}
-        <div class="flex justify-between w-full">
-          <a
-            href="/"
-            class="font-semibold hover:text-zinc-800 transition-all"
-          >Home</a>
-          <div class="flex gap-4">
-            <a
-              href="/users/signup"
-              class="font-semibold hover:text-zinc-800 transition-all"
-            >Signup</a>
-            <a
-              href="/users/login"
-              class="font-semibold hover:text-zinc-800 transition-all"
-            >Login</a>
-          </div>
-        </div>
+      <a href="/" class="font-semibold hover:text-zinc-800 transition-all">Home</a>
+      <div class="w-full">
+        <form id="search" method="get" class="flex gap-2 items-center">
+          <label for="search_task" class="sr-only">Search</label>
+          <input type="text" id="search_task" name="q" placeholder="Search by Category or Description"
+            class="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full search-bar" />
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all">
+            Search
+          </button>
+        </form>
+      </div>
+      <ul class="ml-auto flex gap-4 justify-center items-center">
+        <a href="/users/signup" class="font-semibold hover:text-zinc-800 transition-all">Signup</a>
+        <a href="/users/login" class="font-semibold hover:text-zinc-800 transition-all">Login</a>
+      </ul>
       {{/if}}
     </header>
     <main class="flex grow flex-col justify-center p-4">
