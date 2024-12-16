@@ -33,9 +33,9 @@
       </form>
     </div>
     <ul class="ml-auto flex gap-4 justify-center items-center">
-      <a href="/users/profile/{{user.username}}">{{user.username}}</a>
-      <button id="logoutButton" type="button" class="font-semibold hover:text-red-500 transition-all">Logout</button>
-      <a href="/posts/createPost" class="font-semibold hover:text-zinc-800 transition-all w-max">Create Post</a>
+      <li><a href="/users/profile/{{user.username}}">{{user.username}}</a></li>
+      <li><button id="logoutButton" type="button" class="font-semibold hover:text-red-500 transition-all">Logout</button></li>
+      <li><a href="/posts/createPost" class="font-semibold hover:text-zinc-800 transition-all w-max">Post</a></li>
     </ul>
 
       {{else}}
@@ -51,8 +51,8 @@
         </form>
       </div>
       <ul class="ml-auto flex gap-4 justify-center items-center">
-        <a href="/users/signup" class="font-semibold hover:text-zinc-800 transition-all">Signup</a>
-        <a href="/users/login" class="font-semibold hover:text-zinc-800 transition-all">Login</a>
+        <li><a href="/users/signup" class="font-semibold hover:text-zinc-800 transition-all">Signup</a></li>
+        <li><a href="/users/login" class="font-semibold hover:text-zinc-800 transition-all">Login</a></li>
       </ul>
       {{/if}}
     </header>
