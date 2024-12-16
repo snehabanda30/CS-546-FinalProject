@@ -2009,6 +2009,10 @@ html {
   margin-top: 2rem;
 }
 
+.ml-auto {
+  margin-left: auto;
+}
+
 .block {
   display: block;
 }
@@ -2061,8 +2065,30 @@ html {
   width: 100%;
 }
 
+.w-64 {
+  width: 16rem;
+}
+
+.w-min {
+  width: -moz-min-content;
+  width: min-content;
+}
+
+.w-max {
+  width: -moz-max-content;
+  width: max-content;
+}
+
 .min-w-\[915px\] {
   min-width: 915px;
+}
+
+.min-w-4 {
+  min-width: 1rem;
+}
+
+.min-w-8 {
+  min-width: 2rem;
 }
 
 .max-w-4xl {
@@ -2092,6 +2118,10 @@ html {
 
 .grow {
   flex-grow: 1;
+}
+
+.basis-8 {
+  flex-basis: 2rem;
 }
 
 .list-disc {
