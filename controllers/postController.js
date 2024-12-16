@@ -144,56 +144,6 @@ const getPostDetails = async (req, res) => {
   }
 };
 
-// gets the post along with comments and posters username
-// renders comments.handlerbars
-// const getComments = async (req, res) => {
-//   // redirect to login if user not logged in
-//   if (!req.session.profile) {
-//     return res.redirect("/users/login");
-//   }
-//   const postId = req.params.postId;
-
-//   try {
-//     // get the post with the associated comments and user details
-//     const post = await Post.findById(postId)
-//       .populate("posterID", "username")
-//       .exec();
-
-//     if (!post) {
-//       return res.status(404).json({ error: "Post not found" });
-//     }
-
-//     console.log(post);
-
-//     // formatting the post for rendering
-//     const formattedPost = {
-//       ...post.toObject(),
-//       comments: post.comments.map((comment) => ({
-//         commenter: comment.username || { username: "Anonymous" },
-//         text: comment.commentText || "No text provided.",
-//       })),
-//       completeBy: post.completeBy.toLocaleDateString("en-US", {
-//         timeZone: "UTC",
-//       }),
-//       datePosted: post.datePosted.toLocaleDateString("en-US", {
-//         timeZone: "UTC",
-//       }),
-//     };
-
-//     // get the comments page with post details and comments
-//     res.render("comments", {
-//       post: formattedPost,
-//       comments: post.comments, // passing comments to the template
-//       user: req.session.profile,
-//       title: "Comments",
-//       script: "/public/js/validateCommentSchema.js", // validation script for comments
-//     });
-//   } catch (error) {
-//     console.error("Error retrieving comments:", error);
-//     res.status(500).json({ error: "Failed to retrieve comments" });
-//   }
-// };
-
 // new comment creation
 const createComment = async (req, res) => {
   if (!req.session.profile) {
