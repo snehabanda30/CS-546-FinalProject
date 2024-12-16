@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import { postSchema } from "../utils/schemas.js";
+import { commentSchema } from "../utils/schemas.js";
 
 // Allow user to create a Post
 const getCreatePost = (req, res) => {
@@ -106,18 +107,31 @@ const getPostDetails = async (req, res) => {
       return res.status(404).json({ error: "Poster not found" });
     }
 
+    const objectComments = post.comments.map((comment) => ({
+      text: comment.commentText,
+      commenter: comment.username,
+      ...comment.toObject(),
+    }));
+
     // Render the 'postDetails' page and pass the post data
     const formattedPost = {
       ...post.toObject(),
       completeBy: post.completeBy.toLocaleDateString("en-US", {
         timeZone: "UTC",
       }), // Format date
+      datePosted: post.datePosted.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+      }),
+      comments: objectComments,
       username: user.username, // Add username
     };
+
+    // console.log("Formatted Comments:", formattedPost.comments);
 
     res.render("postDetails", {
       post: formattedPost,
       user: req.session.profile,
+      script: "/public/js/validateComments.js",
       title: "Post Details",
     });
   } catch (error) {
@@ -126,14 +140,87 @@ const getPostDetails = async (req, res) => {
   }
 };
 
+// new comment creation
+const createComment = async (req, res) => {
+  if (!req.session.profile) {
+    return res.status(401).json({ error: "User not logged in" });
+  }
+
+  const postId = req.params.postId;
+  // console.log(postId);
+  const { commentText } = req.body;
+
+  if (commentText.trim().length === 0) {
+    return res.status(404).json({ error: "Cannot post empty comments." });
+  }
+
+  try {
+    // Validate using Zod schema
+    const result = commentSchema.safeParse({
+      userID: req.session.profile.id,
+      username: req.session.profile.username,
+      commentText,
+    });
+    if (result.success === false) {
+      const errors = result.error.errors.map((error) => error.message);
+      return res.status(400).json({
+        error: errors.join(", "),
+      });
+    }
+
+    // finding the post to add the comment
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // add the new comment
+    const newComment = {
+      userID: req.session.profile.id,
+      username: req.session.profile.username,
+      commentText,
+    };
+    // const newComment = {
+    //   commenter: { username: req.session.profile.username },
+    //   text: commentText,
+    // };
+
+    post.comments.push(newComment);
+    await post.save();
+
+    // Redirect to the comments page
+    // res.redirect(`/posts/${postId}/comments`);
+    return res.status(201).json({ message: "Comment posted" });
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    res.status(500).json({ error: "Failed to create comment" });
+  }
+};
+
 const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().populate("posterID").exec();
-    const sanitizedPosts = posts.map((post) => ({
-      ...post.toObject(),
-      datePosted: format(post.datePosted, "MM/dd/yyyy"),
-      completeBy: format(post.completeBy, "MM/dd/yyyy"),
-    }));
+
+    // const sanitizedPosts = posts.map((post) =>
+    //   JSON.parse(JSON.stringify(post)),
+    // );
+    const sanitizedPosts = posts.map((post) => {
+      const formattedPost = post.toObject();
+      // Format the completeBy and datePosted dates from DB
+      formattedPost.completeBy = post.completeBy.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+      });
+      formattedPost.datePosted = post.datePosted.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+      });
+      return formattedPost;
+    });
+
+    //     const sanitizedPosts = posts.map((post) => ({
+    //       ...post.toObject(),
+    //       datePosted: format(post.datePosted, "MM/dd/yyyy"),
+    //       completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    //     }));
 
     const user = req.session.profile || null;
 
@@ -144,6 +231,44 @@ const getAllPosts = async (req, res) => {
     return res.status(500).send("Server Error");
   }
 };
+
+const postSearch = async (req, res) => {
+  const searchTerm = req.query.q;
+  console.log("Query parameter q:", req.query.q);
+
+  try {
+    if (
+      !searchTerm ||
+      typeof searchTerm !== "string" ||
+      searchTerm.trim().length === 0
+    )
+      throw `Search term is required.`;
+
+    const exp = new RegExp(
+      searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      "i",
+    );
+
+    const searchedPosts = await Post.find({
+      $or: [{ category: exp }, { description: exp }],
+    }).lean();
+
+    const searchResults = searchedPosts.map((post) =>
+      JSON.parse(JSON.stringify(post)),
+    );
+    //console.log(searchResults);
+
+    const user = req.session.profile || null;
+
+    return res
+      .status(200)
+      .render("searchResults", { user, searchedPosts: searchResults });
+  } catch (error) {
+    return res.status(500).send("Server Error");
+  }
+};
+
+const postFilter = async (req, res) => {};
 
 const sendInfo = async (req, res) => {
   try {
@@ -273,5 +398,8 @@ export default {
   getAllPosts,
   sendInfo,
   getHelpers,
+  createComment,
   selectHelper,
+  postSearch,
+  postFilter,
 };

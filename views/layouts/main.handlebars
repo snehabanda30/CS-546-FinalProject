@@ -25,6 +25,13 @@
             href="/"
             class="font-semibold hover:text-zinc-800 transition-all"
           >Home</a>
+          <div>
+            <form id="search"  method="get">
+              <label for="search_task"></label>
+              <input type="text" id="search_task", name="q", placeholder="Search by Category or Description">
+              <button type="submit">Search</button>
+            </form>
+          </div>
           <div class="flex gap-4">
             <a href="/users/profile/{{user.username}}">{{user.username}}</a>
             <button

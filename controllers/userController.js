@@ -7,6 +7,7 @@ import {
   refinedUserSchema,
   userLoginSchema,
   reviewSchema,
+  taskStatusSchema,
 } from "../utils/schemas.js";
 import Post from "../models/Post.js";
 import { format } from "date-fns";
@@ -143,6 +144,8 @@ const login = async (req, res) => {
       });
     }
 
+    console.log(existingUser);
+
     req.session.profile = {
       id: existingUser._id,
       username: existingUser.username,
@@ -181,7 +184,7 @@ const getProfilePage = async (req, res) => {
     }
 
     const signedInUser = await User.findOne({ _id: req.session.profile.id });
-
+   
     const filteredPosts = await Post.find({ posterID: user._id });
     const objectPosts = filteredPosts.map((post) => ({
       ...post.toObject(),
@@ -195,7 +198,7 @@ const getProfilePage = async (req, res) => {
 
     const favorited = signedInUser.favorites.includes(user._id);
 
-    const returnedUserData = {
+    const returnedUserData = { 
       username: user.username,
       tasksPosted: objectPosts,
       tasksHelped: user.tasksHelped,
@@ -641,6 +644,92 @@ const favoriteUser = async (req, res) => {
   }
 };
 
+
+const getTaskStatusTracking = async (req, res) => { 
+  const { username, postId } = req.params;
+  if (!req.session.profile) {
+    return res.redirect("/users/login");
+  } else if (req.session.profile.username !== req.params.username) {
+    return res.status(403).render("403", {
+      user: req.session.profile,
+    });
+  }
+
+  const user = await User.findOne({ username: req.params.username });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  const returnedUserData = {
+    taskStatus: user.taskStatus,
+  };
+  
+  return res.render("taskstatus", {
+    user: req.session.profile,
+    userData: returnedUserData,
+    script: "/public/js/validateTaskStatus.js ",
+    title: "Edit Task Status",
+  });
+};
+
+const taskStatus = async (req, res) => {
+  try {
+    let userLogin = null;
+      if (req.session.profile.id) {
+        userLogin = await User.findById(req.session.profile.id);
+        console.log(userLogin);
+      }
+    console.log(req.session.profile.id);
+    const { username, postId } = req.params; 
+    console.log(req.params);
+    const trimmedUsername = username.trim();
+
+    const user = await User.findOne({ username: trimmedUsername });
+    if (!user) {
+      return res.status(404).render("404", {
+        user: req.session.profile,
+      });
+    }
+    
+    const usernameValidation = edituserSchema.safeParse({ username });
+    if (!usernameValidation.success) {
+        const errors = usernameValidation.error.errors.map(
+          (error) => error.message,
+        );
+        return res.status(400).json({ error: errors.join(", ") });
+      }
+      const { status } = req.body;
+
+      
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId }, 
+      { $set: { status } }, 
+      { new: true } 
+    );
+ 
+  
+      if (!updatedPost) {
+        return res.status(500).json({ error: "Failed to update the post." });
+      }
+  
+      // Step 6: Respond with success
+      return res.status(200).json({
+        message: "Post status updated successfully.",
+        updatedPost,
+      });
+
+      
+  } catch (err) {
+    return res.status(400).json({
+      error: "An error occurred while updating the user. Please try again.",
+    });
+  }
+};
+
+
 export default {
   getSignup,
   signup,
@@ -656,4 +745,6 @@ export default {
   getEdit,
   editUser,
   getCompletedProfilePage,
+  getTaskStatusTracking,
+  taskStatus,
 };
