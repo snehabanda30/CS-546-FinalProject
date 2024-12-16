@@ -5,12 +5,12 @@
     {{#each posts}}
       <div class="bg-white p-6 rounded-lg shadow-xl">
         <div class="flex flex-col space-y-6">
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Poster:</label>
             <span class="text-gray-500">{{this.posterID.username}}</span>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Category:</label>
             <span class="text-gray-500">{{category}}</span>
           </div>
@@ -26,24 +26,24 @@
               {{location.country}}</span>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Priority:</label>
             <span class="text-gray-500">{{priority}}</span>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label
               class="text-lg font-semibold text-gray-700"
             >Description:</label>
             <p class="text-gray-500 whitespace-pre-wrap">{{description}}</p>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Complete By:</label>
             <span class="text-gray-500">{{completeBy}}</span>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Date Posted:</label>
             <span class="text-gray-500">{{datePosted}}</span>
           </div>
@@ -54,8 +54,6 @@
             </button>
           </div>
         </div>
-
-        <br />
       </div>
     {{/each}}
   </div>
@@ -66,7 +64,12 @@
     {{#each posts}}
       <div class="bg-white p-6 rounded-lg shadow-xl">
         <div class="flex flex-col space-y-6">
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
+            <label class="text-lg font-semibold text-gray-700">Poster:</label>
+            <span class="text-gray-500">{{this.posterID.username}}</span>
+          </div>
+
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Category:</label>
             <span class="text-gray-500">{{category}}</span>
           </div>
@@ -82,38 +85,32 @@
               {{location.country}}</span>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Skills Required:</label>
             <span class="text-gray-500">{{skillsRequired}}</span>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Priority:</label>
             <span class="text-gray-500">{{priority}}</span>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label
               class="text-lg font-semibold text-gray-700"
             >Description:</label>
             <p class="text-gray-500 whitespace-pre-wrap">{{description}}</p>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Complete By:</label>
             <span class="text-gray-500">{{completeBy}}</span>
           </div>
 
-          <div class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Date Posted:</label>
             <span class="text-gray-500">{{datePosted}}</span>
           </div>
-
-          {{!-- <div class="mt-4 text-center">
-            <button class="post-details-button">
-              <a href="/posts/{{_id}}">View Post Details</a>
-            </button>
-          </div> --}}
         </div>
       </div>
     {{/each}}

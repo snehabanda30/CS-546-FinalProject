@@ -184,7 +184,7 @@ const getProfilePage = async (req, res) => {
     }
 
     const signedInUser = await User.findOne({ _id: req.session.profile.id });
-   
+
     const filteredPosts = await Post.find({ posterID: user._id });
     const objectPosts = filteredPosts.map((post) => ({
       ...post.toObject(),
@@ -198,7 +198,7 @@ const getProfilePage = async (req, res) => {
 
     const favorited = signedInUser.favorites.includes(user._id);
 
-    const returnedUserData = { 
+    const returnedUserData = {
       username: user.username,
       tasksPosted: objectPosts,
       tasksHelped: user.tasksHelped,
@@ -600,8 +600,7 @@ const favoriteUser = async (req, res) => {
   }
 };
 
-
-const getTaskStatusTracking = async (req, res) => { 
+const getTaskStatusTracking = async (req, res) => {
   const { username, postId } = req.params;
   if (!req.session.profile) {
     return res.redirect("/users/login");
@@ -622,7 +621,7 @@ const getTaskStatusTracking = async (req, res) => {
   const returnedUserData = {
     taskStatus: user.taskStatus,
   };
-  
+
   return res.render("taskstatus", {
     user: req.session.profile,
     userData: returnedUserData,
@@ -634,12 +633,12 @@ const getTaskStatusTracking = async (req, res) => {
 const taskStatus = async (req, res) => {
   try {
     let userLogin = null;
-      if (req.session.profile.id) {
-        userLogin = await User.findById(req.session.profile.id);
-        console.log(userLogin);
-      }
+    if (req.session.profile.id) {
+      userLogin = await User.findById(req.session.profile.id);
+      console.log(userLogin);
+    }
     console.log(req.session.profile.id);
-    const { username, postId } = req.params; 
+    const { username, postId } = req.params;
     console.log(req.params);
     const trimmedUsername = username.trim();
 
@@ -649,42 +648,37 @@ const taskStatus = async (req, res) => {
         user: req.session.profile,
       });
     }
-    
+
     const usernameValidation = edituserSchema.safeParse({ username });
     if (!usernameValidation.success) {
-        const errors = usernameValidation.error.errors.map(
-          (error) => error.message,
-        );
-        return res.status(400).json({ error: errors.join(", ") });
-      }
-      const { status } = req.body;
+      const errors = usernameValidation.error.errors.map(
+        (error) => error.message,
+      );
+      return res.status(400).json({ error: errors.join(", ") });
+    }
+    const { status } = req.body;
 
-      
     const updatedPost = await Post.findOneAndUpdate(
-      { _id: postId }, 
-      { $set: { status } }, 
-      { new: true } 
+      { _id: postId },
+      { $set: { status } },
+      { new: true },
     );
- 
-  
-      if (!updatedPost) {
-        return res.status(500).json({ error: "Failed to update the post." });
-      }
-  
-      // Step 6: Respond with success
-      return res.status(200).json({
-        message: "Post status updated successfully.",
-        updatedPost,
-      });
 
-      
+    if (!updatedPost) {
+      return res.status(500).json({ error: "Failed to update the post." });
+    }
+
+    // Step 6: Respond with success
+    return res.status(200).json({
+      message: "Post status updated successfully.",
+      updatedPost,
+    });
   } catch (err) {
     return res.status(400).json({
       error: "An error occurred while updating the user. Please try again.",
     });
   }
 };
-
 
 export default {
   getSignup,
