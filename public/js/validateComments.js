@@ -1,8 +1,8 @@
 const commentSchema = Zod.object({
   commentText: Zod.string()
     .min(1, { message: "Comment cannot be empty" })
-    .max(500, {
-      message: "Comment cannot exceed 500 characters",
+    .max(50, {
+      message: "Comment cannot exceed 50 characters",
     }),
 });
 
