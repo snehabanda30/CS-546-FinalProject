@@ -111,6 +111,12 @@ const getPostDetails = async (req, res) => {
       return res.status(404).json({ error: "Poster not found" });
     }
 
+    const objectComments = post.comments.map((comment) => ({
+      text: comment.commentText,
+      commenter: comment.username,
+      ...comment.toObject(),
+    }));
+
     // Render the 'postDetails' page and pass the post data
     const formattedPost = {
       ...post.toObject(),
@@ -120,12 +126,16 @@ const getPostDetails = async (req, res) => {
       datePosted: post.datePosted.toLocaleDateString("en-US", {
         timeZone: "UTC",
       }),
+      comments: objectComments,
       username: user.username, // Add username
     };
+
+    console.log("Formatted Comments:", formattedPost.comments);
 
     res.render("postDetails", {
       post: formattedPost,
       user: req.session.profile,
+      script: "/public/js/validateComments.js",
       title: "Post Details",
     });
   } catch (error) {
@@ -136,53 +146,53 @@ const getPostDetails = async (req, res) => {
 
 // gets the post along with comments and posters username
 // renders comments.handlerbars
-const getComments = async (req, res) => {
-  // redirect to login if user not logged in
-  if (!req.session.profile) {
-    return res.redirect("/users/login");
-  }
-  const postId = req.params.postId;
+// const getComments = async (req, res) => {
+//   // redirect to login if user not logged in
+//   if (!req.session.profile) {
+//     return res.redirect("/users/login");
+//   }
+//   const postId = req.params.postId;
 
-  try {
-    // get the post with the associated comments and user details
-    const post = await Post.findById(postId)
-      .populate("posterID", "username")
-      .exec();
+//   try {
+//     // get the post with the associated comments and user details
+//     const post = await Post.findById(postId)
+//       .populate("posterID", "username")
+//       .exec();
 
-    if (!post) {
-      return res.status(404).json({ error: "Post not found" });
-    }
+//     if (!post) {
+//       return res.status(404).json({ error: "Post not found" });
+//     }
 
-    console.log(post);
+//     console.log(post);
 
-    // formatting the post for rendering
-    const formattedPost = {
-      ...post.toObject(),
-      comments: post.comments.map((comment) => ({
-        commenter: comment.username || { username: "Anonymous" },
-        text: comment.commentText || "No text provided.",
-      })),
-      completeBy: post.completeBy.toLocaleDateString("en-US", {
-        timeZone: "UTC",
-      }),
-      datePosted: post.datePosted.toLocaleDateString("en-US", {
-        timeZone: "UTC",
-      }),
-    };
+//     // formatting the post for rendering
+//     const formattedPost = {
+//       ...post.toObject(),
+//       comments: post.comments.map((comment) => ({
+//         commenter: comment.username || { username: "Anonymous" },
+//         text: comment.commentText || "No text provided.",
+//       })),
+//       completeBy: post.completeBy.toLocaleDateString("en-US", {
+//         timeZone: "UTC",
+//       }),
+//       datePosted: post.datePosted.toLocaleDateString("en-US", {
+//         timeZone: "UTC",
+//       }),
+//     };
 
-    // get the comments page with post details and comments
-    res.render("comments", {
-      post: formattedPost,
-      comments: post.comments, // passing comments to the template
-      user: req.session.profile,
-      title: "Comments",
-      script: "/public/js/validateCommentSchema.js", // validation script for comments
-    });
-  } catch (error) {
-    console.error("Error retrieving comments:", error);
-    res.status(500).json({ error: "Failed to retrieve comments" });
-  }
-};
+//     // get the comments page with post details and comments
+//     res.render("comments", {
+//       post: formattedPost,
+//       comments: post.comments, // passing comments to the template
+//       user: req.session.profile,
+//       title: "Comments",
+//       script: "/public/js/validateCommentSchema.js", // validation script for comments
+//     });
+//   } catch (error) {
+//     console.error("Error retrieving comments:", error);
+//     res.status(500).json({ error: "Failed to retrieve comments" });
+//   }
+// };
 
 // new comment creation
 const createComment = async (req, res) => {
@@ -233,7 +243,8 @@ const createComment = async (req, res) => {
     await post.save();
 
     // Redirect to the comments page
-    res.redirect(`/posts/${postId}/comments`);
+    // res.redirect(`/posts/${postId}/comments`);
+    return res.status(201).json({ message: "Comment posted" });
   } catch (error) {
     console.error("Error creating comment:", error);
     res.status(500).json({ error: "Failed to create comment" });
@@ -340,6 +351,5 @@ export default {
   getAllPosts,
   sendInfo,
   getHelpers,
-  getComments,
   createComment,
 };
