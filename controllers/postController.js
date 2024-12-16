@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import { postSchema } from "../utils/schemas.js";
@@ -90,11 +91,6 @@ const createPost = async (req, res) => {
 
 const getPostDetails = async (req, res) => {
   const postId = req.params.postId;
-
-  // check if the user is logged in, if not, redirect
-  if (!req.session.profile) {
-    return res.redirect("/users/login");
-  }
 
   try {
     // Find the post by its ID in the database
@@ -204,6 +200,7 @@ const createComment = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().populate("posterID").exec();
+
     // const sanitizedPosts = posts.map((post) =>
     //   JSON.parse(JSON.stringify(post)),
     // );
@@ -219,6 +216,12 @@ const getAllPosts = async (req, res) => {
       return formattedPost;
     });
 
+//     const sanitizedPosts = posts.map((post) => ({
+//       ...post.toObject(),
+//       datePosted: format(post.datePosted, "MM/dd/yyyy"),
+//       completeBy: format(post.completeBy, "MM/dd/yyyy"),
+//     }));
+
     const user = req.session.profile || null;
 
     return res
@@ -229,11 +232,54 @@ const getAllPosts = async (req, res) => {
   }
 };
 
+const postSearch = async (req, res) => {
+
+  const searchTerm = req.query.q;
+  console.log("Query parameter q:", req.query.q);
+
+  try{
+
+    if(!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim().length === 0) throw `Search term is required.`;
+    
+    const exp = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+
+    const searchedPosts = await Post.find({
+      $or: [{ category: exp }, { description: exp }]
+    }).lean();
+
+    const searchResults = searchedPosts.map((post) =>
+      JSON.parse(JSON.stringify(post)),
+    );
+    //console.log(searchResults);
+
+    const user = req.session.profile || null;
+    
+    return res
+      .status(200)
+      .render("searchResults", { user, searchedPosts: searchResults });
+
+
+  } catch(error){
+      return res.status(500).send("Server Error");
+  }
+    
+};
+
+const postFilter = async (req, res) => {
+
+};
+
 const sendInfo = async (req, res) => {
   try {
     const postID = req.params.postID;
 
     const post = await Post.findById(postID).populate("posterID").exec();
+
+    if (!req.session.profile) {
+      return res
+        .status(401)
+        .json({ error: "You must be logged in to do that!" });
+    }
 
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
@@ -269,7 +315,6 @@ const getHelpers = async (req, res) => {
     const user = req.session.profile;
     const postID = req.params.postID;
 
-    const userThatPosted = await User.findById(user.id);
     const post = await Post.findById(postID)
       .lean()
       .populate([{ path: "requestedUsers" }, { path: "posterID" }])
@@ -294,6 +339,58 @@ const getHelpers = async (req, res) => {
   }
 };
 
+const selectHelper = async (req, res) => {
+  try {
+    const user = req.session.profile;
+    if (!user) {
+      return res.status(401).json({ error: "User not logged in" });
+    }
+
+    const postID = req.params.postID;
+    const helperID = req.params.helperID;
+
+    const post = await Post.findById(postID).populate("posterID").exec();
+
+    if (user.id !== post.posterID._id.toString()) {
+      return res.status(403).json({
+        error: "You are not authorized to select a helper for this post",
+      });
+    }
+
+    if (post.posterID._id.toString() === helperID) {
+      return res
+        .status(400)
+        .json({ error: "Cannot select yourself as a helper" });
+    }
+
+    if (!post.requestedUsers.some((id) => id.toString() === helperID)) {
+      return res
+        .status(400)
+        .json({ error: "This user has not requested to help with the post" });
+    }
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (post.helperID) {
+      return res
+        .status(400)
+        .json({ error: "A helper has already been selected" });
+    } else {
+      post.helperID = helperID;
+      post.status = "In Progress";
+      await post.save();
+    }
+
+    return res.status(200).json({ success: true, message: "Helper selected" });
+  } catch (error) {
+    console.error("Error selecting helper:", error);
+    res.status(500).json({ error: "Failed to select helper" });
+  }
+};
+
+
 export default {
   getCreatePost,
   createPost,
@@ -301,5 +398,9 @@ export default {
   getAllPosts,
   sendInfo,
   getHelpers,
-  createComment,
+  createComment
+  selectHelper,
+  postSearch, 
+  postFilter
 };
+

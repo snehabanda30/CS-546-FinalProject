@@ -2103,6 +2103,11 @@ html {
   max-width: 28rem;
 }
 
+.max-w-max {
+  max-width: -moz-max-content;
+  max-width: max-content;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -2171,6 +2176,12 @@ html {
   gap: 1rem;
 }
 
+
+.gap-8 {
+  gap: 2rem;
+}
+
+
 .space-y-2 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
@@ -2191,8 +2202,16 @@ html {
   overflow-y: auto;
 }
 
+.whitespace-normal {
+  white-space: normal;
+}
+
 .whitespace-pre-wrap {
   white-space: pre-wrap;
+}
+
+.break-words {
+  overflow-wrap: break-word;
 }
 
 .break-all {
