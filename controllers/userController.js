@@ -325,12 +325,12 @@ const getEditProfilePage = async (req, res) => {
     email: user.email,
     phoneNumber: user.phoneNumber,
     address: {
-      address: user.address.address,
-      suite: user.address.suite,
-      city: user.address.city,
-      state: user.address.state,
-      zipCode: user.address.zipCode,
-      country: user.address.country,
+      address: user.address?.address ? user.address.address : "",
+      suite: user.address?.suite ? user.address.suite : "",
+      city: user.address?.city ? user.address.city : "",
+      state: user.address?.state ? user.address.state : "",
+      zipCode: user.address?.zipCode ? user.address.zipCode : "",
+      country: user.address?.country ? user.address.country : "",
     },
   };
 

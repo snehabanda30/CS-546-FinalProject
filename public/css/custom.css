@@ -1,0 +1,56 @@
+/* This CSS file includes our minimum 15 custom rulesets. */
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.post-details-button {
+    background-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.5rem .5rem .5rem .5rem;
+    border-radius: .5rem;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.post-details-button:hover {
+    background-color: #1d4ed8;
+}
+
+.large-text {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 640px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.card {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
