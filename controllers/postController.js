@@ -68,7 +68,7 @@ const createPost = async (req, res) => {
 
     await User.findOneAndUpdate(
       { _id: req.session.profile.id },
-      { $push: { posts: post._id } },
+      { $push: { tasksPosted: post._id } },
     );
 
     return res.json({ _id: post._id });
