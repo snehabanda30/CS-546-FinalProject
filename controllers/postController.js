@@ -253,10 +253,11 @@ const postSearch = async (req, res) => {
       $or: [{ category: exp }, { description: exp }],
     }).lean();
 
-    const searchResults = searchedPosts.map((post) =>
-      JSON.parse(JSON.stringify(post)),
-    );
-    //console.log(searchResults);
+    const searchResults = searchedPosts.map((post) => ({
+      ...post,
+      datePosted: format(post.datePosted, "MM/dd/yyyy"),
+      completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    }));
 
     const user = req.session.profile || null;
 
