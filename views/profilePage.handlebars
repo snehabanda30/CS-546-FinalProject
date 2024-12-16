@@ -36,7 +36,7 @@
         class="w-[600px] flex flex-col gap-2 col-span-2 overflow-y-auto px-4 h-full"
       >
         {{#each viewedUser.tasksPosted}}
-          <article class="p-4 rounded-xl border-[1px] border-black shadow-lg">
+          <article class="p-4 rounded-xl border-[1px] border-black shadow-lg flex flex-col">
             <p class="text-2xl">{{category}}</p>
             <p><span class="font-bold">Posted: </span>{{datePosted}}</p>
             <p><span class="font-bold">Complete By: </span>{{completeBy}}</p>
@@ -46,6 +46,9 @@
                 <li>{{this}}</li>
               {{/each}}
             </ul>
+            {{#ifEquals ../user.username ../viewedUser.username}}
+            <a href="/posts/{{../this._id}}/helpers" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all max-w-max">View Helpers</a>
+            {{/ifEquals}}
           </article>
         {{/each}}
       </div>

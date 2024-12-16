@@ -2077,6 +2077,11 @@ html {
   max-width: 28rem;
 }
 
+.max-w-max {
+  max-width: -moz-max-content;
+  max-width: max-content;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }

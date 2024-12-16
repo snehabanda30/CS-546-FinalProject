@@ -17,7 +17,6 @@ function registerHelpers() {
     if (arg2 instanceof mongoose.Types.ObjectId) {
       arg2 = arg2.toString();
     }
-
     return arg1 === arg2 ? options.fn(context) : options.inverse(context);
   });
 
