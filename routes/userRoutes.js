@@ -21,10 +21,6 @@ router
   .get(verifyAuth, userController.getProfilePage);
 
 router
-  .route("/profile/:username/completed")
-  .get(verifyAuth, userController.getCompletedProfilePage);
-
-router
   .route("/profile/:username/edit")
   .get(userController.getEditProfilePage)
   .put(userController.editProfile);
@@ -47,11 +43,11 @@ router.route("/review").post(userController.reviewUser);
 router
   .route("/editsignup")
   .get(userController.getEdit)
-  .patch(userController.editUser);
+  .patch(userController.editUser); 
 
 router
   .route("/profile/taskstatus/:username/:postId")
   .get(userController.getTaskStatusTracking)
-  .patch(userController.taskStatus);
+  .patch(userController.taskStatus)
 
 export default router;

@@ -68,7 +68,7 @@ $("#createPostForm").on("submit", (event) => {
       },
       success: function (result, status, xhr) {
         // Redirect on success
-        window.location.href = `/posts/${result._id}`; // Redirect to the newly created post's page
+        window.location.href = `/posts/post/${result._id}`; // Redirect to the newly created post's page
       },
     };
     $.ajax(requestConfig);
