@@ -136,3 +136,12 @@ export const edituserSchema = z.object({
     .min(6, "Password must be at least 6 characters")
     .optional(),
 });
+const allowedStatuses = ["Not Started", "In Progress", "Completed", "On Hold"];
+
+export const taskStatusSchema = z.object({
+  status: z 
+  .string()
+  .refine((value) => allowedStatuses.includes(value), {
+    message: "Invalid status selected.",
+  }),
+});

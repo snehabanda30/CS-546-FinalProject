@@ -43,6 +43,11 @@ router.route("/review").post(userController.reviewUser);
 router
   .route("/editsignup")
   .get(userController.getEdit)
-  .patch(userController.editUser);
+  .patch(userController.editUser); 
+
+router
+  .route("/profile/taskstatus/:username/:postId")
+  .get(userController.getTaskStatusTracking)
+  .patch(userController.taskStatus)
 
 export default router;
