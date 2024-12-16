@@ -7,7 +7,12 @@
         <div class="flex flex-col space-y-6">
           <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Poster:</label>
-            <span class="text-gray-500">{{this.posterID.username}}</span>
+            <a
+              href="/users/profile/{{this.posterID.username}}"
+              class="text-blue-600 font-medium hover:underline"
+            >
+              {{this.posterID.username}}
+            </a>
           </div>
 
           <div class="flex items-center space-x-2">
@@ -68,7 +73,12 @@
         <div class="flex flex-col space-y-6">
           <div class="flex items-center space-x-2">
             <label class="text-lg font-semibold text-gray-700">Poster:</label>
-            <span class="text-gray-500">{{this.posterID.username}}</span>
+            <a
+              href="/users/profile/{{this.posterID.username}}"
+              class="text-blue-600 font-medium hover:underline"
+            >
+              {{this.posterID.username}}
+            </a>
           </div>
 
           <div class="flex items-center space-x-2">
