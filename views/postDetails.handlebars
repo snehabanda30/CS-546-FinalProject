@@ -1,8 +1,12 @@
 {{#ifEqualsID post.posterID._id user.id}}
   <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-xl mt-8">
-    <h1 class="text-3xl font-bold text-center mb-6">Poster:
-      {{post.posterID.username}}</h1>
-
+    <div>
+      <a href="/users/profile/{{post.posterID.username}}" class="view-users">
+        Poster:
+        {{post.posterID.username}}
+      </a>
+    </div>
+    <br />
     <div class="flex items-center text-lg font-semibold text-gray-700">
       <span class="mr-2">Category:</span>
       <span class="text-gray-500">{{post.category}}</span>
@@ -76,16 +80,17 @@
             >
               Post Comment
             </button>
-            <button
+            <a
+              href="/posts/{{post._id}}/helpers"
               class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
             >
-              <a href="/posts/{{post._id}}/helpers">View Helpers</a>
-            </button>
-            <button
-              class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
-            >
-              <a href="/">Return</a>
-            </button>
+              View Helpers
+            </a>
+            <br />
+            <br />
+            <a href="/" class="green-button">
+              Return
+            </a>
             <p id="success-message" class="font-bold text-green-500"></p>
             <ul
               class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
@@ -98,9 +103,14 @@
   </div>
 {{else}}
   <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-xl mt-8">
-    <h1 class="text-3xl font-bold text-center mb-6">Poster:
-      {{post.posterID.username}}</h1>
 
+    <div>
+      <a href="/users/profile/{{post.posterID.username}}" class="view-users">
+        Poster:
+        {{post.posterID.username}}
+      </a>
+    </div>
+    <br />
     <div class="space-y-4">
       <div class="flex items-center text-lg font-semibold text-gray-700">
         <span class="mr-2">Category:</span>
@@ -182,11 +192,11 @@
               >
                 Offer Help
               </button>
-              <button
-                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
-              >
-                <a href="/">Return</a>
-              </button>
+              <br />
+              <br />
+              <a href="/" class="green-button">
+                Return
+              </a>
               <p id="success-message" class="font-bold text-green-500"></p>
               <ul
                 class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"

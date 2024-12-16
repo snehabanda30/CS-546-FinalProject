@@ -68,3 +68,105 @@
     margin-bottom: 10px; 
     letter-spacing: 1px; 
   }
+
+  .green-button {
+    background-color: #16a34a; 
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .green-button:hover {
+    background-color: #22c55e; 
+  }
+  
+  .green-button a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .home-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #f12839; 
+    color: white;
+    text-align: center;
+    border-radius: 0.375rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-decoration: none; 
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .home-button:hover {
+    background-color: #f12839; 
+    transform: translateY(-2px); 
+  }
+  
+  .home-button:active {
+    background-color: #f12839;
+    transform: translateY(0); 
+  }
+
+.poster-link {
+    color: #3b82f6; 
+    font-weight: bold; 
+    text-decoration: none; 
+    transition: color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .poster-link:hover {
+    color: #1d4ed8; 
+    transform: translateY(-3px);
+  }
+  
+  .poster-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.6); 
+    border-radius: 4px; 
+  }
+  
+  .poster-link:active {
+    color: #1e40af; 
+    transform: translateY(0);
+  }
+  
+  .poster-link {
+    transition: color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  @media (min-width: 768px) {
+    .poster-link:hover {
+      transform: translateY(-3px) scale(1.05); 
+    }
+  }
+  
+ 
+  .view-users {
+    font-size: 2rem; 
+    font-weight: bold; 
+    text-align: center; 
+    margin-bottom: 1.5rem; 
+    text-decoration: none; 
+    color: blue; 
+    display: block; 
+    margin: 0 auto; 
+  }
+  
+  .view-users {
+    text-align: center; 
+    display: block; 
+    margin: 0 auto;
+  }
+  
+  body {
+    background-color: #d3f3a6b1; 
+    margin: 0;
+    font-family: Arial, sans-serif; 
+  }
+  
+  
+  html {
+    background-color: #d3f3a6b1; 
+  }
