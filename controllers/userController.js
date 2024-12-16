@@ -1,15 +1,14 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import {
-  userSchema,
   edituserSchema,
   userEditSchema,
   refinedUserSchema,
   userLoginSchema,
   reviewSchema,
-  taskStatusSchema,
 } from "../utils/schemas.js";
 import Post from "../models/Post.js";
+import xss from "xss";
 import { format } from "date-fns";
 
 // Signup
@@ -28,6 +27,13 @@ const signup = async (req, res) => {
     // Logic for signup
     let { username, password, email, firstName, lastName, confirmPassword } =
       req.body;
+
+    xss(username);
+    xss(password);
+    xss(email);
+    xss(firstName);
+    xss(lastName);
+    xss(confirmPassword);
 
     // Check for username and password
     if (
@@ -113,6 +119,9 @@ const login = async (req, res) => {
   try {
     let { username, password } = req.body;
 
+    xss(username);
+    xss(password);
+
     if (!username || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -172,7 +181,7 @@ const logout = async (req, res) => {
 const getProfilePage = async (req, res) => {
   try {
     const { username } = req.params;
-    const trimmedUsername = username.trim();
+    const trimmedUsername = xss(username.trim());
 
     const user = await User.findOne({ username: trimmedUsername });
     if (!user) {
@@ -222,7 +231,6 @@ const getProfilePage = async (req, res) => {
 
 const getEdit = async (req, res) => {
   try {
-    const { userId } = req.params;
     if (!req.session || !req.session.profile || !req.session.profile.id) {
       return res.redirect("/");
     }
@@ -239,8 +247,8 @@ const getEdit = async (req, res) => {
 
     return res.render("edit", {
       script: "/public/js/validateUserEditSignup.js",
-      user: user.username, // Pass user data for editing
-      userLogin: userLogin.username, // Pass userLogin to show authenticated state
+      user: user.username,
+      userLogin: userLogin.username,
       title: "Edit Login",
     });
   } catch (e) {
@@ -259,6 +267,8 @@ const editUser = async (req, res) => {
       }
     }
     const { username, password } = req.body;
+    xss(username);
+    xss(password);
     const user = await User.findById(req.session.profile.id);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
@@ -282,12 +292,11 @@ const editUser = async (req, res) => {
       req.session.profile.username = username;
     }
 
-    // Update password if provided
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updates.hashedPassword = await bcrypt.hash(password, salt);
     }
-    // Apply updates if any
+
     if (Object.keys(updates).length > 0) {
       await User.findByIdAndUpdate(req.session.profile.id, updates, {
         new: true,
@@ -312,7 +321,10 @@ const getEditProfilePage = async (req, res) => {
     });
   }
 
-  const user = await User.findOne({ username: req.params.username });
+  const { username } = req.params;
+  xss(username);
+
+  const user = await User.findOne({ username: username });
 
   if (!user) {
     return res.status(404).render("404", {
@@ -357,6 +369,18 @@ const editProfile = async (req, res) => {
     country,
     skills,
   } = req.body;
+
+  xss(firstName);
+  xss(lastName);
+  xss(email);
+  xss(phone);
+  xss(address);
+  xss(suite);
+  xss(city);
+  xss(state);
+  xss(zipcode);
+  xss(country);
+  xss(skills);
 
   if (!req.session.profile) {
     return res.status(401).render("401", {
@@ -440,6 +464,9 @@ export const reviewUser = async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
     const { username, rating, reviewBody } = req.body;
+    xss(username);
+    xss(rating);
+    xss(reviewBody);
     const reviewer = req.session.profile.username;
 
     const reviewUser = await User.findOne({ username: reviewer });
@@ -529,6 +556,7 @@ export const reviewUser = async (req, res) => {
 
 const getFavorites = async (req, res) => {
   const { username } = req.params;
+  xss(username);
 
   if (req.session.profile.username !== username) {
     return res.status(403).render("403", {
@@ -565,6 +593,7 @@ const favoriteUser = async (req, res) => {
     }
 
     const { favoritedUsername } = req.body;
+    xss(favoritedUsername);
 
     const favoritedUser = await User.findOne(
       { username: favoritedUsername },
@@ -599,7 +628,6 @@ const favoriteUser = async (req, res) => {
 };
 
 const getTaskStatusTracking = async (req, res) => {
-  const { username, postId } = req.params;
   if (!req.session.profile) {
     return res.redirect("/users/login");
   } else if (req.session.profile.username !== req.params.username) {
@@ -607,8 +635,10 @@ const getTaskStatusTracking = async (req, res) => {
       user: req.session.profile,
     });
   }
+  const { username } = req.params;
+  xss(username);
 
-  const user = await User.findOne({ username: req.params.username });
+  const user = await User.findOne({ username: username });
 
   if (!user) {
     return res.status(404).render("404", {
@@ -635,7 +665,8 @@ const taskStatus = async (req, res) => {
       userLogin = await User.findById(req.session.profile.id);
     }
     const { username, postId } = req.params;
-    const trimmedUsername = username.trim();
+    const trimmedUsername = xss(username.trim());
+    xss(postId);
 
     const user = await User.findOne({ username: trimmedUsername });
     if (!user) {
@@ -663,7 +694,6 @@ const taskStatus = async (req, res) => {
       return res.status(500).json({ error: "Failed to update the post." });
     }
 
-    // Step 6: Respond with success
     return res.status(200).json({
       message: "Post status updated successfully.",
       updatedPost,
