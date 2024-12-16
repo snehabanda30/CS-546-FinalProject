@@ -67,9 +67,6 @@ $("#updateProfileForm").on("submit", (event) => {
   const result = userEditSchema.safeParse(userInput);
   if (result.success === false) {
     result.error.errors.forEach((error) => {
-      console.log(
-        `Path: ${error.path.join(".")}, Error: ${error.message}, code: ${error.code}`,
-      );
       $("#inputErrors").append(`<li>${error.message}</li>`);
     });
     $("#inputErrors").removeClass("hidden");

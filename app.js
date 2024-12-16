@@ -3,12 +3,10 @@ import exphbs from "express-handlebars";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import homeRoutes from "./routes/homepageRoutes.js";
-
 import { connectDB } from "./config/connectDB.js";
 import session from "express-session";
 import { configDotenv } from "dotenv";
 import { registerHelpers } from "./helpers.js";
-import Post from "./models/Post.js";
 
 const app = express();
 
@@ -55,19 +53,6 @@ app.use(
   }),
 );
 
-// app.use((req, res, next) => {
-//   console.log("Session:", req.session);
-//   next();
-// });
-
-// app.get("/", (req, res) => {
-
-//     if(req.session.profile?.id) {
-//       return res.render("home", { user: req.session.profile,});
-//     }
-//     return res.render("home");
-
-//   });
 app.use("/", homeRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);

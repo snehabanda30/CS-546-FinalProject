@@ -33,8 +33,6 @@ $("#favoriteButton").on("click", () => {
 
 $("#search").on("submit", (event) => {
   event.preventDefault();
-  console.log("Hello");
-  // Collect form data
   const searchTerm = $("#search_task").val().trim();
 
   if (!searchTerm) {
@@ -54,6 +52,7 @@ $("#offer-help").on("click", (e) => {
     url: `/posts/${postID}/send-info`,
     contentType: "application/json",
     success: function () {
+      $("#success-message").show();
       $("#success-message").text("Info sent successfully!");
     },
     error: function (xhr) {
