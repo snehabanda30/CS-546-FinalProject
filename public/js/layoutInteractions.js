@@ -31,6 +31,21 @@ $("#favoriteButton").on("click", () => {
   $.ajax(requestConfig);
 });
 
+$("#search").on("submit", (event) => {
+  event.preventDefault();
+  console.log("Hello");
+  // Collect form data
+  const searchTerm = $("#search_task").val().trim();
+  
+  if (!searchTerm) {
+    alert("Please enter a search term");
+    return;
+  }
+
+  window.location.href = `/search?q=${encodeURIComponent(searchTerm)}`;
+  
+});
+
 $("#offer-help").on("click", (e) => {
   $("success-message").addClass("hidden").text("");
   $("#inputErrors").addClass("hidden").empty();
@@ -70,3 +85,4 @@ $("#select-helper").on("click", (e) => {
   };
   $.ajax(requestConfig);
 });
+

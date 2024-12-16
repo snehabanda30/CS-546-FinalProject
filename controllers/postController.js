@@ -145,6 +145,43 @@ const getAllPosts = async (req, res) => {
   }
 };
 
+const postSearch = async (req, res) => {
+
+  const searchTerm = req.query.q;
+  console.log("Query parameter q:", req.query.q);
+
+  try{
+
+    if(!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim().length === 0) throw `Search term is required.`;
+    
+    const exp = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+
+    const searchedPosts = await Post.find({
+      $or: [{ category: exp }, { description: exp }]
+    }).lean();
+
+    const searchResults = searchedPosts.map((post) =>
+      JSON.parse(JSON.stringify(post)),
+    );
+    //console.log(searchResults);
+
+    const user = req.session.profile || null;
+    
+    return res
+      .status(200)
+      .render("searchResults", { user, searchedPosts: searchResults });
+
+
+  } catch(error){
+      return res.status(500).send("Server Error");
+  }
+    
+};
+
+const postFilter = async (req, res) => {
+
+};
+
 const sendInfo = async (req, res) => {
   try {
     const postID = req.params.postID;
@@ -266,6 +303,7 @@ const selectHelper = async (req, res) => {
   }
 };
 
+
 export default {
   getCreatePost,
   createPost,
@@ -274,4 +312,7 @@ export default {
   sendInfo,
   getHelpers,
   selectHelper,
+  postSearch, 
+  postFilter
 };
+
