@@ -126,7 +126,7 @@ const getPostDetails = async (req, res) => {
       username: user.username, // Add username
     };
 
-    console.log("Formatted Comments:", formattedPost.comments);
+    // console.log("Formatted Comments:", formattedPost.comments);
 
     res.render("postDetails", {
       post: formattedPost,
@@ -147,7 +147,7 @@ const createComment = async (req, res) => {
   }
 
   const postId = req.params.postId;
-  console.log(postId);
+  // console.log(postId);
   const { commentText } = req.body;
 
   if (commentText.trim().length === 0) {
@@ -216,11 +216,11 @@ const getAllPosts = async (req, res) => {
       return formattedPost;
     });
 
-//     const sanitizedPosts = posts.map((post) => ({
-//       ...post.toObject(),
-//       datePosted: format(post.datePosted, "MM/dd/yyyy"),
-//       completeBy: format(post.completeBy, "MM/dd/yyyy"),
-//     }));
+    //     const sanitizedPosts = posts.map((post) => ({
+    //       ...post.toObject(),
+    //       datePosted: format(post.datePosted, "MM/dd/yyyy"),
+    //       completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    //     }));
 
     const user = req.session.profile || null;
 
@@ -233,18 +233,24 @@ const getAllPosts = async (req, res) => {
 };
 
 const postSearch = async (req, res) => {
-
   const searchTerm = req.query.q;
   console.log("Query parameter q:", req.query.q);
 
-  try{
+  try {
+    if (
+      !searchTerm ||
+      typeof searchTerm !== "string" ||
+      searchTerm.trim().length === 0
+    )
+      throw `Search term is required.`;
 
-    if(!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim().length === 0) throw `Search term is required.`;
-    
-    const exp = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    const exp = new RegExp(
+      searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      "i",
+    );
 
     const searchedPosts = await Post.find({
-      $or: [{ category: exp }, { description: exp }]
+      $or: [{ category: exp }, { description: exp }],
     }).lean();
 
     const searchResults = searchedPosts.map((post) =>
@@ -253,21 +259,16 @@ const postSearch = async (req, res) => {
     //console.log(searchResults);
 
     const user = req.session.profile || null;
-    
+
     return res
       .status(200)
       .render("searchResults", { user, searchedPosts: searchResults });
-
-
-  } catch(error){
-      return res.status(500).send("Server Error");
+  } catch (error) {
+    return res.status(500).send("Server Error");
   }
-    
 };
 
-const postFilter = async (req, res) => {
-
-};
+const postFilter = async (req, res) => {};
 
 const sendInfo = async (req, res) => {
   try {
@@ -390,7 +391,6 @@ const selectHelper = async (req, res) => {
   }
 };
 
-
 export default {
   getCreatePost,
   createPost,
@@ -398,9 +398,8 @@ export default {
   getAllPosts,
   sendInfo,
   getHelpers,
-  createComment
+  createComment,
   selectHelper,
-  postSearch, 
-  postFilter
+  postSearch,
+  postFilter,
 };
-

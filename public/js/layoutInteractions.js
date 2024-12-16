@@ -36,14 +36,13 @@ $("#search").on("submit", (event) => {
   console.log("Hello");
   // Collect form data
   const searchTerm = $("#search_task").val().trim();
-  
+
   if (!searchTerm) {
     alert("Please enter a search term");
     return;
   }
 
   window.location.href = `/search?q=${encodeURIComponent(searchTerm)}`;
-  
 });
 
 $("#offer-help").on("click", (e) => {
@@ -85,4 +84,3 @@ $("#select-helper").on("click", (e) => {
   };
   $.ajax(requestConfig);
 });
-
