@@ -197,6 +197,7 @@ const getProfilePage = async (req, res) => {
     }));
 
     const favorited = signedInUser.favorites.includes(user._id);
+    console.log("Skills",user.skills)
 
     const returnedUserData = {
       username: user.username,
@@ -207,7 +208,8 @@ const getProfilePage = async (req, res) => {
       lastName: user.lastName,
       hasTasksPosted: objectPosts.length > 0,
       reviews: objectReviews,
-      isFavorited: favorited,
+      isFavorited: favorited, 
+      skills: user.skills,
     };
     return res.render("profilePage", {
       user: req.session.profile,
@@ -252,11 +254,13 @@ const getCompletedProfilePage = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       tasksHelped: formattedPosts,
+      skills: user.skills,
+
     };
 
     return res.render("completedProfilePage", {
       user: req.session.profile,
-      viewedUser: viewedUserData,
+      viewedUser: viewedUserData, 
     });
   } catch (e) {
     console.log(e);
@@ -365,7 +369,6 @@ const getEditProfilePage = async (req, res) => {
       user: req.session.profile,
     });
   }
-
   const returnedUserData = {
     firstName: user.firstName,
     lastName: user.lastName,
@@ -448,6 +451,9 @@ const editProfile = async (req, res) => {
   user.email = email;
 
   user.phoneNumber = phone;
+  if (!user.address) {
+    user.address = {}; 
+  }
 
   user.address.address = address;
 
