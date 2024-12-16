@@ -21,10 +21,6 @@ router
   .get(verifyAuth, userController.getProfilePage);
 
 router
-  .route("/profile/:username/completed")
-  .get(verifyAuth, userController.getCompletedProfilePage);
-
-router
   .route("/profile/:username/edit")
   .get(userController.getEditProfilePage)
   .put(userController.editProfile);

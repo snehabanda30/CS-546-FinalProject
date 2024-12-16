@@ -58,3 +58,13 @@
   .search-bar {
     min-width: 300px;
   }
+  .PostTitle {
+    text-align: center; 
+    font-weight: bold; 
+    font-size: 35px;    
+    font-family: 'Arial', sans-serif; 
+    color: #333;        
+    margin-top: 20px;   
+    margin-bottom: 10px; 
+    letter-spacing: 1px; 
+  }
