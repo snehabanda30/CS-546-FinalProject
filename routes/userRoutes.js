@@ -46,7 +46,7 @@ router
   .patch(userController.editUser); 
 
 router
-  .route("/profile/taskstatus/:username")
+  .route("/profile/taskstatus/:username/:postId")
   .get(userController.getTaskStatusTracking)
   .patch(userController.taskStatus)
 

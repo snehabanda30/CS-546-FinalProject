@@ -1,6 +1,6 @@
 const taskSchema = Zod.object({
     status: Zod.enum(
-      ["Pending", "In Progress", "Complete"],
+      ["Pending", "In Progress", "Completed"],
       "Priority must be Low, Medium, or High"),
   });
   
@@ -27,11 +27,13 @@ const taskSchema = Zod.object({
     }
     // Submit form with AJAX
     const username = window.location.pathname.split("/")[4];
+    const postId = window.location.pathname.split("/")[5];
+
     // console.log(req.session.profile.username);
     console.log("Status Input:", statusInput);
     const requestConfig = {
       method: "PATCH",
-      url: `/users/profile/taskstatus/${username}`,
+      url: `/users/profile/taskstatus/${username}/${postId}`,
       contentType: "application/json",
       data: JSON.stringify(statusInput),
       error: function (xhr, status, error) {
@@ -46,7 +48,7 @@ const taskSchema = Zod.object({
         $("#inputErrors").removeClass("hidden");
       },
       success: function (result, status, xhr) {
-        window.location.href = "/";
+        window.location.href = `/users/profile/${username}`;
       },
     };
   

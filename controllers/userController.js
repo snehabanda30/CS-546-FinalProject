@@ -7,6 +7,7 @@ import {
   refinedUserSchema,
   userLoginSchema,
   reviewSchema,
+  taskStatusSchema,
 } from "../utils/schemas.js";
 import Post from "../models/Post.js";
 import { format } from "date-fns";
@@ -143,6 +144,8 @@ const login = async (req, res) => {
       });
     }
 
+    console.log(existingUser);
+
     req.session.profile = {
       id: existingUser._id,
       username: existingUser.username,
@@ -181,7 +184,7 @@ const getProfilePage = async (req, res) => {
     }
 
     const signedInUser = await User.findOne({ _id: req.session.profile.id });
-
+   
     const filteredPosts = await Post.find({ posterID: user._id });
     const objectPosts = filteredPosts.map((post) => ({
       ...post.toObject(),
@@ -598,7 +601,8 @@ const favoriteUser = async (req, res) => {
 };
 
 
-const getTaskStatusTracking = async (req, res) => {
+const getTaskStatusTracking = async (req, res) => { 
+  const { username, postId } = req.params;
   if (!req.session.profile) {
     return res.redirect("/users/login");
   } else if (req.session.profile.username !== req.params.username) {
@@ -623,7 +627,7 @@ const getTaskStatusTracking = async (req, res) => {
     user: req.session.profile,
     userData: returnedUserData,
     script: "/public/js/validateTaskStatus.js ",
-    title: "Edit Profile",
+    title: "Edit Task Status",
   });
 };
 
@@ -635,8 +639,16 @@ const taskStatus = async (req, res) => {
         console.log(userLogin);
       }
     console.log(req.session.profile.id);
-    const { username } = req.params;
+    const { username, postId } = req.params; 
+    console.log(req.params);
+    const trimmedUsername = username.trim();
 
+    const user = await User.findOne({ username: trimmedUsername });
+    if (!user) {
+      return res.status(404).render("404", {
+        user: req.session.profile,
+      });
+    }
     
     const usernameValidation = edituserSchema.safeParse({ username });
     if (!usernameValidation.success) {
@@ -647,44 +659,25 @@ const taskStatus = async (req, res) => {
       }
       const { status } = req.body;
 
-      console.log(status);
-
-      // Step 3: Validate the input
-      const statusValidation = taskStatusSchema.safeParse({ status }); // Replace `taskStatusSchema` with your validation schema
-      if (!statusValidation.success) {
-        const errors = statusValidation.error.errors.map((error) => error.message);
-        return res.status(400).json({ error: errors.join(", ") });
+      
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId }, 
+      { $set: { status } }, 
+      { new: true } 
+    );
+ 
+  
+      if (!updatedPost) {
+        return res.status(500).json({ error: "Failed to update the post." });
       }
   
-      // Step 4: Prepare updates
-      const updates = { status };
-  
-      // Step 5: Update the user in the database
-      const updatedUser = await User.findByIdAndUpdate(
-        req.session.profile.id,
-        updates,
-        { new: true } // Returns the updated document
-      );
-  
-      if (!updatedUser) {
-        return res.status(500).json({ error: "Failed to update the user." });
-      }
-  
-      // Step 6: Update session profile
-      req.session.profile.status = updatedUser.status;
-  
-      // Step 7: Respond with success
+      // Step 6: Respond with success
+      return res.status(200).json({
+        message: "Post status updated successfully.",
+        updatedPost,
+      });
 
-
-    
-    // if (Object.keys(updates).length > 0) {
-    //   await User.findByIdAndUpdate(req.session.profile.id, updates, {
-    //     new: true,
-    //   });
-    //   return res
-    //     .status(200)
-    //     .json({ message: "User details updated successfully." });
-    // }
+      
   } catch (err) {
     return res.status(400).json({
       error: "An error occurred while updating the user. Please try again.",
