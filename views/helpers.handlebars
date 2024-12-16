@@ -13,8 +13,8 @@
                 <li class="text-gray-700 text-sm bg-gray-100 py-1 px-2 rounded-md">{{this}}</li>
                 {{/each}}
             </ul>
-            <button id="select-helper"
-                class="mt-4 w-full sm:w-auto bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
+            <button
+                class="mt-4 w-full sm:w-auto bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 select-helper"
                 data-post-id="{{../post._id}}" data-helper-id="{{this._id}}">
                 Select as Helper
             </button>
@@ -26,4 +26,3 @@
         {{/each}}
     </div>
 </section>
-
