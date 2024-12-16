@@ -256,7 +256,11 @@ const sendInfo = async (req, res) => {
       return res.status(400).json({ error: "Cannot send info to own post" });
     }
 
-    if (!post.requestedUsers.includes(user._id)) {
+    if (post.requestedUsers.includes(user._id)) {
+      return res
+        .status(400)
+        .json({ error: "You have already requested to help with this post" });
+    } else {
       post.requestedUsers.push(user._id);
       await post.save();
     }

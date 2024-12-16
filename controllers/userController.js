@@ -144,8 +144,6 @@ const login = async (req, res) => {
       });
     }
 
-    console.log(existingUser);
-
     req.session.profile = {
       id: existingUser._id,
       username: existingUser.username,
@@ -679,11 +677,8 @@ const taskStatus = async (req, res) => {
     let userLogin = null;
     if (req.session.profile.id) {
       userLogin = await User.findById(req.session.profile.id);
-      console.log(userLogin);
     }
-    console.log(req.session.profile.id);
     const { username, postId } = req.params;
-    console.log(req.params);
     const trimmedUsername = username.trim();
 
     const user = await User.findOne({ username: trimmedUsername });
