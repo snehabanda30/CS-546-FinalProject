@@ -53,6 +53,14 @@
     {{/if}}
   </header>
   <main class="flex grow flex-col justify-center p-4">
+    <form id="filterForm">
+      <label for="categoryDropdown"></label>
+      <button id="fetch-filters" type="button">Fetch Filters</button>
+      <select id="categoryDropdown" name="category">
+        <option value="">Select Category</option>
+      </select>
+      <button type="submit">Apply Filter</button>
+    </form> 
     {{{body}}}
   </main>
   <footer class="flex bg-gray-300 p-4 justify-center">
