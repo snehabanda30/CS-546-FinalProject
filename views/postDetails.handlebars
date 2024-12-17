@@ -80,30 +80,30 @@
             >
               Post Comment
             </button>
-            <a
-              href="/posts/{{post._id}}/helpers"
-              class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
-            >
-              View Helpers
-            </a>
-            <br />
-            <br />
-            <a href="/" class="green-button">
-              Return
-            </a>
-            <p id="success-message" class="font-bold text-green-500"></p>
-            <ul
-              class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
-              id="inputErrors"
-            ></ul>
           </div>
         </form>
+        <div class="mt-6 text-center">
+          <button
+            onclick="window.location.href='/posts/{{post._id}}/helpers'"
+            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
+          >
+            View Helpers
+          </button>
+
+          <a href="/" class="green-button">
+            Return
+          </a>
+          <p id="success-message" class="font-bold text-green-500"></p>
+          <ul
+            class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
+            id="inputErrors"
+          ></ul>
+        </div>
       </div>
     </div>
   </div>
 {{else}}
   <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-xl mt-8">
-
     <div>
       <a href="/users/profile/{{post.posterID.username}}" class="view-users">
         Poster:
@@ -185,28 +185,28 @@
               >
                 Post Comment
               </button>
-              <button
-                id="offer-help"
-                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
-                data-post-id="{{post._id}}"
-              >
-                Offer Help
-              </button>
-              <br />
-              <br />
-              <a href="/" class="green-button">
-                Return
-              </a>
-              <p id="success-message" class="font-bold text-green-500"></p>
-              <ul
-                class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
-                id="inputErrors"
-              ></ul>
             </div>
           </form>
         </div>
+        <br />
+        <div class="mt-6 text-center">
+          <button
+            id="offer-help"
+            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
+            data-post-id="{{post._id}}"
+          >
+            Offer Help
+          </button>
+          <a href="/" class="green-button">
+            Return
+          </a>
+          <p id="success-message" class="font-bold text-green-500"></p>
+          <ul
+            class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
+            id="inputErrors"
+          ></ul>
+        </div>
       </div>
     </div>
-
   </div>
 {{/ifEqualsID}}
