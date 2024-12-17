@@ -1,4 +1,3 @@
-
 $("#editForm").on("submit", (event) => {
   event.preventDefault();
   $("#inputErrors").addClass("hidden").empty();
@@ -6,7 +5,7 @@ $("#editForm").on("submit", (event) => {
     username: $("#username").val().trim(),
     password: $("#password").val().trim(),
   };
-  // const result = edituserSchema.safeParse(userInput); 
+  // const result = edituserSchema.safeParse(userInput);
   // console.log(result);
   // if (result.success === false) {
   //   result.error.errors.forEach((error) => {

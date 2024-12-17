@@ -308,7 +308,7 @@ async function seedDatabase() {
         ],
       },
     });
-    
+
     await User.findByIdAndUpdate(user2._id, {
       $push: {
         endorsedBy: [
@@ -317,7 +317,7 @@ async function seedDatabase() {
         ],
       },
     });
-    
+
     await User.findByIdAndUpdate(user3._id, {
       $push: {
         endorsedBy: [
@@ -326,7 +326,7 @@ async function seedDatabase() {
         ],
       },
     });
-    
+
     await User.findByIdAndUpdate(user4._id, {
       $push: {
         endorsedBy: [
@@ -335,7 +335,7 @@ async function seedDatabase() {
         ],
       },
     });
-    
+
     await User.findByIdAndUpdate(user5._id, {
       $push: {
         endorsedBy: [

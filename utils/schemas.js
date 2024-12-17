@@ -13,7 +13,7 @@ export const userSchema = z.object({
   confirmPassword: z
     .string()
     .min(6, "Confirmed password must be at least 6 characters")
-    .regex(/^\S+$/, "Username cannot contain spaces"),
+    .regex(/^\S+$/, "Password cannot contain spaces"),
   email: z.string().email("Invalid email address"),
   firstName: z.string().min(1, "First name must be at least 1 character"),
   lastName: z.string().min(1, "Last name must be at least 1 character"),
@@ -132,12 +132,14 @@ export const edituserSchema = z.object({
     .string()
     .min(3, "Username must be at least 3 characters")
     .max(13, "Username must be no more than 13 characters")
+    .regex(/^\S+$/, "Username cannot contain spaces")
     .refine((z) => !z || z.trim().length > 0, {
       message: "Username cannot be empty or only spaces",
     }),
   trimmedpassword: z
     .string()
     .min(6, "Password must be at least 6 characters")
+    .regex(/^\S+$/, "Password cannot contain spaces")
     .refine((z) => !z || z.trim().length > 0, {
       message: "Password cannot be empty or only spaces",
     }),

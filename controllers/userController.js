@@ -195,7 +195,7 @@ const getProfilePage = async (req, res) => {
     }));
 
     const favorited = signedInUser.favorites.includes(user._id);
-    console.log("Skills",user.skills)
+    console.log("Skills", user.skills);
 
     const returnedUserData = {
       username: user.username,
@@ -206,7 +206,7 @@ const getProfilePage = async (req, res) => {
       lastName: user.lastName,
       hasTasksPosted: objectPosts.length > 0,
       reviews: objectReviews,
-      isFavorited: favorited, 
+      isFavorited: favorited,
       skills: user.skills,
     };
     return res.render("profilePage", {
@@ -265,13 +265,13 @@ const editUser = async (req, res) => {
         userLogin = await User.findById(req.session.profile.id);
       }
     }
-    const { username, password } = req.body; 
+    const { username, password } = req.body;
     console.log(req.body);
     /*const existingUser = await User.findOne(
       { username },
       {},
       { collation: { locale: "en_US", strength: 2 } },
-    );*/ 
+    );*/
 
     const user = await User.findById(req.session.profile.id);
     if (!user) {
@@ -279,23 +279,26 @@ const editUser = async (req, res) => {
     }
     const updates = {};
     // username !== user.username
-    if (username || password ) {
-    const  trimmedusername = username.trim();
-    const trimmedpassword = password.trim();
-    //  console.log(trimmedusername); 
-    //  console.log(trimmedpassword);
-      const usernameValidation = edituserSchema.safeParse({ trimmedusername,trimmedpassword });
-      // const existingUser = await User.findOne({ username }); 
+    if (username || password) {
+      const trimmedusername = username.trim();
+      const trimmedpassword = password.trim();
+      //  console.log(trimmedusername);
+      //  console.log(trimmedpassword);
+      const usernameValidation = edituserSchema.safeParse({
+        trimmedusername,
+        trimmedpassword,
+      });
+      // const existingUser = await User.findOne({ username });
       const existingUser = await User.findOne(
         { username },
         {},
         { collation: { locale: "en_US", strength: 2 } },
       );
-      if (existingUser) {
-        return res.status(403).json({
-          error: `User with username ${username} already exists.`,
-        });
-      }
+      // if (existingUser) {
+      //   return res.status(403).json({
+      //     error: `User with username ${username} already exists.`,
+      //   });
+      // }
       console.log(usernameValidation);
       if (!usernameValidation.success) {
         const errors = usernameValidation.error.errors.map(
@@ -306,14 +309,13 @@ const editUser = async (req, res) => {
       }
       updates.username = username;
       req.session.profile.username = username;
-      
     }
 
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updates.hashedPassword = await bcrypt.hash(password, salt);
     }
-     if (Object.keys(updates).length > 1) {
+    if (Object.keys(updates).length > 1) {
       await User.findByIdAndUpdate(req.session.profile.id, updates, {
         new: true,
       });
@@ -427,7 +429,7 @@ const editProfile = async (req, res) => {
 
   user.phoneNumber = phone;
   if (!user.address) {
-    user.address = {}; 
+    user.address = {};
   }
 
   user.address.address = address;
@@ -700,7 +702,7 @@ const taskStatus = async (req, res) => {
     });
   }
 };
-const skillsendorse = async (req,res) => {
+const skillsendorse = async (req, res) => {
   const { username } = req.params;
 
   if (req.session.profile.username !== username) {
@@ -722,16 +724,17 @@ const skillsendorse = async (req,res) => {
   });
   const endorsedformatUsers = endorsedUsers.map((endorsedUser) => {
     const userEndorsements = user.endorsedBy.filter(
-      (endorsement) => endorsement.endorsedBy.toString() === endorsedUser._id.toString()
+      (endorsement) =>
+        endorsement.endorsedBy.toString() === endorsedUser._id.toString(),
     );
 
     return {
       username: endorsedUser.username,
       profilePicture: endorsedUser.profilePicture,
-      skills: userEndorsements.map((endorsement) => endorsement.skill), 
+      skills: userEndorsements.map((endorsement) => endorsement.skill),
     };
   });
-  
+
   return res.render("endorsedUsers", {
     user: req.session.profile,
     endorsedUsers: endorsedformatUsers,
