@@ -26,25 +26,20 @@ $("#taskstatusform").on("submit", (event) => {
       .removeClass("hidden");
     return;
   }
-  // Submit form with AJAX
   const username = window.location.pathname.split("/")[4];
   const postId = window.location.pathname.split("/")[5];
 
-  // console.log(req.session.profile.username);
-  console.log("Status Input:", statusInput);
   const requestConfig = {
     method: "PATCH",
     url: `/users/profile/taskstatus/${username}/${postId}`,
     contentType: "application/json",
     data: JSON.stringify(statusInput),
     error: function (xhr, status, error) {
-      console.log(xhr);
       try {
         const errorResponse = JSON.parse(xhr.responseText);
         $("#inputErrors").append(
           `<li>${errorResponse.error || "Unknown error occurred"}</li>`,
         );
-        console.log(errorResponse);
       } catch (e) {
         $("#inputErrors").append(
           `<li>An unexpected error occurred: ${xhr.statusText}</li>`,

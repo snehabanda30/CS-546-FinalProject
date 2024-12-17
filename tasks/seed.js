@@ -198,7 +198,7 @@ async function seedDatabase() {
       comments: [comment1, comment2],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user4._id, user5._id],
+      requestedUsers: [user2._id, user5._id],
     });
 
     const post2 = await Post.create({
@@ -213,7 +213,7 @@ async function seedDatabase() {
       comments: [comment3, comment4],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user1._id, user5._id],
+      requestedUsers: [user3._id, user5._id],
     });
 
     const post3 = await Post.create({
@@ -228,7 +228,7 @@ async function seedDatabase() {
       comments: [comment5],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user1._id, user2._id],
+      requestedUsers: [user4._id, user2._id],
     });
 
     const post4 = await Post.create({
@@ -243,7 +243,7 @@ async function seedDatabase() {
       comments: [comment5],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user1._id, user2._id],
+      requestedUsers: [user5._id, user2._id],
     });
 
     const post5 = await Post.create({
@@ -258,7 +258,7 @@ async function seedDatabase() {
       comments: [comment4],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user3._id, user2._id],
+      requestedUsers: [user1._id, user2._id],
     });
 
     await User.findByIdAndUpdate(user1._id, {

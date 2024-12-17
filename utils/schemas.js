@@ -7,11 +7,13 @@ export const userSchema = z.object({
   username: z
     .string()
     .min(3, "Username must be at least 3 characters")
-    .max(13, "Username must be no more than 13 characters"),
+    .max(13, "Username must be no more than 13 characters")
+    .regex(/^\S+$/, "Username cannot contain spaces"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z
     .string()
-    .min(6, "Confirmed password must be at least 6 characters"),
+    .min(6, "Confirmed password must be at least 6 characters")
+    .regex(/^\S+$/, "Username cannot contain spaces"),
   email: z.string().email("Invalid email address"),
   firstName: z.string().min(1, "First name must be at least 1 character"),
   lastName: z.string().min(1, "Last name must be at least 1 character"),
@@ -55,7 +57,7 @@ export const postSchema = z.object({
       );
       const completeByDate = new Date(date);
       return completeByDate > currentDateNewYork; // adjust time zone
-    }, "Complete by date must be in the future."),
+    }, "Complete by date must be more than a day into the future."),
 });
 
 export const commentSchema = z.object({

@@ -4,7 +4,6 @@
   {{#each searchedPosts}}
     <div class="bg-white p-6 rounded-lg shadow-xl">
       <div class="flex flex-col space-y-6">
-
         <div class="flex items-center space-x-2">
           <label class="text-lg font-semibold text-gray-700">Category:</label>
           <span class="text-gray-500">{{category}}</span>
@@ -49,9 +48,7 @@
         </div>
 
         <div class="mt-4 text-center">
-          <button class="post-details-button">
-            <a href="/posts/{{_id}}">View Post Details</a>
-          </button>
+          <a href="/posts/{{_id}}" class="post-details-button">View Post Details</a>
         </div>
       </div>
     </div>

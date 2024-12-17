@@ -33,7 +33,6 @@ $("#favoriteButton").on("click", () => {
 
 $("#search").on("submit", (event) => {
   event.preventDefault();
-  // Collect form data
   const searchTerm = $("#search_task").val().trim();
 
   if (!searchTerm) {
@@ -53,6 +52,7 @@ $("#offer-help").on("click", (e) => {
     url: `/posts/${postID}/send-info`,
     contentType: "application/json",
     success: function () {
+      $("#success-message").show();
       $("#success-message").text("Info sent successfully!");
     },
     error: function (xhr) {
@@ -63,15 +63,17 @@ $("#offer-help").on("click", (e) => {
   $.ajax(requestConfig);
 });
 
-$("#select-helper").on("click", (e) => {
+$(".select-helper").on("click", (e) => {
   const postID = $(e.currentTarget).data("post-id");
   const helperID = $(e.currentTarget).data("helper-id");
-  $("#inputErrors").addClass("hidden").empty();
+  $(`#inputErrors-${helperID}`).addClass("hidden").empty();
   $(`#success-message-${helperID}`).addClass("hidden").text("");
+
   const requestConfig = {
     method: "PATCH",
     url: `/posts/${postID}/select-helper/${helperID}`,
     success: function () {
+      $(`#success-message-${helperID}`).show();
       $(`#success-message-${helperID}`).text("Helper selected successfully!");
     },
     error: function (xhr) {

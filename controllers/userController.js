@@ -144,8 +144,6 @@ const login = async (req, res) => {
       });
     }
 
-    console.log(existingUser);
-
     req.session.profile = {
       id: existingUser._id,
       username: existingUser.username,
@@ -218,52 +216,6 @@ const getProfilePage = async (req, res) => {
       title: "Profile",
     });
   } catch (e) {
-    return res
-      .status(500)
-      .json({ error: "Something went wrong when fetching page" });
-  }
-};
-
-const getCompletedProfilePage = async (req, res) => {
-  try {
-    const { username } = req.params;
-    const trimmedUsername = username.trim();
-
-    const user = await User.findOne(
-      { username: trimmedUsername },
-      {},
-      { collation: { locale: "en_US", strength: 2 } },
-    );
-
-    if (!user) {
-      return res.status(404).render("404", {
-        user: req.session.profile,
-      });
-    }
-
-    const allHelpedPosts = await Post.find({ helperID: user._id });
-
-    const formattedPosts = allHelpedPosts.map((post) => ({
-      ...post.toObject(),
-      datePosted: format(post.datePosted, "MM/dd/yyyy"),
-      completeBy: format(post.completeBy, "MM/dd/yyyy"),
-    }));
-
-    const viewedUserData = {
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      tasksHelped: formattedPosts,
-      skills: user.skills,
-
-    };
-
-    return res.render("completedProfilePage", {
-      user: req.session.profile,
-      viewedUser: viewedUserData, 
-    });
-  } catch (e) {
-    console.log(e);
     return res
       .status(500)
       .json({ error: "Something went wrong when fetching page" });
@@ -708,7 +660,6 @@ const taskStatus = async (req, res) => {
     let userLogin = null;
     if (req.session.profile.id) {
       userLogin = await User.findById(req.session.profile.id);
-      console.log(userLogin);
     }
     const { username, postId } = req.params;
     const trimmedUsername = username.trim();
@@ -786,7 +737,51 @@ const skillsendorse = async (req,res) => {
     endorsedUsers: endorsedformatUsers,
     title: "Endorsed Users",
   });
-}
+};
+
+const getCompletedProfilePage = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const trimmedUsername = username.trim();
+
+    const user = await User.findOne(
+      { username: trimmedUsername },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
+
+    if (!user) {
+      return res.status(404).render("404", {
+        user: req.session.profile,
+      });
+    }
+
+    const allHelpedPosts = await Post.find({ helperID: user._id });
+
+    const formattedPosts = allHelpedPosts.map((post) => ({
+      ...post.toObject(),
+      datePosted: format(post.datePosted, "MM/dd/yyyy"),
+      completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    }));
+
+    const viewedUserData = {
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      tasksHelped: formattedPosts,
+    };
+
+    return res.render("completedProfilePage", {
+      user: req.session.profile,
+      viewedUser: viewedUserData,
+    });
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(500)
+      .json({ error: "Something went wrong when fetching page" });
+  }
+};
 export default {
   getSignup,
   signup,
@@ -801,8 +796,8 @@ export default {
   favoriteUser,
   getEdit,
   editUser,
-  getCompletedProfilePage,
   getTaskStatusTracking,
   taskStatus,
   skillsendorse,
+  getCompletedProfilePage,
 };
