@@ -2,10 +2,12 @@ const edituserSchema = Zod.object({
   username: Zod.string()
     .min(3, "Username must be at least 3 characters")
     .max(13, "Username must be no more than 13 characters")
+    .regex(/^\S+$/, "Username cannot contain spaces")
     .optional()
     .or(Zod.literal("")),
   password: Zod.string()
     .min(6, "Password must be at least 6 characters.")
+    .regex(/^\S+$/, "Password cannot contain spaces")
     .nullable()
     .optional()
     .or(Zod.literal("")),
