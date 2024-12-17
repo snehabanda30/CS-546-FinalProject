@@ -259,15 +259,15 @@ const getCategories = async (req, res) => {
 
 const filterByCategory = async(req, res) => {
   const { category } = req.query;
-
+  const sanitizedCategory = xss(category);
   try{
     if(
-      !category ||
-      typeof category !== 'string' ||
-      category.trim().length === 0
+      !sanitizedCategory ||
+      typeof sanitizedCategory !== 'string' ||
+      sanitizedCategory.trim().length === 0
     ) throw `No category provided`;
 
-    const filtered = await Post.find({category}).lean();
+    const filtered = await Post.find({sanitizedCategory}).lean();
 
     const filteredResults = filtered.map((post) => ({
       ...post,
