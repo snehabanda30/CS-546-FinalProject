@@ -88,52 +88,59 @@ $(".select-helper").on("click", (e) => {
 });
 
 $(document).ready(function () {
-  $('#fetch-filters').on('click', () => {
-    const categoryDropdown = $('#categoryDropdown').empty().append('<option>Loading...</option>');
-    const skillDropdown = $('#skillsDropdown').empty().append('<option>Loading...</option>');
-    const $successMessage = $('#success-message').addClass('hidden').text('');
-    const $inputErrors = $('#inputErrors').addClass('hidden').empty();
+  $("#fetch-filters").on("click", () => {
+    const categoryDropdown = $("#categoryDropdown")
+      .empty()
+      .append("<option>Loading...</option>");
+    const skillDropdown = $("#skillsDropdown")
+      .empty()
+      .append("<option>Loading...</option>");
+    const $successMessage = $("#success-message").addClass("hidden").text("");
+    const $inputErrors = $("#inputErrors").addClass("hidden").empty();
 
     $.ajax({
-      method: 'GET',
-      url: '/categories',
+      method: "GET",
+      url: "/categories",
       success: (categories) => {
-        categoryDropdown.empty().append('<option value="">Select Category</option>');
-        categories.forEach(category => {
-          categoryDropdown.append(`<option value="${category}">${category}</option>`);
+        categoryDropdown
+          .empty()
+          .append('<option value="">Select Category</option>');
+        categories.forEach((category) => {
+          categoryDropdown.append(
+            `<option value="${category}">${category}</option>`,
+          );
         });
-        $successMessage.text('Categories loaded successfully!').removeClass('hidden');
+        $successMessage
+          .text("Categories loaded successfully!")
+          .removeClass("hidden");
       },
       error: (xhr) => {
         $inputErrors
-          .append('<li>Error fetching categories. Please try again.</li>')
-          .removeClass('hidden');
+          .append("<li>Error fetching categories. Please try again.</li>")
+          .removeClass("hidden");
       },
-    });  
+    });
   });
 });
-
 
 $("#filterForm").on("submit", (event) => {
   event.preventDefault();
   //console.log("Hello");
   // Collect form data
   const selectedCategory = $("#categoryDropdown").val();
-  
+
   if (!selectedCategory) {
     $("#inputErrors").append("<li>Please select a category to filter.</li>");
     $("#inputErrors").removeClass("hidden");
     return;
   }
 
- window.location.href = `/filterByCategory?category=${encodeURIComponent(selectedCategory)}`;
-  
+  window.location.href = `/filterByCategory?category=${encodeURIComponent(selectedCategory)}`;
 });
- 
+
 $("#endorsebutton").on("click", (event) => {
   event.preventDefault();
 
   const username = window.location.pathname.split("/")[3];
   window.location.href = `/users/profile/${encodeURIComponent(username)}/endorse`;
-
 });
