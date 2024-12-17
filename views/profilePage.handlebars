@@ -16,38 +16,42 @@
       Edit Profile
     </a>
     <a href="/users/profile/{{../viewedUser.username}}/favorites" class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400">Favorites</a>
-      <a href="/users/editsignup"
-       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all">
-   Edit User Settings </a>
+    <a href="/users/editsignup" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all">Edit User Settings </a>
+    <a href="/users/profile/{{../viewedUser.username}}/completed" class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400">View Helped Tasks</a>
   </div>
   {{else}}
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all disabled:border-2 disabled:border-black disabled:text-black disabled:bg-white"
-    id="favoriteButton"
-    {{#ifEquals ../viewedUser.isFavorited true}}disabled{{/ifEquals}}>
-      {{#ifEquals ../viewedUser.isFavorited true}}Favorited{{else}}Favorite{{/ifEquals}}
-    </button>
-  {{/ifEquals}}
+    <div class="flex gap-3">
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all disabled:border-2 disabled:border-black disabled:text-black disabled:bg-white"
+      id="favoriteButton"
+      {{#ifEquals ../viewedUser.isFavorited true}}disabled{{/ifEquals}}>
+        {{#ifEquals ../viewedUser.isFavorited true}}Favorited{{else}}Favorite{{/ifEquals}}
+      </button>
+      <a href="/users/profile/{{../viewedUser.username}}/completed" class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400">View Helped Tasks</a>
+    </div>
+  {{/ifEquals}} 
 
-  <div
-    class="grid grid-cols-3 place-items-start gap-3 min-w-[915px] flex-grow h-[450px] overflow-hidden"
-  >
+  {{#if viewedUser.skills.length}}
+    
+      <div class="flex gap-3">
+      <button class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400"
+      id="endorsebutton"> Endorsements </button>
+    </div>
+
+{{/if}}
+
+  <div class="grid grid-cols-3 place-items-start gap-3 min-w-[915px] flex-grow h-[450px] overflow-hidden">
     {{#if viewedUser.hasTasksPosted}}
-      <div
-        class="w-[600px] flex flex-col gap-2 col-span-2 overflow-y-auto px-4 h-full"
-      >
+      <div class="w-[600px] flex flex-col gap-2 col-span-2 overflow-y-auto px-4 h-full">
         {{#each viewedUser.tasksPosted}}
           <article class="p-4 rounded-xl border-[1px] border-black shadow-lg flex flex-col">
-            <p class="text-2xl">{{category}}</p>
+            <h2 class="text-2xl font-bold">{{category}}</h2> <!-- Added heading here -->
             <p><span class="font-bold">Posted: </span>{{datePosted}}</p>
             <p><span class="font-bold">Complete By: </span>{{completeBy}}</p>
-             <p>
-               <a 
-                  href="/users/profile/taskstatus/{{../viewedUser.username}}/{{_id}}" 
-                  class="text-blue-600 underline hover:text-blue-800 font-bold"
-                >
-                  Task Status: {{status}}
-                </a>
-              </p>
+            <p>
+              <a href="/users/profile/taskstatus/{{../viewedUser.username}}/{{_id}}" class="text-blue-600 underline hover:text-blue-800 font-bold">
+                Task Status: {{status}}
+              </a>
+            </p>
             <p class="font-bold">Skills required:</p>
             <ul class="list-disc px-6">
               {{#each skillsRequired}}
@@ -55,7 +59,7 @@
               {{/each}}
             </ul>
             {{#ifEquals ../user.username ../viewedUser.username}}
-            <a href="/posts/{{../this._id}}/helpers" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all max-w-max">View Helpers</a>
+              <a href="/posts/{{../this._id}}/helpers" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all max-w-max">View Helpers</a>
             {{/ifEquals}}
           </article>
         {{/each}}
@@ -66,78 +70,26 @@
       </div>
     {{/if}}
     <div class="flex flex-col w-full px-2 h-full overflow-y-auto">
-      <form
-        class="flex flex-col w-full mb-2 items-start p-2"
-        id="reviewForm"
-        method="post"
-      >
+      <form class="flex flex-col w-full mb-2 items-start p-2" id="reviewForm" method="post">
         <h1 class="text-lg font-bold">Rating:</h1>
         <div class="rating gap-1">
           <label for="rating-1" class="sr-only">Rating 1</label>
-          <input
-            type="radio"
-            name="rating"
-            class="mask mask-star-2 bg-orange-400"
-            id="rating-1"
-            value="1"
-          />
-
+          <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" id="rating-1" value="1" />
           <label for="rating-2" class="sr-only">Rating 2</label>
-          <input
-            type="radio"
-            name="rating"
-            class="mask mask-star-2 bg-orange-400"
-            id="rating-2"
-            value="2"
-          />
-
+          <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" id="rating-2" value="2" />
           <label for="rating-3" class="sr-only">Rating 3</label>
-          <input
-            type="radio"
-            name="rating"
-            class="mask mask-star-2 bg-orange-400"
-            id="rating-3"
-            value="3"
-          />
-
+          <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" id="rating-3" value="3" />
           <label for="rating-4" class="sr-only">Rating 4</label>
-          <input
-            type="radio"
-            name="rating"
-            class="mask mask-star-2 bg-orange-400"
-            id="rating-4"
-            value="4"
-            checked
-          />
-
+          <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" id="rating-4" value="4" checked />
           <label for="rating-5" class="sr-only">Rating 5</label>
-          <input
-            type="radio"
-            name="rating"
-            class="mask mask-star-2 bg-orange-400"
-            id="rating-5"
-            value="5"
-          />
+          <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" id="rating-5" value="5" />
         </div>
         <label for="reviewBody" class="text-lg font-bold">Review:</label>
-        <textarea
-          type="text"
-          placeholder="Review here"
-          class="textarea textarea-bordered w-full mb-2"
-          name="reviewBody"
-          id="reviewBody"
-        ></textarea>
-        <button
-          type="submit"
-          class="btn btn-success btn-sm mb-2 text-white"
-        >Submit</button>
-        <ul
-          class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500 w-full"
-          id="inputErrors"
-        >
-
-        </ul>
+        <textarea placeholder="Review here" class="textarea textarea-bordered w-full mb-2" name="reviewBody" id="reviewBody"></textarea>
+        <button type="submit" class="btn btn-success btn-sm mb-2 text-white">Submit</button>
+        <ul class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500 w-full" id="inputErrors"></ul>
       </form>
+
       {{#if viewedUser.reviews.length}}
         {{#each viewedUser.reviews}}
           <div class="chat chat-end w-full mb-2">
@@ -159,4 +111,6 @@
       <span class="font-bold" id="alert-text">Favorited user</span>
     </div>
   </div>
+  <a href="/" class="green-button">Return</a>
 </section>
+

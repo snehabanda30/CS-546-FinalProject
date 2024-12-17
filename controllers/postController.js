@@ -77,7 +77,7 @@ const createPost = async (req, res) => {
 
     await User.findOneAndUpdate(
       { _id: req.session.profile.id },
-      { $push: { posts: post._id } },
+      { $push: { tasksPosted: post._id } },
     );
 
     return res.json({ _id: post._id });
@@ -229,10 +229,12 @@ const postSearch = async (req, res) => {
     const searchedPosts = await Post.find({
       $or: [{ category: exp }, { description: exp }],
     }).lean();
-
-    const searchResults = searchedPosts.map((post) =>
-      JSON.parse(JSON.stringify(post)),
-    );
+    
+    const searchResults = searchedPosts.map((post) => ({
+      ...post,
+      datePosted: format(post.datePosted, "MM/dd/yyyy"),
+      completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    }));
 
     const user = req.session.profile || null;
 

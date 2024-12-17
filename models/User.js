@@ -67,6 +67,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  endorsedBy: {
+    type: [
+      {
+        skill: { type: String, required: true },
+        endorsedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+      },
+    ],
+    default: [],
+  },
 });
 
 const User = mongoose.model("User", userSchema);

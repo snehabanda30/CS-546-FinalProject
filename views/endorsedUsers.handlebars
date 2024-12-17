@@ -1,0 +1,29 @@
+<section class="max-w-7xl flex flex-col items-center grow px-4 py-8">
+  <h1 class="font-bold text-3xl mb-6 text-center">Endorsed By</h1>
+  {{#if endorsedUsers.length}}
+    <div class="space-y-6 w-full max-w-md">
+      {{#each endorsedUsers}}
+        <a
+          href="/users/profile/{{username}}"
+          class="block shadow-lg px-6 py-4 rounded-lg hover:scale-105 transition-all bg-white flex items-center gap-4 border border-gray-200 hover:shadow-xl"
+        >
+          <div class="avatar">
+            <div class="w-10 h-10 rounded-full overflow-hidden">
+              <img
+                src="{{profilePicture}}"
+                alt="{{username}} profile picture"
+                class="object-cover w-full h-full"
+              />
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <p class="font-semibold text-lg text-gray-800">{{username}}</p>
+            <p class="text-sm text-gray-600">{{skills}}</p>
+          </div>
+        </a>
+      {{/each}}
+    </div>
+  {{else}}
+    <p class="mt-4 text-gray-500 text-center">No endorsed users found.</p>
+  {{/if}}
+</section>

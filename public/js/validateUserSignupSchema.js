@@ -1,8 +1,11 @@
 const userSchema = Zod.object({
   username: Zod.string()
     .min(3, "Username must be at least 3 characters")
-    .max(13, "Username must be no more than 13 characters"),
-  password: Zod.string().min(6, "Password must be at least 6 characters"),
+    .max(13, "Username must be no more than 13 characters")
+    .regex(/^\S+$/, "Username cannot contain spaces"),
+  password: Zod.string()
+    .min(6, "Password must be at least 6 characters")
+    .regex(/^\S+$/, "Password cannot contain spaces"),
   confirmPassword: Zod.string().min(
     6,
     "Confirmed password must be at least 6 characters",

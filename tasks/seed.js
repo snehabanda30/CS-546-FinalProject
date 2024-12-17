@@ -57,31 +57,31 @@ async function seedDatabase() {
     });
 
     const review1 = await Review.create({
-      rating: 4.5,
+      rating: 4,
       reviewBody: "Great helper!",
       posterUsername: "sbanda",
     });
 
     const review2 = await Review.create({
-      rating: 4.0,
+      rating: 4,
       reviewBody: "Very helpful!",
       posterUsername: "bpatel",
     });
 
     const review3 = await Review.create({
-      rating: 4.8,
+      rating: 5,
       reviewBody: "Excellent work!",
       posterUsername: "jferber",
     });
 
     const review4 = await Review.create({
-      rating: 4.2,
+      rating: 4,
       reviewBody: "Very knowledgeable!",
       posterUsername: "pputrevu",
     });
 
     const review5 = await Review.create({
-      rating: 4.6,
+      rating: 5,
       reviewBody: "Great job!",
       posterUsername: "vgiraldo",
     });
@@ -96,7 +96,7 @@ async function seedDatabase() {
       address: address1,
       skills: ["Construction", "Plumbing"],
       reviews: [review1, review2],
-      averageRating: 4.5,
+      averageRating: 4,
       profilePicture: "https://i.imgur.com/19JB4HV.png",
     });
 
@@ -110,7 +110,7 @@ async function seedDatabase() {
       address: address2,
       skills: ["Programming", "Electrical"],
       reviews: [review5],
-      averageRating: 4.0,
+      averageRating: 4,
       profilePicture: "https://i.imgur.com/19JB4HV.png",
     });
 
@@ -124,7 +124,7 @@ async function seedDatabase() {
       address: address3,
       skills: ["Drawing", "Painting", "Programming"],
       reviews: [review2],
-      averageRating: 4.8,
+      averageRating: 5,
       profilePicture: "https://i.imgur.com/19JB4HV.png",
     });
 
@@ -138,7 +138,7 @@ async function seedDatabase() {
       address: address4,
       skills: ["Construction", "Plumbing", "Electrical"],
       reviews: [review3],
-      averageRating: 4.2,
+      averageRating: 4,
       profilePicture: "https://i.imgur.com/19JB4HV.png",
     });
 
@@ -152,7 +152,7 @@ async function seedDatabase() {
       address: address5,
       skills: ["Drawing", "Painting"],
       reviews: [review4],
-      averageRating: 4.6,
+      averageRating: 5,
       profilePicture: "https://i.imgur.com/19JB4HV.png",
     });
 
@@ -198,7 +198,7 @@ async function seedDatabase() {
       comments: [comment1, comment2],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user4._id, user5._id],
+      requestedUsers: [user2._id, user5._id],
     });
 
     const post2 = await Post.create({
@@ -213,7 +213,7 @@ async function seedDatabase() {
       comments: [comment3, comment4],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user1._id, user5._id],
+      requestedUsers: [user3._id, user5._id],
     });
 
     const post3 = await Post.create({
@@ -228,7 +228,7 @@ async function seedDatabase() {
       comments: [comment5],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user1._id, user2._id],
+      requestedUsers: [user4._id, user2._id],
     });
 
     const post4 = await Post.create({
@@ -243,7 +243,7 @@ async function seedDatabase() {
       comments: [comment5],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user1._id, user2._id],
+      requestedUsers: [user5._id, user2._id],
     });
 
     const post5 = await Post.create({
@@ -258,7 +258,7 @@ async function seedDatabase() {
       comments: [comment4],
       datePosted: new Date(),
       completeBy: new Date(2024, 11, 17),
-      requestedUsers: [user3._id, user2._id],
+      requestedUsers: [user1._id, user2._id],
     });
 
     await User.findByIdAndUpdate(user1._id, {
@@ -298,6 +298,50 @@ async function seedDatabase() {
         favorites: [user4._id, user2._id],
         tasksPosted: post5._id,
         tasksHelped: post4._id,
+      },
+    });
+    await User.findByIdAndUpdate(user1._id, {
+      $push: {
+        endorsedBy: [
+          { skill: "Construction", endorsedBy: user2._id },
+          { skill: "Plumbing", endorsedBy: user3._id },
+        ],
+      },
+    });
+
+    await User.findByIdAndUpdate(user2._id, {
+      $push: {
+        endorsedBy: [
+          { skill: "Programming", endorsedBy: user1._id },
+          { skill: "Electrical", endorsedBy: user4._id },
+        ],
+      },
+    });
+
+    await User.findByIdAndUpdate(user3._id, {
+      $push: {
+        endorsedBy: [
+          { skill: "Drawing", endorsedBy: user5._id },
+          { skill: "Painting", endorsedBy: user1._id },
+        ],
+      },
+    });
+
+    await User.findByIdAndUpdate(user4._id, {
+      $push: {
+        endorsedBy: [
+          { skill: "Electrical", endorsedBy: user2._id },
+          { skill: "Construction", endorsedBy: user5._id },
+        ],
+      },
+    });
+
+    await User.findByIdAndUpdate(user5._id, {
+      $push: {
+        endorsedBy: [
+          { skill: "Painting", endorsedBy: user3._id },
+          { skill: "Drawing", endorsedBy: user4._id },
+        ],
       },
     });
 
