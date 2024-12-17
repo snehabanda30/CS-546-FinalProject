@@ -33,7 +33,6 @@ $("#favoriteButton").on("click", () => {
 
 $("#search").on("submit", (event) => {
   event.preventDefault();
-  console.log("Hello");
   // Collect form data
   const searchTerm = $("#search_task").val().trim();
 
@@ -83,4 +82,11 @@ $("#select-helper").on("click", (e) => {
     },
   };
   $.ajax(requestConfig);
+});
+
+$("#endorsebutton").on("click", (event) => {
+  event.preventDefault();
+  
+  const username = window.location.pathname.split("/")[3];
+  window.location.href = `/users/profile/${encodeURIComponent(username)}/endorse`;
 });

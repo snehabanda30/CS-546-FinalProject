@@ -282,6 +282,11 @@ const getEdit = async (req, res) => {
         userLogin = await User.findById(req.session.profile.id);
       }
     }
+    /*const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    ); */
     const user = await User.findById(req.session.profile.id);
     if (!user) {
       return res.status(404).json({ error: "User not found! in this array" });
@@ -308,37 +313,55 @@ const editUser = async (req, res) => {
         userLogin = await User.findById(req.session.profile.id);
       }
     }
-    const { username, password } = req.body;
+    const { username, password } = req.body; 
+    console.log(req.body);
+    /*const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );*/ 
+
     const user = await User.findById(req.session.profile.id);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
     const updates = {};
-    if (username && username !== user.username) {
-      const usernameValidation = edituserSchema.safeParse({ username });
-      const existingUser = await User.findOne({ username });
+    // username !== user.username
+    if (username || password ) {
+    const  trimmedusername = username.trim();
+    const trimmedpassword = password.trim();
+    //  console.log(trimmedusername); 
+    //  console.log(trimmedpassword);
+      const usernameValidation = edituserSchema.safeParse({ trimmedusername,trimmedpassword });
+      // const existingUser = await User.findOne({ username }); 
+      const existingUser = await User.findOne(
+        { username },
+        {},
+        { collation: { locale: "en_US", strength: 2 } },
+      );
       if (existingUser) {
-        return res.status(409).json({
+        return res.status(403).json({
           error: `User with username ${username} already exists.`,
         });
       }
+      console.log(usernameValidation);
       if (!usernameValidation.success) {
         const errors = usernameValidation.error.errors.map(
           (error) => error.message,
         );
+        console.log(errors);
         return res.status(400).json({ error: errors.join(", ") });
       }
       updates.username = username;
       req.session.profile.username = username;
+      
     }
 
-    // Update password if provided
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updates.hashedPassword = await bcrypt.hash(password, salt);
     }
-    // Apply updates if any
-    if (Object.keys(updates).length > 0) {
+     if (Object.keys(updates).length > 1) {
       await User.findByIdAndUpdate(req.session.profile.id, updates, {
         new: true,
       });
@@ -687,9 +710,7 @@ const taskStatus = async (req, res) => {
       userLogin = await User.findById(req.session.profile.id);
       console.log(userLogin);
     }
-    console.log(req.session.profile.id);
     const { username, postId } = req.params;
-    console.log(req.params);
     const trimmedUsername = username.trim();
 
     const user = await User.findOne({ username: trimmedUsername });
@@ -718,7 +739,6 @@ const taskStatus = async (req, res) => {
       return res.status(500).json({ error: "Failed to update the post." });
     }
 
-    // Step 6: Respond with success
     return res.status(200).json({
       message: "Post status updated successfully.",
       updatedPost,
@@ -729,7 +749,44 @@ const taskStatus = async (req, res) => {
     });
   }
 };
+const skillsendorse = async (req,res) => {
+  const { username } = req.params;
 
+  if (req.session.profile.username !== username) {
+    return res.status(403).render("403", {
+      user: req.session.profile,
+    });
+  }
+
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  const endorsedUsers = await User.find({
+    _id: { $in: user.endorsedBy.map((e) => e.endorsedBy) },
+  });
+  const endorsedformatUsers = endorsedUsers.map((endorsedUser) => {
+    const userEndorsements = user.endorsedBy.filter(
+      (endorsement) => endorsement.endorsedBy.toString() === endorsedUser._id.toString()
+    );
+
+    return {
+      username: endorsedUser.username,
+      profilePicture: endorsedUser.profilePicture,
+      skills: userEndorsements.map((endorsement) => endorsement.skill), 
+    };
+  });
+  
+  return res.render("endorsedUsers", {
+    user: req.session.profile,
+    endorsedUsers: endorsedformatUsers,
+    title: "Endorsed Users",
+  });
+}
 export default {
   getSignup,
   signup,
@@ -747,4 +804,5 @@ export default {
   getCompletedProfilePage,
   getTaskStatusTracking,
   taskStatus,
+  skillsendorse,
 };

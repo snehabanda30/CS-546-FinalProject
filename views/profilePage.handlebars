@@ -28,7 +28,16 @@
       </button>
       <a href="/users/profile/{{../viewedUser.username}}/completed" class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400">View Helped Tasks</a>
     </div>
-  {{/ifEquals}}
+  {{/ifEquals}} 
+
+  {{#if viewedUser.skills.length}}
+    
+      <div class="flex gap-3">
+      <button class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400"
+      id="endorsebutton"> Endorsements </button>
+    </div>
+
+{{/if}}
 
   <div
     class="grid grid-cols-3 place-items-start gap-3 min-w-[915px] flex-grow h-[450px] overflow-hidden"
@@ -137,9 +146,9 @@
           class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500 w-full"
           id="inputErrors"
         >
-
         </ul>
       </form>
+
       {{#if viewedUser.reviews.length}}
         {{#each viewedUser.reviews}}
           <div class="chat chat-end w-full mb-2">
@@ -160,5 +169,6 @@
     <div class="alert" id="toast-alert">
       <span class="font-bold" id="alert-text">Favorited user</span>
     </div>
-  </div>
+  </div> 
 </section>
+

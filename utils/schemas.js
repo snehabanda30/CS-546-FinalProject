@@ -126,15 +126,19 @@ export const reviewSchema = z
   });
 
 export const edituserSchema = z.object({
-  username: z
+  trimmedusername: z
     .string()
     .min(3, "Username must be at least 3 characters")
     .max(13, "Username must be no more than 13 characters")
-    .optional(),
-  password: z
+    .refine((z) => !z || z.trim().length > 0, {
+      message: "Username cannot be empty or only spaces",
+    }),
+  trimmedpassword: z
     .string()
     .min(6, "Password must be at least 6 characters")
-    .optional(),
+    .refine((z) => !z || z.trim().length > 0, {
+      message: "Password cannot be empty or only spaces",
+    }),
 });
 const allowedStatuses = ["Not Started", "In Progress", "Completed", "On Hold"];
 
