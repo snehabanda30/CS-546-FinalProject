@@ -15,3 +15,11 @@ The purpose of this application is to provide the community with an online resou
 - For developing with handlebars and Tailwind, first make sure to run `npm run tailwind-generate` in a separate terminal
 - Then, open a new terminal and run `npm run dev` to start a nodemon server to make your changes and have it auto refresh
   - If you do not have nodemon installed, you can install it globally by using `npm install -g nodemon`
+
+## Running the Program
+
+- Clone the repo using `git clone https://github.com/snehabanda30/CS-546-FinalProject.git` (If installing from Git)
+  - If project in unzipped from a zip file, go to next step
+- After cloning or unzipping the repo, go to the project directory and open the terminal and type `npm install`
+- Run `npm run seed` to seed the database with mock users and posts
+- Run `npm start` to start the project server and navigate to `localhost:3000` to see the home page
