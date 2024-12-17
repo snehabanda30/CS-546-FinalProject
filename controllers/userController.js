@@ -671,13 +671,13 @@ const taskStatus = async (req, res) => {
       });
     }
 
-    const usernameValidation = edituserSchema.safeParse({ username });
-    if (!usernameValidation.success) {
-      const errors = usernameValidation.error.errors.map(
-        (error) => error.message,
-      );
-      return res.status(400).json({ error: errors.join(", ") });
-    }
+    // const usernameValidation = edituserSchema.safeParse({ username });
+    // if (!usernameValidation.success) {
+    //   const errors = usernameValidation.error.errors.map(
+    //     (error) => error.message,
+    //   );
+    //   return res.status(400).json({ error: errors.join(", ") });
+    // }
     const { status } = req.body;
 
     const updatedPost = await Post.findOneAndUpdate(
