@@ -24,7 +24,7 @@ const postSchema = Zod.object({
       );
       const completeByDate = new Date(date);
       return completeByDate > currentDateNewYork; // adjust time zone
-    }, "Complete by date must be in the future."),
+    }, "Complete by date must be more than a day into the future."),
 });
 
 $("#createPostForm").on("submit", (event) => {
