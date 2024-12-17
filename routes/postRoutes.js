@@ -20,5 +20,4 @@ router.route("/:postId/comments").post(postController.createComment);
 router.post("/:postID/send-info", postController.sendInfo);
 router.get("/:postID/helpers", postController.getHelpers);
 router.patch("/:postID/select-helper/:helperID", postController.selectHelper);
-
 export default router;

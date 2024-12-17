@@ -1,0 +1,59 @@
+<div
+  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mt-8"
+>
+  {{#each filtered}}
+    <div class="bg-white p-6 rounded-lg shadow-xl">
+      <div class="flex flex-col space-y-6">
+
+        <div class="flex items-center space-x-2">
+          <label class="text-lg font-semibold text-gray-700">Category:</label>
+          <span class="text-gray-500">{{category}}</span>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+          <label class="text-lg font-semibold text-gray-700">Location:</label>
+          <span
+            class="text-gray-500 break-words whitespace-normal"
+          >{{location.address}},
+            {{location.city}},
+            {{location.state}},
+            {{location.zipCode}},
+            {{location.country}}</span>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <label class="text-lg font-semibold text-gray-700">Skills Required:</label>
+          <span class="text-gray-500">{{skillsRequired}}</span>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <label class="text-lg font-semibold text-gray-700">Priority:</label>
+          <span class="text-gray-500">{{priority}}</span>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+          <label
+            class="text-lg font-semibold text-gray-700"
+          >Description:</label>
+          <span class="text-gray-500 whitespace-pre-wrap">{{description}}</span>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <label class="text-lg font-semibold text-gray-700">Complete By:</label>
+          <span class="text-gray-500">{{completeBy}}</span>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <label class="text-lg font-semibold text-gray-700">Date Posted:</label>
+          <span class="text-gray-500">{{datePosted}}</span>
+        </div>
+
+        <div class="mt-4 text-center">
+          <button class="post-details-button">
+            <a href="/posts/{{_id}}">View Post Details</a>
+          </button>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>

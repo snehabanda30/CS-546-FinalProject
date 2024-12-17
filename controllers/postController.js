@@ -246,6 +246,47 @@ const postSearch = async (req, res) => {
   }
 };
 
+const getCategories = async (req, res) => {
+   try{
+    const categories = await Post.distinct("category");
+    return res
+      .status(200)
+      .json(categories);
+   } catch(error){
+      return res.status(500).send("Server Error"); 
+   }
+};
+
+const filterByCategory = async(req, res) => {
+  const { category } = req.query;
+
+  try{
+    if(
+      !category ||
+      typeof category !== 'string' ||
+      category.trim().length === 0
+    ) throw `No category provided`;
+
+    const filtered = await Post.find({category}).lean();
+
+    const filteredResults = filtered.map((post) => ({
+      ...post,
+      datePosted: format(post.datePosted, "MM/dd/yyyy"),
+      completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    }));
+
+    const user = req.session.profile || null;
+
+    return res
+      .status(200)
+      .render("filteredResults", { user, filtered: filteredResults });
+
+  } catch (error){
+      return res.status(500).send("Server Error");
+  }
+};
+
+
 const sendInfo = async (req, res) => {
   try {
     const postID = req.params.postID;
@@ -386,4 +427,6 @@ export default {
   createComment,
   selectHelper,
   postSearch,
+  getCategories,
+  filterByCategory,
 };

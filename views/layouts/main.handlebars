@@ -65,6 +65,27 @@
     {{#if script}}
       <script src="{{script}}"></script>
     {{/if}}
+
+  </header>
+  <main class="flex grow flex-col justify-center p-4">
+    <form id="filterForm">
+      <label for="categoryDropdown"></label>
+      <button id="fetch-filters" type="button">Fetch Filters</button>
+      <select id="categoryDropdown" name="category">
+        <option value="">Select Category</option>
+      </select>
+      <button type="submit">Apply Filter</button>
+    </form> 
+    {{{body}}}
+  </main>
+  <footer class="flex bg-gray-300 p-4 justify-center">
+    <p>&copy; CS-546 Final Project Footer</p>
+  </footer>
+  {{#if script}}
+  <script src="{{script}}"></script>
+  {{/if}}
+  <script src="/public/js/layoutInteractions.js"></script>
+</body>
     <script src="/public/js/layoutInteractions.js"></script>
   </body>
 </html>
