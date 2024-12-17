@@ -77,7 +77,7 @@ const createPost = async (req, res) => {
     // Update the user's posts array with the new post ID
     await User.findOneAndUpdate(
       { _id: req.session.profile.id },
-      { $push: { posts: post._id } },
+      { $push: { tasksPosted: post._id } },
     );
 
     // Redirect to the post details page after successful creation

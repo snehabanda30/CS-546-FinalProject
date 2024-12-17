@@ -48,6 +48,16 @@ router
 router
   .route("/profile/taskstatus/:username/:postId")
   .get(userController.getTaskStatusTracking)
-  .patch(userController.taskStatus);
+  .patch(userController.taskStatus); 
 
+// router
+//   .route("/profile/skillsendorse/:username/:skills")
+//   .get(userController.skillsendorse); 
+
+router
+  .route("/profile/:username/endorse")
+  .get(verifyAuth, userController.skillsendorse); 
+router
+  .route("/profile/:username/completed")
+  .get(verifyAuth, userController.getCompletedProfilePage);
 export default router;

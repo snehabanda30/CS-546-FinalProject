@@ -85,3 +85,10 @@ $(".select-helper").on("click", (e) => {
   };
   $.ajax(requestConfig);
 });
+
+$("#endorsebutton").on("click", (event) => {
+  event.preventDefault();
+  
+  const username = window.location.pathname.split("/")[3];
+  window.location.href = `/users/profile/${encodeURIComponent(username)}/endorse`;
+});

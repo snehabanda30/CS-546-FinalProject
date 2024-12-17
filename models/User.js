@@ -66,6 +66,15 @@ const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
     default: "",
+  }, 
+  endorsedBy: {
+    type: [
+      {
+        skill: { type: String, required: true },
+        endorsedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      },
+    ],
+    default: [],
   },
 });
 

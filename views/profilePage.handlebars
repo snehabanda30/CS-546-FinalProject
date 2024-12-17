@@ -16,18 +16,28 @@
       Edit Profile
     </a>
     <a href="/users/profile/{{../viewedUser.username}}/favorites" class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400">Favorites</a>
-    <a href="/users/editsignup"
-       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all">
-       Edit User Settings
-    </a>
+    <a href="/users/editsignup" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all">Edit User Settings </a>
+    <a href="/users/profile/{{../viewedUser.username}}/completed" class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400">View Helped Tasks</a>
   </div>
   {{else}}
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all disabled:border-2 disabled:border-black disabled:text-black disabled:bg-white"
-    id="favoriteButton"
-    {{#ifEquals ../viewedUser.isFavorited true}}disabled{{/ifEquals}}>
-      {{#ifEquals ../viewedUser.isFavorited true}}Favorited{{else}}Favorite{{/ifEquals}}
-    </button>
-  {{/ifEquals}}
+    <div class="flex gap-3">
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all disabled:border-2 disabled:border-black disabled:text-black disabled:bg-white"
+      id="favoriteButton"
+      {{#ifEquals ../viewedUser.isFavorited true}}disabled{{/ifEquals}}>
+        {{#ifEquals ../viewedUser.isFavorited true}}Favorited{{else}}Favorite{{/ifEquals}}
+      </button>
+      <a href="/users/profile/{{../viewedUser.username}}/completed" class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400">View Helped Tasks</a>
+    </div>
+  {{/ifEquals}} 
+
+  {{#if viewedUser.skills.length}}
+    
+      <div class="flex gap-3">
+      <button class="py-2 px-4 rounded bg-gray-500 transition-all font-bold text-white hover:bg-gray-400"
+      id="endorsebutton"> Endorsements </button>
+    </div>
+
+{{/if}}
 
   <div class="grid grid-cols-3 place-items-start gap-3 min-w-[915px] flex-grow h-[450px] overflow-hidden">
     {{#if viewedUser.hasTasksPosted}}
@@ -79,6 +89,7 @@
         <button type="submit" class="btn btn-success btn-sm mb-2 text-white">Submit</button>
         <ul class="hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500 w-full" id="inputErrors"></ul>
       </form>
+
       {{#if viewedUser.reviews.length}}
         {{#each viewedUser.reviews}}
           <div class="chat chat-end w-full mb-2">
@@ -102,3 +113,4 @@
   </div>
   <a href="/" class="green-button">Return</a>
 </section>
+

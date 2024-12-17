@@ -195,6 +195,7 @@ const getProfilePage = async (req, res) => {
     }));
 
     const favorited = signedInUser.favorites.includes(user._id);
+    console.log("Skills",user.skills)
 
     const returnedUserData = {
       username: user.username,
@@ -205,7 +206,8 @@ const getProfilePage = async (req, res) => {
       lastName: user.lastName,
       hasTasksPosted: objectPosts.length > 0,
       reviews: objectReviews,
-      isFavorited: favorited,
+      isFavorited: favorited, 
+      skills: user.skills,
     };
     return res.render("profilePage", {
       user: req.session.profile,
@@ -232,6 +234,11 @@ const getEdit = async (req, res) => {
         userLogin = await User.findById(req.session.profile.id);
       }
     }
+    /*const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    ); */
     const user = await User.findById(req.session.profile.id);
     if (!user) {
       return res.status(404).json({ error: "User not found! in this array" });
@@ -258,37 +265,55 @@ const editUser = async (req, res) => {
         userLogin = await User.findById(req.session.profile.id);
       }
     }
-    const { username, password } = req.body;
+    const { username, password } = req.body; 
+    console.log(req.body);
+    /*const existingUser = await User.findOne(
+      { username },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );*/ 
+
     const user = await User.findById(req.session.profile.id);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
     const updates = {};
-    if (username && username !== user.username) {
-      const usernameValidation = edituserSchema.safeParse({ username });
-      const existingUser = await User.findOne({ username });
+    // username !== user.username
+    if (username || password ) {
+    const  trimmedusername = username.trim();
+    const trimmedpassword = password.trim();
+    //  console.log(trimmedusername); 
+    //  console.log(trimmedpassword);
+      const usernameValidation = edituserSchema.safeParse({ trimmedusername,trimmedpassword });
+      // const existingUser = await User.findOne({ username }); 
+      const existingUser = await User.findOne(
+        { username },
+        {},
+        { collation: { locale: "en_US", strength: 2 } },
+      );
       if (existingUser) {
-        return res.status(409).json({
+        return res.status(403).json({
           error: `User with username ${username} already exists.`,
         });
       }
+      console.log(usernameValidation);
       if (!usernameValidation.success) {
         const errors = usernameValidation.error.errors.map(
           (error) => error.message,
         );
+        console.log(errors);
         return res.status(400).json({ error: errors.join(", ") });
       }
       updates.username = username;
       req.session.profile.username = username;
+      
     }
 
-    // Update password if provided
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updates.hashedPassword = await bcrypt.hash(password, salt);
     }
-    // Apply updates if any
-    if (Object.keys(updates).length > 0) {
+     if (Object.keys(updates).length > 1) {
       await User.findByIdAndUpdate(req.session.profile.id, updates, {
         new: true,
       });
@@ -319,7 +344,6 @@ const getEditProfilePage = async (req, res) => {
       user: req.session.profile,
     });
   }
-
   const returnedUserData = {
     firstName: user.firstName,
     lastName: user.lastName,
@@ -402,6 +426,9 @@ const editProfile = async (req, res) => {
   user.email = email;
 
   user.phoneNumber = phone;
+  if (!user.address) {
+    user.address = {}; 
+  }
 
   user.address.address = address;
 
@@ -663,7 +690,6 @@ const taskStatus = async (req, res) => {
       return res.status(500).json({ error: "Failed to update the post." });
     }
 
-    // Step 6: Respond with success
     return res.status(200).json({
       message: "Post status updated successfully.",
       updatedPost,
@@ -674,7 +700,88 @@ const taskStatus = async (req, res) => {
     });
   }
 };
+const skillsendorse = async (req,res) => {
+  const { username } = req.params;
 
+  if (req.session.profile.username !== username) {
+    return res.status(403).render("403", {
+      user: req.session.profile,
+    });
+  }
+
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    return res.status(404).render("404", {
+      user: req.session.profile,
+    });
+  }
+
+  const endorsedUsers = await User.find({
+    _id: { $in: user.endorsedBy.map((e) => e.endorsedBy) },
+  });
+  const endorsedformatUsers = endorsedUsers.map((endorsedUser) => {
+    const userEndorsements = user.endorsedBy.filter(
+      (endorsement) => endorsement.endorsedBy.toString() === endorsedUser._id.toString()
+    );
+
+    return {
+      username: endorsedUser.username,
+      profilePicture: endorsedUser.profilePicture,
+      skills: userEndorsements.map((endorsement) => endorsement.skill), 
+    };
+  });
+  
+  return res.render("endorsedUsers", {
+    user: req.session.profile,
+    endorsedUsers: endorsedformatUsers,
+    title: "Endorsed Users",
+  });
+};
+
+const getCompletedProfilePage = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const trimmedUsername = username.trim();
+
+    const user = await User.findOne(
+      { username: trimmedUsername },
+      {},
+      { collation: { locale: "en_US", strength: 2 } },
+    );
+
+    if (!user) {
+      return res.status(404).render("404", {
+        user: req.session.profile,
+      });
+    }
+
+    const allHelpedPosts = await Post.find({ helperID: user._id });
+
+    const formattedPosts = allHelpedPosts.map((post) => ({
+      ...post.toObject(),
+      datePosted: format(post.datePosted, "MM/dd/yyyy"),
+      completeBy: format(post.completeBy, "MM/dd/yyyy"),
+    }));
+
+    const viewedUserData = {
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      tasksHelped: formattedPosts,
+    };
+
+    return res.render("completedProfilePage", {
+      user: req.session.profile,
+      viewedUser: viewedUserData,
+    });
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(500)
+      .json({ error: "Something went wrong when fetching page" });
+  }
+};
 export default {
   getSignup,
   signup,
@@ -691,4 +798,6 @@ export default {
   editUser,
   getTaskStatusTracking,
   taskStatus,
+  skillsendorse,
+  getCompletedProfilePage,
 };
