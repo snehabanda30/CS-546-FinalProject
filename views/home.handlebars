@@ -1,3 +1,7 @@
+<div class="max-w-4xl mx-auto mt-8 text-center">
+  <h1 class="PostTitle">Welcome to NeighborAid!</h1>
+</div>
+
 <div
   class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mt-8"
 >
@@ -8,7 +12,7 @@
           <label class="text-lg font-semibold text-gray-700">Poster:</label>
           <a
             href="/users/profile/{{this.posterID.username}}"
-            class="text-blue-600 font-medium hover:underline"
+            class="poster-link"
           >
             {{this.posterID.username}}
           </a>
@@ -57,10 +61,15 @@
           <span class="text-gray-500">{{datePosted}}</span>
         </div>
 
+        <div class="flex items-center space-x-2">
+          <label class="text-lg font-semibold text-gray-700">Task Status:</label>
+          <span class="text-gray-500">{{status}}</span>
+        </div>
+
         <div class="mt-4 text-center">
-          <button class="post-details-button">
-            <a href="/posts/{{_id}}">View Post Details</a>
-          </button>
+          <a href="/posts/{{_id}}" class="post-details-button">
+            View Post Details
+          </a>
         </div>
       </div>
     </div>

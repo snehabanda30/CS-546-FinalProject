@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {{#if title}}
+      <title>{{title}}</title>
+    {{else}}
+      <title>CS-546 Final Project</title>
+    {{/if}}
+    <link rel="stylesheet" href="/public/css/output.css" />
+    <link rel="stylesheet" href="/public/css/custom.css" />
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/zod@3.23.8/lib/index.umd.min.js"
+    ></script>
+  </head>
+  <body class="flex flex-col min-h-screen">
+     <header class="bg-gray-300 p-4 flex gap-4 items-center">
+      {{#if user}}
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  {{#if title}}
-  <title>{{title}}</title>
-  {{else}}
-  <title>CS-546 Final Project</title>
-  {{/if}}
-  <link rel="stylesheet" href="/public/css/output.css" />
-  <link rel="stylesheet" href="/public/css/custom.css" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/zod@3.23.8/lib/index.umd.min.js"></script>
-</head>
-
-<body class="flex flex-col min-h-screen">
-  <header class="bg-gray-300 p-4 flex gap-4 items-center">
-    {{#if user}}
     <a href="/" class="font-semibold hover:text-zinc-800 transition-all">Home</a>
     <div class="w-full">
       <form id="search" method="get" class="flex gap-2 items-center">
@@ -30,11 +33,12 @@
       </form>
     </div>
     <ul class="ml-auto flex gap-4 justify-center items-center">
-      <a href="/users/profile/{{user.username}}">{{user.username}}</a>
-      <button id="logoutButton" type="button" class="font-semibold hover:text-red-500 transition-all">Logout</button>
-      <a href="/posts/createPost" class="font-semibold hover:text-zinc-800 transition-all w-max">Create Post</a>
+      <li><a href="/users/profile/{{user.username}}">{{user.username}}</a></li>
+      <li><button id="logoutButton" type="button" class="font-semibold hover:text-red-500 transition-all">Logout</button></li>
+      <li><a href="/posts/createPost" class="font-semibold hover:text-zinc-800 transition-all w-max">Post</a></li>
     </ul>
-    {{else}}
+
+      {{else}}
       <a href="/" class="font-semibold hover:text-zinc-800 transition-all">Home</a>
       <div class="w-full">
         <form id="search" method="get" class="flex gap-2 items-center">
@@ -47,10 +51,21 @@
         </form>
       </div>
       <ul class="ml-auto flex gap-4 justify-center items-center">
-        <a href="/users/signup" class="font-semibold hover:text-zinc-800 transition-all">Signup</a>
-        <a href="/users/login" class="font-semibold hover:text-zinc-800 transition-all">Login</a>
+        <li><a href="/users/signup" class="font-semibold hover:text-zinc-800 transition-all">Signup</a></li>
+        <li><a href="/users/login" class="font-semibold hover:text-zinc-800 transition-all">Login</a></li>
       </ul>
+      {{/if}}
+    </header>
+    <main class="flex grow flex-col justify-center p-4">
+      {{{body}}}
+    </main>
+    <footer class="flex bg-gray-300 p-4 justify-center">
+      <p>&copy; CS-546 Final Project Footer</p>
+    </footer>
+    {{#if script}}
+      <script src="{{script}}"></script>
     {{/if}}
+
   </header>
   <main class="flex grow flex-col justify-center p-4">
     <form id="filterForm">
@@ -71,5 +86,6 @@
   {{/if}}
   <script src="/public/js/layoutInteractions.js"></script>
 </body>
-
+    <script src="/public/js/layoutInteractions.js"></script>
+  </body>
 </html>

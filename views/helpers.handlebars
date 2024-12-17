@@ -1,8 +1,7 @@
 <section class="max-w-4xl mx-auto px-4 py-8">
     <h1 class="large-text font-bold text-center mb-6">Poster:
         {{post.posterID.username}}</h1>
-
-
+    
     <div class="grid">
         {{#each post.requestedUsers}}
         <div class="card">
@@ -12,12 +11,32 @@
                 {{#each this.skills}}
                 <li class="text-gray-700 text-sm bg-gray-100 py-1 px-2 rounded-md">{{this}}</li>
                 {{/each}}
+
             </ul>
-            <button id="select-helper"
-                class="mt-4 w-full sm:w-auto bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
-                data-post-id="{{../post._id}}" data-helper-id="{{this._id}}">
-                Select as Helper
-            </button>
+            {{#if ../post.helperID}}
+                {{#if (eq this._id ../post.helperID)}}
+                    <!-- If the user is already selected as a helper, show "Helper Selected" -->
+                    <button
+                    class="mt-4 w-full sm:w-auto bg-gray-500 text-white py-2 px-4 rounded-md"
+                    disabled>
+                    Helper Selected
+                    </button>
+                {{else}}
+                    <!-- Otherwise, show "Select as Helper" -->
+                    <button
+                    class="mt-4 w-full sm:w-auto bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 select-helper"
+                    data-post-id="{{../post._id}}" data-helper-id="{{this._id}}">
+                    Select as Helper
+                    </button>
+                {{/if}}
+                {{else}}
+                <!-- If no helper is selected, show "Select as Helper" for all users -->
+                <button
+                    class="mt-4 w-full sm:w-auto bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 select-helper"
+                    data-post-id="{{../post._id}}" data-helper-id="{{this._id}}">
+                    Select as Helper
+                </button>
+            {{/if}}
             <p id="success-message-{{this._id}}" class="font-bold text-green-500"></p>
             <ul class="mt-4 hidden bg-red-200 text-red-500 font-bold px-4 py-2 rounded-xl border-2 border-red-500"
                 id="inputErrors-{{this._id}}"></ul>
@@ -26,4 +45,3 @@
         {{/each}}
     </div>
 </section>
-

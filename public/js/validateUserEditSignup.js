@@ -1,16 +1,3 @@
-const edituserSchema = Zod.object({
-  username: Zod.string()
-    .min(3, "Username must be at least 3 characters")
-    .max(13, "Username must be no more than 13 characters")
-    .optional()
-    .or(Zod.literal("")),
-  password: Zod.string()
-    .min(6, "Password must be at least 6 characters.")
-    .nullable()
-    .optional()
-    .or(Zod.literal("")),
-});
-
 $("#editForm").on("submit", (event) => {
   event.preventDefault();
   $("#inputErrors").addClass("hidden").empty();
@@ -18,14 +5,15 @@ $("#editForm").on("submit", (event) => {
     username: $("#username").val().trim(),
     password: $("#password").val().trim(),
   };
-  const result = edituserSchema.safeParse(userInput);
-  if (result.success === false) {
-    result.error.errors.forEach((error) => {
-      $("#inputErrors").append(`<li>${error.message}</li>`);
-    });
-    $("#inputErrors").removeClass("hidden");
-    return;
-  }
+  // const result = edituserSchema.safeParse(userInput);
+  // console.log(result);
+  // if (result.success === false) {
+  //   result.error.errors.forEach((error) => {
+  //     $("#inputErrors").append(`<li>${error.message}</li>`);
+  //   });
+  //   $("#inputErrors").removeClass("hidden");
+  //   return;
+  // }
   const dataToSend = {};
 
   if (userInput.username) {

@@ -1,8 +1,8 @@
-import { format } from "date-fns";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import { postSchema } from "../utils/schemas.js";
 import { commentSchema } from "../utils/schemas.js";
+import xss from "xss";
 
 const getCreatePost = (req, res) => {
   if (!req.session.profile) {
@@ -31,6 +31,15 @@ const createPost = async (req, res) => {
     completeBy,
   } = req.body;
 
+  xss(category);
+  xss(location);
+  xss(skillsRequired);
+  xss(priority);
+  xss(status);
+  xss(description);
+  xss(completeBy);
+
+  // Validate using Zod schema
   try {
     const postData = {
       category,
@@ -80,6 +89,8 @@ const createPost = async (req, res) => {
 
 const getPostDetails = async (req, res) => {
   const postId = req.params.postId;
+
+  xss(postId);
 
   try {
     const post = await Post.findById(postId).populate("posterID").exec();
@@ -131,6 +142,8 @@ const createComment = async (req, res) => {
 
   const postId = req.params.postId;
   const { commentText } = req.body;
+  xss(commentText);
+  xss(postId);
 
   if (commentText.trim().length === 0) {
     return res.status(404).json({ error: "Cannot post empty comments." });
@@ -198,6 +211,8 @@ const getAllPosts = async (req, res) => {
 const postSearch = async (req, res) => {
   const searchTerm = req.query.q;
 
+  xss(searchTerm);
+
   try {
     if (
       !searchTerm ||
@@ -214,7 +229,7 @@ const postSearch = async (req, res) => {
     const searchedPosts = await Post.find({
       $or: [{ category: exp }, { description: exp }],
     }).lean();
-
+    
     const searchResults = searchedPosts.map((post) => ({
       ...post,
       datePosted: format(post.datePosted, "MM/dd/yyyy"),
@@ -275,6 +290,7 @@ const filterByCategory = async(req, res) => {
 const sendInfo = async (req, res) => {
   try {
     const postID = req.params.postID;
+    xss(postID);
 
     const post = await Post.findById(postID).populate("posterID").exec();
 
@@ -297,7 +313,11 @@ const sendInfo = async (req, res) => {
       return res.status(400).json({ error: "Cannot send info to own post" });
     }
 
-    if (!post.requestedUsers.includes(user._id)) {
+    if (post.requestedUsers.includes(user._id)) {
+      return res
+        .status(400)
+        .json({ error: "You have already requested to help with this post" });
+    } else {
       post.requestedUsers.push(user._id);
       await post.save();
     }
@@ -317,6 +337,7 @@ const getHelpers = async (req, res) => {
 
     const user = req.session.profile;
     const postID = req.params.postID;
+    xss(postID);
 
     const post = await Post.findById(postID)
       .lean()
@@ -351,6 +372,9 @@ const selectHelper = async (req, res) => {
 
     const postID = req.params.postID;
     const helperID = req.params.helperID;
+
+    xss(postID);
+    xss(helperID);
 
     const post = await Post.findById(postID).populate("posterID").exec();
 

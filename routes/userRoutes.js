@@ -21,10 +21,6 @@ router
   .get(verifyAuth, userController.getProfilePage);
 
 router
-  .route("/profile/:username/completed")
-  .get(verifyAuth, userController.getCompletedProfilePage);
-
-router
   .route("/profile/:username/edit")
   .get(userController.getEditProfilePage)
   .put(userController.editProfile);
@@ -54,4 +50,14 @@ router
   .get(userController.getTaskStatusTracking)
   .patch(userController.taskStatus);
 
+// router
+//   .route("/profile/skillsendorse/:username/:skills")
+//   .get(userController.skillsendorse);
+
+router
+  .route("/profile/:username/endorse")
+  .get(verifyAuth, userController.skillsendorse);
+router
+  .route("/profile/:username/completed")
+  .get(verifyAuth, userController.getCompletedProfilePage);
 export default router;
